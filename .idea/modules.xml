@@ -2,6 +2,29 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/Comet-API/Comet-API.iml" filepath="$PROJECT_DIR$/Comet-API/Comet-API.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Comet-API-Example/Comet-API-Example.iml" filepath="$PROJECT_DIR$/Comet-API-Example/Comet-API-Example.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Comet-CatalogTool/Comet-CatalogTool.iml" filepath="$PROJECT_DIR$/Comet-CatalogTool/Comet-CatalogTool.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Comet-Common/Comet-Common.iml" filepath="$PROJECT_DIR$/Comet-Common/Comet-Common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Comet-Game-Achievements/Comet-Game-Achievements.iml" filepath="$PROJECT_DIR$/Comet-Game-Achievements/Comet-Game-Achievements.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Comet-Game-Catalog/Comet-Game-Catalog.iml" filepath="$PROJECT_DIR$/Comet-Game-Catalog/Comet-Game-Catalog.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Comet-Game-Groups/Comet-Game-Groups.iml" filepath="$PROJECT_DIR$/Comet-Game-Groups/Comet-Game-Groups.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Comet-Game-Items/Comet-Game-Items.iml" filepath="$PROJECT_DIR$/Comet-Game-Items/Comet-Game-Items.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Comet-Game-Rooms/Comet-Game-Rooms.iml" filepath="$PROJECT_DIR$/Comet-Game-Rooms/Comet-Game-Rooms.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Comet-GameCenter-FastFood/Comet-GameCenter-FastFood.iml" filepath="$PROJECT_DIR$/Comet-GameCenter-FastFood/Comet-GameCenter-FastFood.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Comet-GameCenter-SnowStorm/Comet-GameCenter-SnowStorm.iml" filepath="$PROJECT_DIR$/Comet-GameCenter-SnowStorm/Comet-GameCenter-SnowStorm.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Comet-Launcher/Comet-Launcher.iml" filepath="$PROJECT_DIR$/Comet-Launcher/Comet-Launcher.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Comet-Manager/Comet-Manager.iml" filepath="$PROJECT_DIR$/Comet-Manager/Comet-Manager.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Comet-Networking-API/Comet-Networking-API.iml" filepath="$PROJECT_DIR$/Comet-Networking-API/Comet-Networking-API.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Comet-Networking-Composers/Comet-Networking-Composers.iml" filepath="$PROJECT_DIR$/Comet-Networking-Composers/Comet-Networking-Composers.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Comet-ProcessManager/Comet-ProcessManager.iml" filepath="$PROJECT_DIR$/Comet-ProcessManager/Comet-ProcessManager.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Comet-Server/Comet-Server.iml" filepath="$PROJECT_DIR$/Comet-Server/Comet-Server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Comet-Server-Protocol/Comet-Server-Protocol.iml" filepath="$PROJECT_DIR$/Comet-Server-Protocol/Comet-Server-Protocol.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Comet-Storage-API/Comet-Storage-API.iml" filepath="$PROJECT_DIR$/Comet-Storage-API/Comet-Storage-API.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Comet-Storage-MySQL/Comet-Storage-MySQL.iml" filepath="$PROJECT_DIR$/Comet-Storage-MySQL/Comet-Storage-MySQL.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Comet-StressTest/Comet-StressTest.iml" filepath="$PROJECT_DIR$/Comet-StressTest/Comet-StressTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Comet-WebApp/Comet-WebApp.iml" filepath="$PROJECT_DIR$/Comet-WebApp/Comet-WebApp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Comet-Website/Comet-Website.iml" filepath="$PROJECT_DIR$/Comet-Website/Comet-Website.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/CometHabbia.iml" filepath="$PROJECT_DIR$/.idea/CometHabbia.iml" />
     </modules>
   </component>

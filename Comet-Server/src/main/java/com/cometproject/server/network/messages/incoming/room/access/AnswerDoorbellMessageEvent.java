@@ -55,6 +55,7 @@ public class AnswerDoorbellMessageEvent implements Event {
         if (answered) {
             requestingClient.getPlayer().getEntity().setDoorbellAnswered(true);
             requestingClient.send(new DoorbellAcceptedComposer());
+            requestingClient.getPlayer().getEntity().joinRoom(requestingClient.getPlayer().getEntity().getRoom(), "");
         } else {
             requestingClient.send(new DoorbellNoAnswerComposer());
             requestingClient.send(new HotelViewMessageComposer());
