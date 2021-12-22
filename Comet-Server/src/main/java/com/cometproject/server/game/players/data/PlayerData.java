@@ -47,6 +47,7 @@ public class PlayerData implements IPlayerData {
     private boolean vip;
     private int questId;
 
+    private boolean ask = false;
     private int timeMuted;
     private int karma;
     private int prestige;
@@ -367,6 +368,13 @@ public class PlayerData implements IPlayerData {
         this.save();
     }
 
+    public boolean getAsk() {
+        return this.ask;
+    }
+
+    public void setAsk(boolean ask) {
+        this.ask = ask;
+    }
     public int getRegTimestamp() {
         return regTimestamp;
     }

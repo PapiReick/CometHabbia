@@ -95,6 +95,7 @@ public class CommandManager implements Initialisable {
         this.commands.clear();
 
         this.loadUserCommands();
+        this.loadGimmickCommands();
         this.loadStaffCommands();
 
         if (Comet.isDebugging) {
@@ -182,12 +183,16 @@ public class CommandManager implements Initialisable {
         this.addCommand(Locale.get("command.grouprole.name"), new AssignGroupRoleCommand());
         this.addCommand("build", new BuildCommand());
         this.addCommand("af", new AutoFloorCommand());
+    }
 
         // Gimmick commands
+        private void loadGimmickCommands() {
         this.addCommand(Locale.get("command.rob.name"), new RobCommand());
         this.addCommand(Locale.get("command.kiss.name"), new KissCommand());
         this.addCommand(Locale.get("command.hug.name"), new HugCommand());
         this.addCommand(Locale.get("command.punch.name"), new PunchCommand());
+        this.addCommand(Locale.get("command.smoke.name"), new SmokeCommand());
+        this.addCommand(Locale.get("command.married.name"), new MarriedCommand());
         //this.addCommand(Locale.get("command.frozen.name"), new FrozenCommand());
     }
 
@@ -259,6 +264,7 @@ public class CommandManager implements Initialisable {
         this.addCommand("ss", new SnowStormManagerCommand());
         this.addCommand("tokens", new TokenCommand());
         this.addCommand("masstokens", new MassTokensCommand());
+        this.addCommand(Locale.get("command.closedice.name"), new CloseDiceCommand());
 
         // New
         this.addCommand(Locale.get("command.advban.name"), new AdvBanCommand());
@@ -274,6 +280,8 @@ public class CommandManager implements Initialisable {
         this.addCommand(Locale.get("command.betsystem.name"), new BetSystemCommand());
         this.addCommand(Locale.get("command.finalevent.name"), new FinalEventCommand());
         this.addCommand(Locale.get("command.voucher.name"), new VoucherCommand());
+        this.addCommand(Locale.getOrDefault("command.furnifix.name", "furnifix"), new FurniFixCommand());
+
 
         // Room bundles
         this.addCommand(Locale.get("command.bundle.name"), new BundleCommand());

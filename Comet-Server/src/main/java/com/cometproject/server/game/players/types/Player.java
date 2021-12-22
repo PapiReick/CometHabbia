@@ -142,6 +142,7 @@ public class Player implements IPlayer {
     private int itemPlacementState = -1;
     private int groupCreationType = 0;
     private boolean isBuilding = false;
+    private boolean isSearchFurni = false;
     private boolean isDeveloping = false;
     private String RPSRival = "";
     private String RPSrequest = "";
@@ -1231,4 +1232,7 @@ public class Player implements IPlayer {
     }
 
     public void setRPSRival(String RPSRival) { this.RPSRival = RPSRival; }
+
+    public void setIsSearchFurni(boolean b) {
+    }
 }
