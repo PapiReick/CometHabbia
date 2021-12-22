@@ -1232,7 +1232,4 @@ public class Player implements IPlayer {
     }
 
     public void setRPSRival(String RPSRival) { this.RPSRival = RPSRival; }
-
-    public void setIsSearchFurni(boolean b) {
-    }
 }

@@ -15,7 +15,7 @@ public class SmokeCommand extends ChatCommand {
     @Override
     public void execute(Session client, String[] params) {
         if (params.length != 1) {
-            sendNotif(Locale.getOrDefault("command.smoke.buy", "¿Quieres comprar 1 gramo de marihuana? dí :fumar yes"), client);
+            sendNotif(Locale.getOrDefault("command.smoke.buy", "¿Quieres comprar 1 gramo de marihuana? dí :smoke yes"), client);
             return;
         }
         // client.getPlayer().getData().decreaseActivityPoints(10);
@@ -44,6 +44,7 @@ public class SmokeCommand extends ChatCommand {
                     break;
                 }
                 default: {
+                    client.getPlayer().getEntity().applyEffect(new PlayerEffect(11));
                     client.getPlayer().getEntity().getRoom().getEntities().broadcastMessage(new TalkMessageComposer(client.getPlayer().getEntity().getId(), Locale.getOrDefault("command.smoke.chat5", "* Es la marihuana más buena que he consumido *"), ChatEmotion.NONE, 0));
                 }
             }
