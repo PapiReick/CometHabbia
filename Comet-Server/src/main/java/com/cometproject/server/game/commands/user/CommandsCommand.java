@@ -24,7 +24,7 @@ public class CommandsCommand extends ChatCommand {
         message.append("(").append(commands.size()).append("):\r\n");
 
         for (ChatCommand c : commands) {
-            message.append(c.getDescription()).append("\r");
+            message.append(c.getDescription()).append("\n\n");
         }
 
         client.send(new MotdNotificationMessageComposer(Locale.get("command.commands.title") + ":\n\n" + Arrays.toString(new String[]{message.toString()})));
