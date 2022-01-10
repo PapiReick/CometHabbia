@@ -12,7 +12,7 @@ public class KissCommand extends ChatCommand {
     @Override
     public void execute(Session client, String[] params) {
         if (params.length != 1) {
-            sendNotif(Locale.getOrDefault("command.kiss.none", "Who do you want to kiss bruh?"), client); //supongamos que esto es swf, editaste algo y ahora quieres subir los cambios al github, arriba a la derecha hay una flecha verde, dale ahi, ta cargando, no es la flecha, es el chulito verde
+            sendNotif(Locale.getOrDefault("command.kiss.none", "Who do you want to kiss bruh?"), client);
             return;
         }
 
