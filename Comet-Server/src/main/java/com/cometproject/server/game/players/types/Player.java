@@ -141,6 +141,7 @@ public class Player implements IPlayer {
     private int itemPlacementRotation = -1;
     private int itemPlacementState = -1;
     private int groupCreationType = 0;
+    private int bubbleId = 0;
     private boolean isBuilding = false;
     private boolean isSearchFurni = false;
     private boolean isDeveloping = false;
@@ -169,6 +170,8 @@ public class Player implements IPlayer {
     private int survivalRoomId = 0;
     private int spectatorRoomId = 0;
     private Map<String, Long> antiSpam = new ConcurrentHashMap<>();
+
+    private final List<PlayerMention> mentions = new ArrayList<PlayerMention>();
 
     public Player(ResultSet data, boolean isFallback) throws SQLException {
         this.id = data.getInt("playerId");
@@ -1232,4 +1235,21 @@ public class Player implements IPlayer {
     }
 
     public void setRPSRival(String RPSRival) { this.RPSRival = RPSRival; }
+
+    public List<PlayerMention> getMentions() {
+        return this.mentions;
+    }
+
+    public void addMention(PlayerMention mention) {
+        this.mentions.add(mention);
+    }
+
+    public int getBubbleId() {
+        return this.bubbleId;
+    }
+
+    public void setBubbleId(int bubbleId) {
+        this.bubbleId = bubbleId;
+    }
+
 }

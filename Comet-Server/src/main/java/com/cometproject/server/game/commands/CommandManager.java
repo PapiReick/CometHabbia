@@ -155,6 +155,7 @@ public class CommandManager implements Initialisable {
         this.addCommand("state", new StateCommand());
         this.addCommand("sorting", new EntitySortingCommand());
         this.addCommand("collision", new AdvancedCollisionCommand());
+        this.addCommand(Locale.get("command.mentions.name"), new MentionsCommand());
 
 
         // VIP commands
