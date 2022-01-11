@@ -22,12 +22,12 @@ public class HelpCommand extends ChatCommand {
             client.send(new MassEventMessageComposer("help/tour"));
             client.getPlayer().setLastCFH(time);
 
-            String messageToClient = "El usuario **" + client.getPlayer().getEntity().getUsername() + "** está solicitando ayuda de un Staff. `" + client.getPlayer().getEntity().getUsername() + "` para seguir a este jugador.";
+            String messageToClient = "El usuario **" + client.getPlayer().getEntity().getUsername() + "** está solicitando ayuda de un Staff. `:Follow " + client.getPlayer().getEntity().getUsername() + "` para seguir a este jugador.";
 
             try {
                 DiscordClient dcClient = new DiscordClient("https://discord.com/api/webhooks/930300436454457424/KZfuyxHJWLNHXky2myhlwvEqQ8o3S9PX5ox8y1HQeYipp8Ki-7TjdxTi1Fkd4AYe_XAR");
                 dcClient.setAvatarUrl("https://i.imgur.com/bA7O9aA.png");
-                dcClient.setContent(messageToClient + "@「 Moderador 」 @「 Embajador 」 @» Soporte y Atención al Usuario");
+                dcClient.setContent(messageToClient + " @everyone");
                 dcClient.setUsername("Soporte a Usuario");
                 dcClient.execute();
 
