@@ -17,6 +17,7 @@
       <module fileurl="file://$PROJECT_DIR$/Comet-Manager/Comet-Manager.iml" filepath="$PROJECT_DIR$/Comet-Manager/Comet-Manager.iml" />
       <module fileurl="file://$PROJECT_DIR$/Comet-Networking-API/Comet-Networking-API.iml" filepath="$PROJECT_DIR$/Comet-Networking-API/Comet-Networking-API.iml" />
       <module fileurl="file://$PROJECT_DIR$/Comet-Networking-Composers/Comet-Networking-Composers.iml" filepath="$PROJECT_DIR$/Comet-Networking-Composers/Comet-Networking-Composers.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Comet-Parent.iml" filepath="$PROJECT_DIR$/Comet-Parent.iml" />
       <module fileurl="file://$PROJECT_DIR$/Comet-ProcessManager/Comet-ProcessManager.iml" filepath="$PROJECT_DIR$/Comet-ProcessManager/Comet-ProcessManager.iml" />
       <module fileurl="file://$PROJECT_DIR$/Comet-Server/Comet-Server.iml" filepath="$PROJECT_DIR$/Comet-Server/Comet-Server.iml" />
       <module fileurl="file://$PROJECT_DIR$/Comet-Server-Protocol/Comet-Server-Protocol.iml" filepath="$PROJECT_DIR$/Comet-Server-Protocol/Comet-Server-Protocol.iml" />

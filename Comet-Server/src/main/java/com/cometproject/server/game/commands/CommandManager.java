@@ -43,7 +43,6 @@ import com.cometproject.server.network.sessions.Session;
 import com.google.common.collect.Lists;
 import gnu.trove.map.hash.THashMap;
 import org.apache.log4j.Logger;
-import org.apache.solr.cloud.Assign;
 
 import java.util.*;
 import java.util.concurrent.ExecutorService;
