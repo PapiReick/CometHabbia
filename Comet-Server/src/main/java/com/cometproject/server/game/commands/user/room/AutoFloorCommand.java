@@ -59,7 +59,7 @@ public class AutoFloorCommand extends ChatCommand {
 
     @Override
     public String getPermission() {
-        return "build_command";
+        return "autofloor_command";
     }
 
     @Override
@@ -69,7 +69,7 @@ public class AutoFloorCommand extends ChatCommand {
 
     @Override
     public String getDescription() {
-        return Locale.get("command.build.description");
+        return Locale.get("command.autofloor.description");
     }
 
     private char parseInvers(double input)

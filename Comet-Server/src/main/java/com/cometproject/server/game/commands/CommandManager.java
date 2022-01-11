@@ -181,7 +181,7 @@ public class CommandManager implements Initialisable {
         this.addCommand(Locale.get("command.help.name"), new HelpCommand());
         this.addCommand(Locale.get("command.grouprole.name"), new AssignGroupRoleCommand());
         this.addCommand("build", new BuildCommand());
-        this.addCommand("af", new AutoFloorCommand());
+        this.addCommand(Locale.get("command.autofloor.name"), new AutoFloorCommand());
     }
 
         // Gimmick commands
