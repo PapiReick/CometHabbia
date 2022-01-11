@@ -52,7 +52,7 @@ public class WhisperMessageEvent implements Event {
             }
         }
 
-        bubbleId = ShoutMessageEvent.getBubble(client, bubbleId);
+        //bubbleId = ShoutMessageEvent.getBubble(client, bubbleId);
 
         final Room room = client.getPlayer().getEntity().getRoom();
 
