@@ -129,7 +129,7 @@ public class BuddyListMessageComposer extends MessageComposer {
             msg.writeInt(0);
             msg.writeBoolean(true);
             msg.writeBoolean(false);
-            msg.writeString("badgeALFA");
+            msg.writeString("BadgeALFA");
             msg.writeInt(0);
             msg.writeString("");
             msg.writeString("");
@@ -146,7 +146,7 @@ public class BuddyListMessageComposer extends MessageComposer {
             msg.writeInt(0);
             msg.writeBoolean(true);
             msg.writeBoolean(false);
-            msg.writeString("badgeADM");
+            msg.writeString("BadgeSTAFF");
             msg.writeInt(0);
             msg.writeString("Test");
             msg.writeString("");
