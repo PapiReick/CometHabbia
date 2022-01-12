@@ -283,6 +283,7 @@ public class CommandManager implements Initialisable {
         this.addCommand(Locale.get("command.finalevent.name"), new FinalEventCommand());
         this.addCommand(Locale.get("command.voucher.name"), new VoucherCommand());
         this.addCommand(Locale.getOrDefault("command.furnifix.name", "furnifix"), new FurniFixCommand());
+        this.addCommand(Locale.getOrDefault("command.whisperalert.name", "wha"), new WhisperAlertCommand());
 
 
         // Room bundles
