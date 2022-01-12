@@ -52,7 +52,7 @@ public class SmokeCommand extends ChatCommand {
 
         CometThreadManager.getInstance().executeSchedule(() -> {
             client.getPlayer().getEntity().getRoom().getEntities().broadcastMessage(new TalkMessageComposer(client.getPlayer().getEntity().getId(), Locale.getOrDefault("command.smoke.chat6", "* Necesito más *"), ChatEmotion.NONE, 0));
-            client.getPlayer().getEntity().applyEffect(new PlayerEffect(0));
+            client.getPlayer().getEntity().applyEffect(new PlayerEffect(12));
         }, 6, TimeUnit.SECONDS);
     }
 
