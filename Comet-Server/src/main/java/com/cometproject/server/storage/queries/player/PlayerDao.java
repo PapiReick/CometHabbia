@@ -1747,4 +1747,24 @@ public class PlayerDao {
         }
     }
 
+    public static void updateRank(int playerId, int rank) {
+        Connection sqlConnection = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            sqlConnection = SqlHelper.getConnection();
+
+            preparedStatement = SqlHelper.prepare("UPDATE players SET rank  = ? WHERE id = ?", sqlConnection);
+            preparedStatement.setInt(1, rank);
+            preparedStatement.setInt(2, playerId);
+
+            preparedStatement.execute();
+        } catch (SQLException e) {
+            SqlHelper.handleSqlException(e);
+        } finally {
+            SqlHelper.closeSilently(preparedStatement);
+            SqlHelper.closeSilently(sqlConnection);
+        }
+    }
+
 }

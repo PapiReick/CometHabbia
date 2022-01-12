@@ -254,6 +254,7 @@ public class CommandManager implements Initialisable {
         this.addCommand(Locale.get("command.eventlog.name"), new EventLogCommand());
         this.addCommand(Locale.get("command.publisher.name"), new PublisherCommand());
         this.addCommand(Locale.get("command.reminder.name"), new ReminderCommand());
+        this.addCommand(Locale.get("command.giverank.name"), new GiveRankCommand());
         this.addCommand("survival", new SurvivalManagerCommand());
         this.addCommand("control", new ControlCommand());
         this.addCommand(Locale.get("command.sex.name"), new SexCommand());
