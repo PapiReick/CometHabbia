@@ -35,7 +35,7 @@ public class MarriedCommand extends ChatCommand {
 
         if(user.getPlayer().getEntity() != null && params.length == 1) {
             client.send(new WhisperMessageComposer(client.getPlayer().getId(), "Le haz preguntado a " + targetUsername + " si se quiere casar contigo, ahora espera la respuesta.", 21));
-            user.send(new AlertMessageComposer("" + username + " quiere casarse contigo.\r\rEscribe:\r<b>:casarme " + username + " si. \r</b>Si quieres aceptar la propuesta de matrimonio " + username + "\r<b>:casarme " + username + " no</b>\rSi no quieres estar con " + username + ""));
+            user.send(new AlertMessageComposer("" + username + " quiere casarse contigo.\r\rEscribe:\r<b>:married " + username + " si. \r</b>Si quieres aceptar la propuesta de matrimonio " + username + "\r<b>:married " + username + " no</b>\rSi no quieres estar con " + username + ""));
 
             client.getPlayer().getData().setAsk(true);
             user.getPlayer().getData().setAsk(true);
