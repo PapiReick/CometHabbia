@@ -1,5 +1,6 @@
 package com.cometproject.server.game.commands.staff;
 
+import com.cometproject.server.api.DiscordClient;
 import com.cometproject.server.config.Locale;
 import com.cometproject.server.game.commands.ChatCommand;
 import com.cometproject.server.game.players.PlayerManager;
@@ -9,6 +10,7 @@ import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.storage.queries.player.PlayerDao;
 import org.apache.commons.lang.StringUtils;
 
+import java.io.IOException;
 import java.util.List;
 
 public class GiveRankCommand extends ChatCommand {
@@ -21,9 +23,9 @@ public class GiveRankCommand extends ChatCommand {
         String username = params[0];
         int rank = Integer.parseInt(params[1]);
 
-        Session session = NetworkManager.getInstance().getSessions().getByPlayerUsername(username);
+        Session user = NetworkManager.getInstance().getSessions().getByPlayerUsername(username);
 
-        if (session == null) {
+        if (user == null) {
             client.getPlayer().sendNotif("error", Locale.getOrDefault("user.not.found", "User is not found or currently offline"));
             return;
         }
@@ -38,11 +40,21 @@ public class GiveRankCommand extends ChatCommand {
             return;
         }
 
-        session.getPlayer().getData().setRank(rank);
-        PlayerDao.updateRank(session.getPlayer().getId(), rank);
+        user.getPlayer().getData().setRank(rank);
+        PlayerDao.updateRank(user.getPlayer().getId(), rank);
 
         client.getPlayer().sendNotif("success", Locale.getOrDefault("command.giverank.success", "Rank set succesfully!"));
-        session.getPlayer().sendNotif("Rank updated", Locale.getOrDefault("command.giverank.received", "Your rank was set to " + rank + ". Please reload client"));
+        user.getPlayer().sendNotif("Rank updated", Locale.getOrDefault("command.giverank.received", "Your rank was set to " + rank + ". Please reload client"));
+
+        try {
+            DiscordClient dcClient = new DiscordClient("https://discord.com/api/webhooks/932679731206291497/2oSXz_ScY0CHFnUVSgu1MiPXIdWIbIar6_YPAqb9J0u-cGmzNWJEH-qwXpEF5s8-JrKk");
+            dcClient.setAvatarUrl("https://i.imgur.com/bA7O9aA.png");
+            dcClient.setContent(" El staff " + client.getPlayer().getEntity().getUsername() + " le ha dado rango " + rank + " a " + user.getPlayer().getData().getUsername());
+            dcClient.setUsername("Logs Habbia");
+            dcClient.execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+    }
 
         this.logDesc = "%s has given rank %r to user '%u'"
                 .replace("%r", Integer.toString(rank))
