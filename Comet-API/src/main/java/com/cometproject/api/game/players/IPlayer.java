@@ -169,4 +169,8 @@ public interface IPlayer {
 
 
     void flush();
+
+    boolean getLogsClientStaff();
+
+    void setLogsClientStaff(boolean logsClient);
 }

@@ -82,6 +82,7 @@ public class Player implements IPlayer {
 
     public boolean cancelPageOpen = false;
     public boolean isDisposed = false;
+    private boolean logsClient;
     public int lastBannedListRequest = 0;
     private final int id;
     private PlayerSettings settings;
@@ -1080,6 +1081,13 @@ public class Player implements IPlayer {
 
         return this.recentPurchases;
     }
+
+
+    @Override
+    public boolean getLogsClientStaff() { return this.logsClient;}
+
+    @Override
+    public void setLogsClientStaff(boolean logsClient) { this.logsClient = logsClient; }
 
     public NavigatorComponent getNavigator() {
         return navigator;
