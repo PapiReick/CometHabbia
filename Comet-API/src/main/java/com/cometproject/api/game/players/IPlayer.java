@@ -173,4 +173,5 @@ public interface IPlayer {
     boolean getLogsClientStaff();
 
     void setLogsClientStaff(boolean logsClient);
+
 }

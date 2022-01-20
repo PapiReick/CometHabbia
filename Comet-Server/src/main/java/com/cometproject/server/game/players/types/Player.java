@@ -1087,7 +1087,7 @@ public class Player implements IPlayer {
     public boolean getLogsClientStaff() { return this.logsClient;}
 
     @Override
-    public void setLogsClientStaff(boolean logsClient) { this.logsClient = logsClient; }
+    public void setLogsClientStaff(boolean logsClient) { this.logsClient = logsClient;}
 
     public NavigatorComponent getNavigator() {
         return navigator;

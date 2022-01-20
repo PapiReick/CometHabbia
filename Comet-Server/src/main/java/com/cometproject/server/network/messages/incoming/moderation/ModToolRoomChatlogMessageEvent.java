@@ -50,6 +50,6 @@ public class ModToolRoomChatlogMessageEvent implements Event {
                 } else
                     player.send(msgg);
             }
-        } // también debes meter las de lib q se han actualizado siempre, oka
+        }
     }
 }
