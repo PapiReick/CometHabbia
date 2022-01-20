@@ -9,6 +9,7 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.ChannelInputShutdownEvent;
+import io.netty.handler.codec.TooLongFrameException;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.util.AttributeKey;
@@ -88,7 +89,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<MessageEvent> {
             ctx.close();
         }
 
-        if (cause instanceof IOException) return;
+        if (cause instanceof IOException || cause instanceof TooLongFrameException) return;
 
         log.error("Exception caught in ClientHandler", cause);
     }
