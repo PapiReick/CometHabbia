@@ -64,6 +64,11 @@ public class TalkMessageEvent implements Event {
             filteredMessage = playerEntity.getRoom().getFilter().filter(playerEntity, filteredMessage);
         }
 
+        try {
+            if (LogManager.ENABLED && !message.replace(" ", "").isEmpty())
+                LogManager.getInstance().getStore().getLogEntryContainer().put(new RoomChatLogEntry(playerEntity.getRoom().getId(), client.getPlayer().getId(), message));
+        } catch (Exception ignored) {}
+
         if (playerEntity.onChat(filteredMessage)) {
             if(!UsingColourCode(message)) {
                 if (message.startsWith("@")) {
@@ -92,11 +97,11 @@ public class TalkMessageEvent implements Event {
                         final String name = String.format("@%s", finalName);
                         filteredMessage = filteredMessage.replace(String.format("@%s", finalName), String.format("%s", name));
 
-                        client.send(new WhisperMessageComposer(client.getPlayer().getData().getId(), Locale.getOrDefault("mention.success", "Mencionaste a %s exitosamente")
-                                .replace("%s", finalName), 34));
+                        client.send(new WhisperMessageComposer(client.getPlayer().getData().getId(), filteredMessage, 1));
+                        playerEntity.postChat(filteredMessage);
+                        return;
                     } else {
-                        client.send(new WhisperMessageComposer(client.getPlayer().getData().getId(), Locale.getOrDefault("mention.notexist", "El usuario %s no existe o está desconectado")
-                                .replace("%s", finalName), 34));
+                        client.send(new WhisperMessageComposer(client.getPlayer().getData().getId(), Locale.getOrDefault("mention.notexist", "El usuario %s no existe o está desconectado").replace("%s", finalName), 34));
                     }
                 }
             }
@@ -107,13 +112,6 @@ public class TalkMessageEvent implements Event {
                 if (filteredMessage.toLowerCase().startsWith("@" + client.getPlayer().getChatMessageColour() + "@:")) {
                     filteredMessage = filteredMessage.toLowerCase().replace("@" + client.getPlayer().getChatMessageColour() + "@:", ":");
                 }
-            }
-
-            try {
-                if (LogManager.ENABLED && !message.replace(" ", "").isEmpty())
-                    LogManager.getInstance().getStore().getLogEntryContainer().put(new RoomChatLogEntry(playerEntity.getRoom().getId(), client.getPlayer().getId(), message));
-            } catch (Exception ignored) {
-
             }
 
             if (client.getPlayer().getEntity().getPrivateChatItemId() != 0) {
