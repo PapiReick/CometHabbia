@@ -47,10 +47,10 @@ public class GiveRankCommand extends ChatCommand {
         user.getPlayer().sendNotif("Rank updated", Locale.getOrDefault("command.giverank.received", "Your rank was set to " + rank + ". Please reload client"));
 
         try {
-            DiscordClient dcClient = new DiscordClient("https://discord.com/api/webhooks/932679731206291497/2oSXz_ScY0CHFnUVSgu1MiPXIdWIbIar6_YPAqb9J0u-cGmzNWJEH-qwXpEF5s8-JrKk");
+            DiscordClient dcClient = new DiscordClient("https://discord.com/api/webhooks/933726180195045396/YapXa9ru4V2g91E7jPdAD9Y0sQXTTN9diINcWt8O96Ug9DsvRzrwMhX3hgbGsa3h_0zD");
             dcClient.setAvatarUrl("https://i.imgur.com/bA7O9aA.png");
-            dcClient.setContent(" El staff " + client.getPlayer().getEntity().getUsername() + " le ha dado rango " + rank + " a " + user.getPlayer().getData().getUsername());
-            dcClient.setUsername("Logs Habbia");
+            dcClient.setContent(" El staff **" + client.getPlayer().getEntity().getUsername() + "** le ha dado rango `" + rank + "` a **" + user.getPlayer().getData().getUsername() + "** en el hotel");
+            dcClient.setUsername("Logs Comandos Habbia");
             dcClient.execute();
         } catch (IOException e) {
             e.printStackTrace();
