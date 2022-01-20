@@ -67,6 +67,8 @@ public abstract class RoomEntity extends RoomFloorObject implements AvatarEntity
     private boolean isBodyRotating = false;
     private boolean isHeadRotating = false;
 
+    public ArrayList<Object> addTagUser;
+
     private final Set<RoomTile> tiles = Sets.newConcurrentHashSet();
 
     private boolean isRoomMuted = false;
@@ -116,6 +118,8 @@ public abstract class RoomEntity extends RoomFloorObject implements AvatarEntity
         this.overriden = false;
         this.isVisible = true;
         this.cancelNextUpdate = false;
+
+        this.addTagUser = new ArrayList<Object>();
 
         this.doorbellAnswered = false;
 
@@ -970,4 +974,6 @@ public abstract class RoomEntity extends RoomFloorObject implements AvatarEntity
     public void setTransformed(boolean transformed) {
         isTransformed = transformed;
     }
+
+    public ArrayList<Object> getTagUser() {return this.addTagUser;}
 }

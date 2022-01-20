@@ -8,9 +8,9 @@ import com.cometproject.server.game.rooms.objects.items.types.floor.wired.events
 import com.cometproject.server.game.rooms.types.Room;
 import com.cometproject.server.network.messages.outgoing.room.avatar.WhisperMessageComposer;
 
-public class WiredCustomFreeze extends WiredActionItem {
+public class WiredCustomUnFreeze extends WiredActionItem {
 
-    public WiredCustomFreeze(RoomItemData itemData, Room room) {
+    public WiredCustomUnFreeze(RoomItemData itemData, Room room) {
         super(itemData, room);
     }
 
@@ -36,9 +36,8 @@ public class WiredCustomFreeze extends WiredActionItem {
             return;
         }
 
-        playerEntity.cancelWalk();
-        playerEntity.setCanWalk(false);
+        playerEntity.setCanWalk(true);
 
-        playerEntity.getPlayer().getSession().send(new WhisperMessageComposer(playerEntity.getId(), Locale.getOrDefault("command.massfreeze.freeze", "¡Acabas de ser congelado por un Wired!"), 0));
+        playerEntity.getPlayer().getSession().send(new WhisperMessageComposer(playerEntity.getId(), Locale.getOrDefault("command.massfreeze.freeze", "¡Acabas de ser descongelado por un Wired!"), 0));
     }
 }

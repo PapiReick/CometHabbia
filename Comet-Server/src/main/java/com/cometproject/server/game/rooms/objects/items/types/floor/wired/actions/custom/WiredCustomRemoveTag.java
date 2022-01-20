@@ -1,16 +1,14 @@
 package com.cometproject.server.game.rooms.objects.items.types.floor.wired.actions.custom;
 
 import com.cometproject.api.game.rooms.objects.data.RoomItemData;
-import com.cometproject.server.config.Locale;
 import com.cometproject.server.game.rooms.objects.entities.types.PlayerEntity;
 import com.cometproject.server.game.rooms.objects.items.types.floor.wired.base.WiredActionItem;
 import com.cometproject.server.game.rooms.objects.items.types.floor.wired.events.WiredItemEvent;
 import com.cometproject.server.game.rooms.types.Room;
-import com.cometproject.server.network.messages.outgoing.room.avatar.WhisperMessageComposer;
+import com.cometproject.server.network.messages.outgoing.notification.NotificationMessageComposer;
 
-public class WiredCustomFreeze extends WiredActionItem {
-
-    public WiredCustomFreeze(RoomItemData itemData, Room room) {
+public class WiredCustomRemoveTag extends WiredActionItem {
+    public WiredCustomRemoveTag(RoomItemData itemData, Room room) {
         super(itemData, room);
     }
 
@@ -21,7 +19,7 @@ public class WiredCustomFreeze extends WiredActionItem {
 
     @Override
     public int getInterface() {
-        return 1;
+        return 7;
     }
 
     @Override
@@ -30,15 +28,21 @@ public class WiredCustomFreeze extends WiredActionItem {
             return;
         }
 
-        PlayerEntity playerEntity = ((PlayerEntity) event.entity);
+        PlayerEntity playerEntity = (PlayerEntity)event.entity;
 
         if (playerEntity.getPlayer() == null || playerEntity.getPlayer().getSession() == null) {
             return;
         }
 
-        playerEntity.cancelWalk();
-        playerEntity.setCanWalk(false);
+        if (this.getWiredData() == null || this.getWiredData().getText() == null) {
+            return;
+        }
 
-        playerEntity.getPlayer().getSession().send(new WhisperMessageComposer(playerEntity.getId(), Locale.getOrDefault("command.massfreeze.freeze", "¡Acabas de ser congelado por un Wired!"), 0));
+        String tag = this.getWiredData().getText();
+
+        if (!tag.isEmpty()) {
+            playerEntity.addTagUser.remove(tag);
+            playerEntity.getPlayer().getSession().send(new NotificationMessageComposer("generic", "Se te ha removido el tag: " + tag + " exitosamente"));
+        }
     }
 }

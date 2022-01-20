@@ -201,6 +201,7 @@ public class RoomItemFactory {
             put("wf_act_chase_blue", WiredCustomChaseBlue.class); // action
 
             put("wf_cstm_freeze", WiredCustomFreeze.class); // action
+            put("wf_cstm_unfreeze", WiredCustomUnFreeze.class); // action
             put("wf_cstm_fswalk", WiredCustomFastWalk.class); // action
             put("wf_cstm_dancee", WiredCustomDance.class); // action
             put("wf_cstm_enable", WiredCustomEnable.class); // action
@@ -215,6 +216,19 @@ public class RoomItemFactory {
             put("wf_act_progress_quest", WiredCustomProgressQuest.class); // action
             put("wf_act_start_quest", WiredCustomStartQuest.class); // action
             put("wf_act_idle", WiredActionCheckIdle.class); // action
+
+            put("wf_cstm_show_message_room", WiredCustomShowMessageRoom.class);
+            put("wf_cstm_toggle_state_negative", WiredCustomToggleStateNegative.class);
+            put("wf_cstm_toggle_state_random", WiredCustomToggleStateRandom.class);
+            put("wf_cstm_actions_player", WiredCustomActionsPlayer.class);
+            put("wf_cstm_reset_highscore", WiredCustomResetHighscore.class);
+            put("wf_cstm_add_tag", WiredCustomAddTag.class);
+            put("wf_cstm_remove_tag", WiredCustomRemoveTag.class);
+
+            put("wf_cnd_cstm_triggerer_furni_green", WiredConditionTriggererOnFurniGreen.class);
+            put("wf_cnd_cstm_triggerer_furni_yellow", WiredConditionTriggererOnFurniYellow.class);
+            put("wf_cnd_cstm_triggerer_furni_blue", WiredConditionTriggererOnFurniBlue.class);
+            put("wf_cnd_cstm_triggerer_furni_red", WiredConditionTriggererOnFurniRed.class);
 
             put("wf_cnd_habbo_has_diamonds", WiredConditionCustomHasDiamonds.class); // condition
             put("wf_cnd_not_habbo_has_diamonds", WiredNegativeConditionCustomHasDiamonds.class); // condition

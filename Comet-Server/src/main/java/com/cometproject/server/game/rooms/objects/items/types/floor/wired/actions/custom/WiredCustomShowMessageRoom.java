@@ -1,16 +1,17 @@
 package com.cometproject.server.game.rooms.objects.items.types.floor.wired.actions.custom;
 
 import com.cometproject.api.game.rooms.objects.data.RoomItemData;
-import com.cometproject.server.config.Locale;
+import com.cometproject.server.boot.Comet;
 import com.cometproject.server.game.rooms.objects.entities.types.PlayerEntity;
 import com.cometproject.server.game.rooms.objects.items.types.floor.wired.base.WiredActionItem;
 import com.cometproject.server.game.rooms.objects.items.types.floor.wired.events.WiredItemEvent;
 import com.cometproject.server.game.rooms.types.Room;
 import com.cometproject.server.network.messages.outgoing.room.avatar.WhisperMessageComposer;
 
-public class WiredCustomFreeze extends WiredActionItem {
+public class WiredCustomShowMessageRoom extends WiredActionItem {
+    protected boolean isWhisperBubble = false;
 
-    public WiredCustomFreeze(RoomItemData itemData, Room room) {
+    public WiredCustomShowMessageRoom(RoomItemData itemData, Room room) {
         super(itemData, room);
     }
 
@@ -21,7 +22,7 @@ public class WiredCustomFreeze extends WiredActionItem {
 
     @Override
     public int getInterface() {
-        return 1;
+        return 7;
     }
 
     @Override
@@ -30,15 +31,21 @@ public class WiredCustomFreeze extends WiredActionItem {
             return;
         }
 
-        PlayerEntity playerEntity = ((PlayerEntity) event.entity);
+        PlayerEntity playerEntity = (PlayerEntity)event.entity;
+        Room room = playerEntity.getRoom();
 
         if (playerEntity.getPlayer() == null || playerEntity.getPlayer().getSession() == null) {
             return;
         }
 
-        playerEntity.cancelWalk();
-        playerEntity.setCanWalk(false);
+        if (this.getWiredData() == null || this.getWiredData().getText() == null) {
+            return;
+        }
+        String finalText = this.getWiredData().getText();
 
-        playerEntity.getPlayer().getSession().send(new WhisperMessageComposer(playerEntity.getId(), Locale.getOrDefault("command.massfreeze.freeze", "¡Acabas de ser congelado por un Wired!"), 0));
+        finalText = finalText.replace("%username%", playerEntity.getPlayer().getData().getUsername());
+        finalText = finalText.replace("%roomname%", this.getRoom().getData().getName());
+        finalText = finalText.replace("%usersonline%", Integer.toString(Comet.getStats().getPlayers() + playerEntity.getRoom().getEntities().getBotEntities().size()));
+        room.getEntities().broadcastMessage(new WhisperMessageComposer(playerEntity.getId(), finalText, this.isWhisperBubble ? 0 : 34));
     }
 }
