@@ -56,7 +56,7 @@ public class GiveRankCommand extends ChatCommand {
             e.printStackTrace();
     }
 
-        this.logDesc = "%s has given rank %r to user '%u'"
+        this.logDesc = "El staff %s le ha dado rango %r a '%u'"
                 .replace("%r", Integer.toString(rank))
                 .replace("%s", client.getPlayer().getData().getUsername())
                 .replace("%u", username);
