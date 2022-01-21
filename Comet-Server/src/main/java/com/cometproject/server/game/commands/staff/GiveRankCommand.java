@@ -22,7 +22,7 @@ public class GiveRankCommand extends ChatCommand {
     public void execute(Session client, String[] params) {
         if (params.length < 2 || !StringUtils.isNumeric(params[1]))
                 client.send(new MotdNotificationMessageComposer(
-                        "Aca tienes la lista de los rangos disponibles en el hotel, usa ;giverank <ID> <username> command.\n\n" +
+                        "Aca tienes la lista de los rangos disponibles en el hotel, usa ;giverank <username> <ID> command.\n\n" +
                                 "- [1] Usuario\n" +
                                 "- [2] VIP\n" +
                                 "- [3] Equipo Creativo\n" +
