@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class Composers {
     // Handshake
-    public static final short InitCryptoMessageComposer = 3523;// 2904
+    public static final short InitCryptoMessageComposer = 1347;// 3523
     public static final short UniqueMachineIDMessageComposer = 1488; // 602
     public static final short AuthenticationOKMessageComposer = 2491;// 3054
     public static final short UserRightsMessageComposer = 411;// 1081

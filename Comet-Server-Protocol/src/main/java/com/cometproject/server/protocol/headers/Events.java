@@ -9,14 +9,14 @@ import java.util.Map;
 
 public class Events {
     // Handshake
-    public static final short GetClientVersionMessageEvent = 3210;// 4000
+    public static final short GetClientVersionMessageEvent = 4000;// 3210
 
     public static final short SSOTicketMessageEvent = 2419; // 286
     public static final short GenerateSecretKeyMessageEvent = 773; //412
     public static final short UniqueIDMessageEvent = 2490;// 921
     public static final short InfoRetrieveMessageEvent = 357; // 2401
 
-    public static final short InitCryptoMessageEvent = 3347;//1905
+    public static final short InitCryptoMessageEvent = 2688;//3347
     public static final short ConfirmUsernameMessageEvent = 3878;// 1590
 
     // Tracker
@@ -97,7 +97,7 @@ public class Events {
     public static final short CraftSecretMessageEvent = 1251;// 3359
 
     // Catalog
-    public static final short GetCatalogIndexMessageEvent = 2529;// 2069
+    public static final short GetCatalogIndexMessageEvent = 223;// 2529
     public static final short GetGiftWrappingConfigurationMessageEvent = 418;// 3335
     public static final short GetCatalogPageMessageEvent = 412;// 2148
     public static final short PurchaseFromCatalogMessageEvent = 3492;// 3250
