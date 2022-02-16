@@ -16,6 +16,6 @@ public class GetCataIndexMessageEvent implements Event {
 //        }
 
         // TODO: Make composers totally dumb!!!! they should only take final data, no services
-        client.send(new CatalogIndexMessageComposer(CatalogManager.getInstance(), ItemManager.getInstance(), client.getPlayer().getData().getRank()));
+        //client.send(new CatalogIndexMessageComposer(CatalogManager.getInstance(), ItemManager.getInstance(), client.getPlayer().getData().getRank()));
     }
 }

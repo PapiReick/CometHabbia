@@ -152,7 +152,7 @@ public class Composers {
     public static final short UserRemoveMessageComposer = 2661;// 2848
     public static final short SleepMessageComposer = 1797;// 157
     public static final short UserUpdateMessageComposer = 1640;// 2694
-    public static final short UsersMessageComposer = 666;// 2775 [ was 374 originally ]
+    public static final short UsersMessageComposer = 374;// 666 [ was 374 originally ]
     public static final short HabboUserBadgesMessageComposer = 1087;// 54
     public static final short UserTagsMessageComposer = 1255;// 2212
     public static final short GetRelationshipsMessageComposer = 2016;// 3068
@@ -250,6 +250,7 @@ public class Composers {
     public static final short GiftWrappingErrorMessageComposer = 1517;// 1434
     public static final short TargettedOfferMessageComposer = 119;// 1976
     public static final short MarketPlaceConfigMessageComposer = 1823;// 1976
+    public static final short CatalogModeMessageComposer = 3828 ; // 2746
 
     // Crafting
     public static final short CraftableProductsMessageComposer = 1000;// 2221

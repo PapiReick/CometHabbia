@@ -16,11 +16,13 @@ public class CatalogIndexMessageComposer extends MessageComposer {
     private final ICatalogService catalogService;
 
     private final int playerRank;
+    private final String mode;
 
-    public CatalogIndexMessageComposer(final ICatalogService catalogService, final IFurnitureService furnitureService, final int playerRank) {
+    public CatalogIndexMessageComposer(final ICatalogService catalogService, final IFurnitureService furnitureService, final int playerRank, String mode) {
         this.catalogService = catalogService;
         this.furnitureService = furnitureService;
         this.playerRank = playerRank;
+        this.mode = mode;
     }
 
     @Override
@@ -47,7 +49,7 @@ public class CatalogIndexMessageComposer extends MessageComposer {
         }
 
         msg.writeBoolean(false);
-        msg.writeString("NORMAL");
+        msg.writeString(this.mode);
     }
 
     private void composePage(ICatalogPage page, IComposer msg) {
@@ -55,7 +57,7 @@ public class CatalogIndexMessageComposer extends MessageComposer {
         msg.writeInt(page.getIcon());
         msg.writeInt(page.isEnabled() ? page.getId() : -1);
         msg.writeString(page.getLinkName().equals("undefined") ? page.getCaption().toLowerCase().replaceAll("[^A-Za-z0-9]", "").replace(" ", "_") : page.getLinkName());
-        msg.writeString(this.playerRank > 8 ? page.getCaption() + " (" + page.getId() + ")" : page.getCaption());
+        msg.writeString(this.playerRank > 8 ? page.getCaption() + " [" + page.getId() + "]" : page.getCaption());
         msg.writeInt(0);
         msg.writeInt(this.countAccessiblePages(page.getChildren()));
 
@@ -68,7 +70,7 @@ public class CatalogIndexMessageComposer extends MessageComposer {
             msg.writeInt(child.getIcon());
             msg.writeInt(child.isEnabled() ? child.getId() : -1);
             msg.writeString(child.getLinkName().equals("undefined") ? child.getCaption().toLowerCase().replaceAll("[^A-Za-z0-9]", "").replace(" ", "_") : child.getLinkName());
-            msg.writeString(this.playerRank > 8 ? child.getCaption() + " (" + child.getId() + ")" : child.getCaption());
+            msg.writeString(this.playerRank > 8 ? child.getCaption() + " [" + child.getId() + "]" : child.getCaption());
             msg.writeInt(child.getOfferSize());
 
             for (ICatalogItem item : child.getItems().values()) {
