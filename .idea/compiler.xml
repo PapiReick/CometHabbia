@@ -10,11 +10,11 @@
         <module name="Comet-Game-Groups" />
         <module name="Comet-Storage-MySQL" />
         <module name="Comet-GameCenter-SnowStorm" />
-        <module name="Comet-Website" />
         <module name="Comet-StressTest" />
+        <module name="Comet-Website" />
         <module name="Comet-Game-Items" />
-        <module name="Comet-API-Example" />
         <module name="Comet-CatalogTool" />
+        <module name="Comet-API-Example" />
         <module name="Comet-Networking-API" />
         <module name="Comet-Game-Achievements" />
         <module name="Comet-Manager" />
@@ -22,13 +22,13 @@
         <module name="Comet-WebApp" />
         <module name="Comet-Storage-API" />
         <module name="Comet-GameCenter-FastFood" />
-        <module name="Comet-API" />
         <module name="Comet-Common" />
+        <module name="Comet-API" />
         <module name="Comet-Networking-Composers" />
         <module name="Comet-Launcher" />
-        <module name="Comet-Game-Rooms" />
-        <module name="Comet-Game-Catalog" />
         <module name="Comet-ProcessManager" />
+        <module name="Comet-Game-Catalog" />
+        <module name="Comet-Game-Rooms" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>

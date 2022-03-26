@@ -13,23 +13,21 @@ public class UpdateInfoMessageComposer extends MessageComposer {
     private final String gender;
     private final String motto;
     private final int achievementPoints;
-    private final int level;
 
-    public UpdateInfoMessageComposer(final int playerId, final String figure, final String gender, final String motto, final int achievementPoints, final int level) {
+    public UpdateInfoMessageComposer(final int playerId, final String figure, final String gender, final String motto, final int achievementPoints) {
         this.playerId = playerId;
         this.figure = figure;
         this.gender = gender;
         this.motto = motto;
         this.achievementPoints = achievementPoints;
-        this.level = level;
     }
 
     public UpdateInfoMessageComposer(RoomEntity entity) {
-        this(entity.getId(), entity.getFigure(), entity.getGender(), entity.getMotto(), (entity instanceof PlayerEntity) ? ((PlayerEntity) entity).getPlayer().getData().getAchievementPoints() : 0, (entity instanceof PlayerEntity) ? ((PlayerEntity) entity).getPlayer().getStats().getLevel() : 0);
+        this(entity.getId(), entity.getFigure(), entity.getGender(), entity.getMotto(), (entity instanceof PlayerEntity) ? ((PlayerEntity) entity).getPlayer().getData().getAchievementPoints() : 0);
     }
 
     public UpdateInfoMessageComposer(int id, RoomEntity entity) {
-        this(id, entity.getFigure(), entity.getGender(), entity.getMotto(), (entity instanceof PlayerEntity) ? ((PlayerEntity) entity).getPlayer().getData().getAchievementPoints() : 0, (entity instanceof PlayerEntity) ? ((PlayerEntity) entity).getPlayer().getStats().getLevel() : 0);
+        this(id, entity.getFigure(), entity.getGender(), entity.getMotto(), (entity instanceof PlayerEntity) ? ((PlayerEntity) entity).getPlayer().getData().getAchievementPoints() : 0);
     }
 
     @Override
@@ -44,7 +42,5 @@ public class UpdateInfoMessageComposer extends MessageComposer {
         msg.writeString(gender.toLowerCase());
         msg.writeString(motto);
         msg.writeInt(achievementPoints);
-        msg.writeInt(level);
-        msg.writeString("0");
     }
 }

@@ -740,8 +740,6 @@ public class PlayerEntity extends RoomEntity implements PlayerEntityAccess, Attr
         }
 
         msg.writeInt(this.playerData == null ? 0 : this.playerData.getAchievementPoints()); //achv points
-        msg.writeInt(this.getPlayer() == null ? 0 : this.getPlayer().getStats() == null ? 0 : this.getPlayer().getStats().getLevel()); // Player Level
-        msg.writeString("0");
         msg.writeBoolean(false);
     }
 

@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.ning:async-http-client:RELEASE">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/ning/async-http-client/RELEASE/async-http-client-RELEASE.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/com/ning/async-http-client/RELEASE/async-http-client-RELEASE-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/ning/async-http-client/RELEASE/async-http-client-RELEASE-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

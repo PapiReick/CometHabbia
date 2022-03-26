@@ -420,7 +420,7 @@ public class Player implements IPlayer {
     @Override
     public void poof() {
         if (this.getEntity() != null && this.getEntity().getRoom() != null && this.getEntity().getRoom().getEntities() != null) {
-            this.getSession().send(new UpdateInfoMessageComposer(this.getEntity().getId(), this.getData().getFigure(), this.getData().getGender(), this.getData().getMotto(), this.getData().getAchievementPoints(), this.getStats().getLevel()));
+            this.getSession().send(new UpdateInfoMessageComposer(this.getEntity().getId(), this.getData().getFigure(), this.getData().getGender(), this.getData().getMotto(), this.getData().getAchievementPoints()));
             this.getEntity().unIdle();
             this.getEntity().getRoom().getEntities().broadcastMessage(new UpdateInfoMessageComposer(this.getEntity()));
         }

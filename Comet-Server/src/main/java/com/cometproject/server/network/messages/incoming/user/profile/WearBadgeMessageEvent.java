@@ -26,7 +26,7 @@ public class WearBadgeMessageEvent implements Event {
             return;
         }
 
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 5; i++) {
             final int slot = msg.readInt();
             final String badge = msg.readString();
 
@@ -34,7 +34,7 @@ public class WearBadgeMessageEvent implements Event {
                 continue;
             }
 
-            if (!client.getPlayer().getInventory().getBadges().containsKey(badge) || slot < 1 || slot > 8) {
+            if (!client.getPlayer().getInventory().getBadges().containsKey(badge) || slot < 1 || slot > 5) {
                 return;
             }
 
