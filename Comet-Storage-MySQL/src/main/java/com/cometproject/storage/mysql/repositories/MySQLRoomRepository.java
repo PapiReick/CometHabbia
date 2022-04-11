@@ -215,6 +215,7 @@ public class MySQLRoomRepository extends MySQLRepository implements IRoomReposit
         final int groupId = room.readInteger("group_id");
         final String requiredBadge = room.readString("required_badge");
         final boolean wiredHidden = room.readBoolean("hide_wired");
+        final int userIdleTicks = room.readInteger("user_idle_ticks");
         final int rollerSpeed = room.readInteger("roller_speed");
         final boolean hasSort = room.readBoolean("has_sorting");
         final boolean advancedCollision = room.readBoolean("advanced_collision");
@@ -223,6 +224,6 @@ public class MySQLRoomRepository extends MySQLRepository implements IRoomReposit
                 originalPassword, tradeState, score, tags, decorations, model, hideWalls, thicknessWall, thicknessFloor,
                 allowWalkthrough, allowPets, heightmap, muteState, kickState, banState, bubbleMode, bubbleType,
                 bubbleScroll, chatDistance, antiFloodSettings, disabledCommands == null ? Lists.newArrayList() : disabledCommands,
-                groupId, requiredBadge, thumbnail, wiredHidden, rollerSpeed, hasSort, advancedCollision);
+                groupId, requiredBadge, thumbnail, wiredHidden, userIdleTicks, rollerSpeed, hasSort, advancedCollision);
     }
 }

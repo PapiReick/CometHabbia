@@ -17,6 +17,7 @@ import com.cometproject.server.game.rooms.objects.entities.types.ai.BotAI;
 import com.cometproject.server.game.rooms.objects.items.RoomItemFloor;
 import com.cometproject.server.game.rooms.objects.items.types.floor.SeatFloorItem;
 import com.cometproject.server.game.rooms.objects.items.types.floor.wired.triggers.WiredTriggerWalksOnFurni;
+import com.cometproject.server.game.rooms.objects.items.types.floor.wired.triggers.custom.WiredTriggerCustomIdle;
 import com.cometproject.server.game.rooms.objects.items.types.floor.wired.triggers.custom.WiredTriggerUsersCollide;
 import com.cometproject.server.game.rooms.types.Room;
 import com.cometproject.server.game.rooms.types.mapping.RoomEntityMovementNode;
@@ -66,6 +67,7 @@ public abstract class RoomEntity extends RoomFloorObject implements AvatarEntity
     private boolean isTransformed = false;
     private boolean isBodyRotating = false;
     private boolean isHeadRotating = false;
+    private int afkTime = 0;
 
     public ArrayList<Object> addTagUser;
 
@@ -262,7 +264,34 @@ public abstract class RoomEntity extends RoomFloorObject implements AvatarEntity
 
         // UnIdle the user and set the path (if the path has nodes it will mean the user is walking)
         this.unIdle();
+        this.resetAfkTimer();
         this.setWalkingPath(path);
+
+        Position collisionCheck;
+
+        switch (this.bodyRotation){
+            case 4:
+                collisionCheck = new Position(this.getPosition().getX(), this.getPosition().getY() + 1);
+                break;
+            case 0:
+                collisionCheck = new Position(this.getPosition().getX(), this.getPosition().getY() - 1);
+                break;
+            case 6:
+                collisionCheck = new Position(this.getPosition().getX() - 1, this.getPosition().getY());
+                break;
+            default:
+                collisionCheck = new Position(this.getPosition().getX() + 1, this.getPosition().getY());
+                break;
+        }
+
+        RoomTile collisionTile = this.getRoom().getMapping().getTile(collisionCheck);
+        if(collisionTile != null) {
+            for (RoomEntity c : collisionTile.getEntities()) {
+                if (c instanceof PlayerEntity && c.getPosition().touching(this.getPosition()) && c != this) {
+                    WiredTriggerUsersCollide.executeTriggers(c);
+                }
+            }
+        }
     }
 
     public void sit(double height, int rotation) {
@@ -468,6 +497,8 @@ public abstract class RoomEntity extends RoomFloorObject implements AvatarEntity
     public boolean isIdleAndIncrement() {
         this.idleTime++;
 
+        if(!this.isWalking()) this.afkTime++;
+
         if(this.isForcedIdle){
             this.getRoom().getEntities().broadcastMessage(new IdleStatusMessageComposer((PlayerEntity) this, true));
             return true;
@@ -479,6 +510,11 @@ public abstract class RoomEntity extends RoomFloorObject implements AvatarEntity
                 this.getRoom().getEntities().broadcastMessage(new IdleStatusMessageComposer((PlayerEntity) this, true));
             }
             return true;
+        }
+
+        if(this.afkTime >= this.getRoom().getData().getUserIdleTicks()) {
+            this.resetAfkTimer();
+            WiredTriggerCustomIdle.executeTriggers((PlayerEntity)this);
         }
 
         return false;
@@ -530,6 +566,10 @@ public abstract class RoomEntity extends RoomFloorObject implements AvatarEntity
             this.getRoom().getEntities().broadcastMessage(new IdleStatusMessageComposer((PlayerEntity) this, false));
         }
 
+    }
+
+    public void resetAfkTimer() {
+        this.afkTime = 0;
     }
 
     @Override

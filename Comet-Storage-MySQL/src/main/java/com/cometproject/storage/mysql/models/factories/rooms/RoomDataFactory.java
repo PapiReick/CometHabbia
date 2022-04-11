@@ -18,12 +18,12 @@ public class RoomDataFactory {
                                     RoomMuteState muteState, RoomKickState kickState, RoomBanState banState,
                                     int bubbleMode, int bubbleType, int bubbleScroll, int chatDistance,
                                     int antiFloodSettings, List<String> disabledCommands, int groupId,String requiredBadge,
-                                    String thumbnail, boolean wiredHidden, int rollerSpeed, boolean hasEntitySort, boolean advancedCollision) {
+                                    String thumbnail, boolean wiredHidden, int userIdleTicks, int rollerSpeed, boolean hasEntitySort, boolean advancedCollision) {
 
         return new RoomData(id, type, name, description, ownerId, owner, category, maxUsers, access, password,
                 originalPassword, tradeState, score, tags, decorations, model, hideWalls, thicknessWall, thicknessFloor,
                 allowWalkthrough, allowPets, heightmap, muteState, kickState, banState, bubbleMode, bubbleType,
                 bubbleScroll, chatDistance, antiFloodSettings, disabledCommands, groupId,
-                requiredBadge, thumbnail, wiredHidden, rollerSpeed, hasEntitySort, advancedCollision);
+                requiredBadge, thumbnail, wiredHidden, userIdleTicks, rollerSpeed, hasEntitySort, advancedCollision);
     }
 }

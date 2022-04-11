@@ -456,6 +456,27 @@ public class RoomDao {
         }
     }
 
+    public static void updateRoomIdleTicks(int ticks, int roomId) {
+        Connection sqlConnection = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            sqlConnection = SqlHelper.getConnection();
+
+            preparedStatement = SqlHelper.prepare("UPDATE `rooms` SET user_idle_ticks = ? WHERE `id` = ?", sqlConnection);
+
+            preparedStatement.setInt(1, ticks);
+            preparedStatement.setInt(2, roomId);
+
+            preparedStatement.execute();
+        } catch (SQLException e) {
+            SqlHelper.handleSqlException(e);
+        } finally {
+            SqlHelper.closeSilently(preparedStatement);
+            SqlHelper.closeSilently(sqlConnection);
+        }
+    }
+
     private static final Type STRING_LIST_TYPE = new TypeToken<List<String>>() {}.getType();
 
     private static IRoomData roomDataFromResultSet(final ResultSet room) throws SQLException {
@@ -514,6 +535,7 @@ public class RoomDao {
         final int groupId = room.getInt("group_id");
         final String requiredBadge = room.getString("required_badge");
         final boolean wiredHidden = room.getBoolean("hide_wired");
+        final int userIdleTicks = room.getInt("user_idle_ticks");
         final int rollerSpeed = room.getInt("roller_speed");
         final boolean hasSort = room.getBoolean("has_sorting");
         final boolean advancedCollision = room.getBoolean("advanced_collision");
@@ -522,7 +544,7 @@ public class RoomDao {
                 originalPassword, tradeState, score, tags, decorations, model, hideWalls, thicknessWall, thicknessFloor,
                 allowWalkthrough, allowPets, heightmap, muteState, kickState, banState, bubbleMode, bubbleType,
                 bubbleScroll, chatDistance, antiFloodSettings, disabledCommands, groupId,
-                requiredBadge, thumbnail, wiredHidden, rollerSpeed, hasSort, advancedCollision);
+                requiredBadge, thumbnail, wiredHidden, userIdleTicks, rollerSpeed, hasSort, advancedCollision);
     }
 
     private static void fillDecorations(Map<String, String> decorations, String[] decorationsArray) {

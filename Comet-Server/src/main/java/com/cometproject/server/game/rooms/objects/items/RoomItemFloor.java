@@ -18,6 +18,7 @@ import com.cometproject.server.utilities.attributes.Collidable;
 import com.cometproject.storage.api.StorageContext;
 import com.google.common.collect.Lists;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -192,6 +193,18 @@ public abstract class RoomItemFloor extends RoomItem implements Collidable, IFlo
         }
 
         return null;
+    }
+
+    public ArrayList<Position> getPositions() {
+        ArrayList<Position> positions = new ArrayList<>();
+        positions.add(new Position(getPosition().getX(), getPosition().getY()));
+        for (AffectedTile affectedTile : AffectedTile.getAffectedTilesAt(getDefinition().getLength(), getDefinition().getWidth(), getPosition().getX(), getPosition().getY(), getRotation())) {
+            Position position = new Position(affectedTile.x, affectedTile.y);
+            if (getRoom().getMapping().isValidPosition(position) &&
+                    !positions.contains(position))
+                positions.add(position);
+        }
+        return positions;
     }
 
     public RoomEntity getCollision() {

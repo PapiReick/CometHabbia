@@ -155,4 +155,8 @@ public interface IRoomData {
     void setRollerSpeed(int speed);
 
     void setIsWiredHidden(boolean hiddenWired);
+
+    int getUserIdleTicks();
+
+    void setUserIdleTicks(int ticks);
 }

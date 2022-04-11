@@ -32,7 +32,7 @@ public class BanzaiGame extends RoomGame {
     @Override
     public void tick() {
         if (this.startBanzaiTileCount != 0 && this.banzaiTileCount == 0) {
-            // Stop the game!
+            // vvb the game!
             this.timer = this.gameLength;
         }
 

@@ -60,6 +60,8 @@ public class RoomData implements IRoomData {
     private boolean hasEntitySort;
     private boolean advancedCollision;
 
+    private int userIdleTicks;
+
     public RoomData(int id, RoomType type, String name, String description, int ownerId, String owner, int category,
                     int maxUsers, RoomAccessType access, String password, String originalPassword,
                     RoomTradeState tradeState, int score, String[] tags, Map<String, String> decorations,
@@ -67,7 +69,7 @@ public class RoomData implements IRoomData {
                     boolean allowPets, String heightmap, RoomMuteState muteState, RoomKickState kickState,
                     RoomBanState banState, int bubbleMode, int bubbleType, int bubbleScroll, int chatDistance,
                     int antiFloodSettings, List<String> disabledCommands, int groupId,
-                    String requiredBadge, String thumbnail, boolean wiredHidden, int rollerSpeed, boolean hasEntitySort, boolean advancedCollision) {
+                    String requiredBadge, String thumbnail, boolean wiredHidden, int userIdleTicks, int rollerSpeed, boolean hasEntitySort, boolean advancedCollision) {
         this.id = id;
         this.type = type;
         this.name = name;
@@ -103,6 +105,7 @@ public class RoomData implements IRoomData {
         this.requiredBadge = requiredBadge;
         this.thumbnail = thumbnail;
         this.wiredHidden = wiredHidden;
+        this.userIdleTicks = userIdleTicks;
         this.rollerSpeed = rollerSpeed;
         this.hasEntitySort = hasEntitySort;
         this.advancedCollision = advancedCollision;
@@ -471,6 +474,16 @@ public class RoomData implements IRoomData {
     @Override
     public void setIsWiredHidden(boolean hiddenWired) {
         this.wiredHidden = hiddenWired;
+    }
+
+    @Override
+    public int getUserIdleTicks() {
+        return this.userIdleTicks;
+    }
+
+    @Override
+    public void setUserIdleTicks(int ticks) {
+        this.userIdleTicks = ticks;
     }
 
     @Override

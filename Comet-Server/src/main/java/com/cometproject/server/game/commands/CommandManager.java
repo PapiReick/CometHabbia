@@ -157,6 +157,7 @@ public class CommandManager implements Initialisable {
         this.addCommand("collision", new AdvancedCollisionCommand());
         this.addCommand("maxfloor", new MaxFloorCommand());
         this.addCommand(Locale.get("command.mentions.name"), new MentionsCommand());
+        this.addCommand(Locale.get("command.setidletimer.name"), new SetIdleTimerCommand());
 
 
         // VIP commands

@@ -216,6 +216,16 @@ public class RoomItemFactory {
             put("wf_act_progress_quest", WiredCustomProgressQuest.class); // action
             put("wf_act_start_quest", WiredCustomStartQuest.class); // action
             put("wf_act_idle", WiredActionCheckIdle.class); // action
+            put("wf_cstm_set_speed", WiredCustomSetSpeed.class); //action
+            put("wf_act_endgame_team", WiredCustomTeamLoses.class);
+            put("wf_cstm_teleport_yellow", WiredCustomTeleportYellow.class);
+            put("wf_cstm_teleport_green", WiredCustomTeleportGreen.class);
+            put("wf_cstm_teleport_blue", WiredCustomTeleportBlue.class);
+            put("wf_cstm_teleport_red", WiredCustomTeleportRed.class);
+
+            //TEST
+            put("wf_cstm_reset_timers_afk", WiredCustomResetTimerAfk.class);
+            put("wf_cstm_execute_stacks_conditions", WiredCustomExecuteStacksConditions.class); // new wired
 
             put("wf_cstm_show_message_room", WiredCustomShowMessageRoom.class);
             put("wf_cstm_toggle_state_negative", WiredCustomToggleStateNegative.class);
