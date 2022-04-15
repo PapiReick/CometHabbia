@@ -23,14 +23,12 @@ import com.cometproject.server.storage.queries.player.PlayerDao;
 import com.cometproject.server.storage.queries.player.inventory.InventoryDao;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import org.apache.log4j.Logger;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-
+import org.apache.log4j.Logger;
 
 public class InventoryComponent extends PlayerComponent implements PlayerInventory {
     private Map<Long, PlayerItem> inventoryItems;
@@ -211,15 +209,20 @@ public class InventoryComponent extends PlayerComponent implements PlayerInvento
     }
 
     @Override
-    public Map<String, Integer> equippedBadges() {
-        Map<String, Integer> badges = new ConcurrentHashMap<>();
+    public String[] equippedBadges() {
+        final String[] badges = new String[9];
+
+        if(this.getBadges() == null)
+            return null;
 
         for (Map.Entry<String, Integer> badge : this.getBadges().entrySet()) {
             if (badge.getValue() > 0)
-                badges.put(badge.getKey(), badge.getValue());
+                badges[badge.getValue()] = badge.getKey();
+            //badges.put(badge.getKey(), badge.getValue());
         }
 
         return badges;
+        //return Collections.sortbadges;
     }
 
     @Override

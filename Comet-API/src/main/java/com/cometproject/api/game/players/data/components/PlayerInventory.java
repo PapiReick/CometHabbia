@@ -33,7 +33,7 @@ public interface PlayerInventory extends IPlayerComponent {
 
     void resetBadgeSlots();
 
-    Map<String, Integer> equippedBadges();
+    String[] equippedBadges();
 
     PlayerItem add(long id, int itemId, String extraData, IGiftData giftData, LimitedEditionItem limitedEditionItem);
 

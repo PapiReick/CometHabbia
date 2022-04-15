@@ -15,7 +15,7 @@ public class HeightCommand extends ChatCommand {
             height = -1;
         }
 
-        if (height < -1 || height > 64) {
+        if (height < -1 || height > 100) {
             sendNotif(Locale.get("command.height.invalid"), client);
             return;
         }

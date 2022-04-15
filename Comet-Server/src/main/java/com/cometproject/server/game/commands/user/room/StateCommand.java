@@ -15,7 +15,7 @@ public class StateCommand extends ChatCommand {
             state = -1;
         }
 
-        if (state < -1 || state > 64) {
+        if (state < -1 || state > 100) {
             sendNotif(Locale.get("command.height.invalid"), client);
             return;
         }

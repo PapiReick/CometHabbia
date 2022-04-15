@@ -58,23 +58,25 @@ public class InventoryDao {
         return data;
     }
 
-    public static Map<String, Integer> getWornBadgesByPlayerId(int playerId) {
+    public static String[] getWornBadgesByPlayerId(int playerId) {
         Connection sqlConnection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
 
-        Map<String, Integer> data = new HashMap<>();
+        String[] data = new String[6];
 
         try {
             sqlConnection = SqlHelper.getConnection();
 
-            preparedStatement = SqlHelper.prepare("SELECT badge_code,slot FROM player_badges WHERE player_id = ? AND slot != 0 LIMIT 5", sqlConnection);
+            preparedStatement = SqlHelper.prepare("SELECT * FROM player_badges WHERE player_id = ? AND slot != 0 LIMIT 5", sqlConnection);
             preparedStatement.setInt(1, playerId);
 
             resultSet = preparedStatement.executeQuery();
 
+            int i = 0;
+
             while (resultSet.next()) {
-                data.put(resultSet.getString("badge_code"), resultSet.getInt("slot"));
+                data[i++] = resultSet.getString("badge_code");
             }
         } catch (SQLException e) {
             SqlHelper.handleSqlException(e);
