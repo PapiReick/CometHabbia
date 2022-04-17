@@ -1,6 +1,7 @@
 package com.cometproject.server.network.messages.incoming.room.action;
 
 import com.cometproject.server.config.Locale;
+import com.cometproject.server.game.moderation.ModerationManager;
 import com.cometproject.server.game.permissions.PermissionsManager;
 import com.cometproject.server.game.players.types.PlayerMention;
 import com.cometproject.server.game.rooms.RoomManager;
@@ -12,7 +13,11 @@ import com.cometproject.server.logging.LogManager;
 import com.cometproject.server.logging.entries.RoomChatLogEntry;
 import com.cometproject.server.network.NetworkManager;
 import com.cometproject.server.network.messages.incoming.Event;
+import com.cometproject.server.network.messages.outgoing.messenger.InstantChatMessageComposer;
+import com.cometproject.server.network.messages.outgoing.moderation.ModToolMessageComposer;
 import com.cometproject.server.network.messages.outgoing.notification.AdvancedAlertMessageComposer;
+import com.cometproject.server.network.messages.outgoing.nuxs.EmailVerificationWindowMessageComposer;
+import com.cometproject.server.network.messages.outgoing.nuxs.SMSVerificationCompleteMessageComposer;
 import com.cometproject.server.network.messages.outgoing.room.avatar.TalkMessageComposer;
 import com.cometproject.server.network.messages.outgoing.room.avatar.WhisperMessageComposer;
 import com.cometproject.server.network.sessions.Session;
@@ -25,6 +30,21 @@ public class TalkMessageEvent implements Event {
         String message = msg.readString();
 
         int bubble = msg.readInt();
+
+        if (client.getPlayer().getSettings().getPersonalPin() != null){
+            if(message.equalsIgnoreCase(client.getPlayer().getSettings().getPersonalPin().toLowerCase())) {
+                client.getPlayer().sendBubble("pincode", Locale.getOrDefault("pin.code.success", "Acabas de introducir tu pin correctamente, ¡disfruta de tu sesión!"));
+                client.getPlayer().getSettings().setPinSucces();
+                client.sendQueue(new ModToolMessageComposer());
+                client.sendQueue(new SMSVerificationCompleteMessageComposer(2,2));
+                return;
+            }
+            else if(client.getPlayer().getPermissions().getRank().modTool() && !client.getPlayer().getSettings().isPinSuccess()) {
+                client.getPlayer().sendBubble("pincode", Locale.getOrDefault("pin.code.required", "Debes verificar tu PIN antes de realizar cualquier acción."));
+                client.send(new EmailVerificationWindowMessageComposer(1,1));
+                return;
+            }
+        }
 
         PlayerEntity playerEntity = client.getPlayer().getEntity();
 
