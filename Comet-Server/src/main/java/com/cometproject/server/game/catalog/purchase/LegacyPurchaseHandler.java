@@ -65,7 +65,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
 
 import java.util.*;
@@ -75,7 +76,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 
 public class LegacyPurchaseHandler implements ICatalogPurchaseHandler {
-    private final Logger log = Logger.getLogger(LegacyPurchaseHandler.class.getName());
+    private final Logger log = LogManager.getLogger();
     private ExecutorService executorService;
 
     public LegacyPurchaseHandler() {

@@ -13,7 +13,7 @@ public class LastWeekLeaderboardComposer extends MessageComposer {
 
     public LastWeekLeaderboardComposer(int gameId) {
         this.gameId = gameId;
-        this.data = GameCenterManager.getInstance().getLeaderboardByWeek(false);
+        this.data = GameCenterManager.getInstance().getLeaderboardByWeek(true);
     }
 
     @Override

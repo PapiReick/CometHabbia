@@ -3,7 +3,6 @@ package com.cometproject.api.config;
 import com.cometproject.api.game.rooms.filter.FilterMode;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import org.apache.log4j.Logger;
 
 import java.time.DayOfWeek;
 import java.util.Map;
@@ -142,8 +141,6 @@ public class CometSettings {
     public static int globalEggsCrafted = 1;
     public static int baseWelcomeRoomId = 9184;
     public static String communityGoalPrize = "ADM";
-
-    private static final Logger log = Logger.getLogger(CometSettings.class.getName());
 
     /**
      * Enable & set the Message Of The Day text

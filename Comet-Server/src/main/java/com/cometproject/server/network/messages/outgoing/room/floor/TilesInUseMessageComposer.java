@@ -5,6 +5,7 @@ import com.cometproject.api.networking.messages.IComposer;
 import com.cometproject.server.protocol.headers.Composers;
 import com.cometproject.server.protocol.messages.MessageComposer;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -13,6 +14,10 @@ public class TilesInUseMessageComposer extends MessageComposer {
 
     public TilesInUseMessageComposer(final List<Position> tiles) {
         this.tiles = tiles;
+    }
+
+    public TilesInUseMessageComposer() {
+        this.tiles = new ArrayList<>();
     }
 
     @Override

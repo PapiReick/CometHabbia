@@ -10,10 +10,9 @@ public class GetWeeklyLeaderboardEvent implements Event {
     public void handle(Session client, MessageEvent msg) throws Exception {
         int gameId = msg.readInt();
 
-        if(gameId == 3) {
+
             client.send(new WeeklyLeaderboardComposer(gameId));
             client.send(new LastWeekLeaderboardComposer(gameId));
             //client.send(new LuckyLosersComposer(gameId));
-        }
     }
 }

@@ -13,13 +13,14 @@ import com.cometproject.server.network.messages.outgoing.room.items.UpdateFloorI
 import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.protocol.messages.MessageEvent;
 import com.google.common.collect.Maps;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Map;
 
 
 public class MoveFloorItemMessageEvent implements Event {
-    private static Logger log = Logger.getLogger(MoveFloorItemMessageEvent.class);
+    private static final Logger log = LogManager.getLogger();
 
     public void handle(Session client, MessageEvent msg) {
         if(client.getPlayer().getPermissions().getRank().modTool() && !client.getPlayer().getSettings().isPinSuccess()) {

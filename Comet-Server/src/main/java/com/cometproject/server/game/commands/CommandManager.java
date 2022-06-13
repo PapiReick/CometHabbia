@@ -42,7 +42,7 @@ import com.cometproject.server.network.messages.outgoing.messenger.InstantChatMe
 import com.cometproject.server.network.sessions.Session;
 import com.google.common.collect.Lists;
 import gnu.trove.map.hash.THashMap;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -51,7 +51,7 @@ import java.util.concurrent.Executors;
 
 public class CommandManager implements Initialisable {
     private static CommandManager commandManagerInstance;
-    private static Logger log = Logger.getLogger(CommandManager.class.getName());
+    private static final Logger log = org.apache.logging.log4j.LogManager.getLogger();
 
     private NotificationManager notifications;
     private Map<String, ChatCommand> commands;
@@ -158,6 +158,7 @@ public class CommandManager implements Initialisable {
         this.addCommand("maxfloor", new MaxFloorCommand());
         this.addCommand(Locale.get("command.mentions.name"), new MentionsCommand());
         this.addCommand(Locale.get("command.setidletimer.name"), new SetIdleTimerCommand());
+        this.addCommand(Locale.get("command.flooredit.name"), new ChangeFloorEditCommand());
 
 
         // VIP commands

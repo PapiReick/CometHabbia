@@ -13,7 +13,12 @@ public class GetTilesInUseMessageEvent implements Event {
     @Override
     public void handle(Session client, MessageEvent msg) throws Exception {
         if (client.getPlayer().getEntity() != null) {
-            client.send(new TilesInUseMessageComposer(client.getPlayer().getEntity().getRoom().getMapping().tilesWithFurniture()));
+
+            if (client.getPlayer().getEntity().floorEditCustom){
+                client.send(new TilesInUseMessageComposer(client.getPlayer().getEntity().getRoom().getMapping().tilesWithFurniture()));
+            }else{
+                client.send(new TilesInUseMessageComposer());
+            }
 
             if (client.getPlayer().getEntity() != null) {
                 IRoomModel model = client.getPlayer().getEntity().getRoom().getModel();

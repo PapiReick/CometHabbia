@@ -69,6 +69,8 @@ public abstract class RoomEntity extends RoomFloorObject implements AvatarEntity
     private boolean isHeadRotating = false;
     private int afkTime = 0;
 
+    public boolean floorEditCustom = true;
+
     public ArrayList<Object> addTagUser;
 
     private final Set<RoomTile> tiles = Sets.newConcurrentHashSet();

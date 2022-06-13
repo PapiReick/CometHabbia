@@ -22,7 +22,8 @@ import com.cometproject.server.storage.queries.player.PlayerDao;
 import com.corundumstudio.socketio.SocketIOClient;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.net.InetSocketAddress;
 import java.util.UUID;
@@ -32,7 +33,7 @@ public class Session implements ISession {
     public static int CLIENT_VERSION = 0;
     private final ChannelHandlerContext channel;
     private final UUID uuid = UUID.randomUUID();
-    private Logger logger = Logger.getLogger("Session");
+    private Logger logger = LogManager.getLogger("Session");
     private SessionEventHandler eventHandler;
     private boolean isClone = false;
     private int loginAt = 0;
@@ -197,7 +198,7 @@ public class Session implements ISession {
 
         String username = player.getData().getUsername();
 
-        this.logger = Logger.getLogger("[" + username + "][" + player.getId() + "]");
+        this.logger = LogManager.getLogger("[" + username + "][" + player.getId() + "]");
         this.player = player;
         this.snowWarPlayerData = new SnowWarPlayerData(player);
 

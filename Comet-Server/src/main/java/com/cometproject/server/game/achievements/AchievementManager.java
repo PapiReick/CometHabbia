@@ -4,15 +4,15 @@ import com.cometproject.api.game.achievements.IAchievementsService;
 import com.cometproject.api.game.achievements.types.AchievementType;
 import com.cometproject.api.game.achievements.types.IAchievementGroup;
 import com.cometproject.api.game.achievements.types.ITalentTrackLevel;
-import com.cometproject.server.game.achievements.types.TalentTrackLevel;
 import com.cometproject.server.storage.queries.achievements.AchievementDao;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class AchievementManager implements IAchievementsService {
-    private static final Logger log = Logger.getLogger(AchievementManager.class.getName());
+    private static final Logger log = LogManager.getLogger();
     private static AchievementManager achievementManager;
     private final Map<AchievementType, IAchievementGroup> achievementGroups;
     private final Map<Integer, Map<AchievementType, IAchievementGroup>> gameCenterAchievements;

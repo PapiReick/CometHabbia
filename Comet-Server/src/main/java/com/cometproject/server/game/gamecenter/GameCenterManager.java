@@ -45,8 +45,8 @@ public class GameCenterManager implements Initialisable {
             this.lastWeek.clear();
         }
 
-        this.currentWeek = BetDao.getLeaderBoard(3, 0, false, false);
-        this.lastWeek = BetDao.getLeaderBoard(3, 0, true, false);
+        this.currentWeek = BetDao.getLeaderBoard(1, 0, false, false);
+        this.lastWeek = BetDao.getLeaderBoard(1, 0, true, false);
 
         // Queue it to be refreshed again in 5 minutes.
         CometThreadManager.getInstance().executeSchedule(this::loadLeaderboards,1, TimeUnit.MINUTES);

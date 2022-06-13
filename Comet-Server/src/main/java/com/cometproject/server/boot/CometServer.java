@@ -34,13 +34,13 @@ import com.cometproject.server.network.websockets.WebSocketManager;
 import com.cometproject.server.storage.StorageManager;
 import com.cometproject.server.storage.queries.config.ConfigDao;
 import com.cometproject.server.tasks.CometThreadManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 import java.util.Map;
 
 
 public class CometServer {
     public static final String CLIENT_VERSION = "PRODUCTION-201709192204-203982672";
-    private final Logger log = Logger.getLogger(CometServer.class.getName());
+    private final Logger log = org.apache.logging.log4j.LogManager.getLogger();
 
     public CometServer(Map<String, String> overridenConfig) {
         Configuration.setConfiguration(new Configuration("./config/comet.properties"));

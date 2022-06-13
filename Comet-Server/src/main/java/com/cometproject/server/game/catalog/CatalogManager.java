@@ -11,7 +11,8 @@ import com.cometproject.server.storage.queries.catalog.CatalogDao;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.commons.collections4.map.ListOrderedMap;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 
@@ -59,7 +60,7 @@ public class CatalogManager implements ICatalogService {
     /**
      * The logger for the catalog manager
      */
-    private Logger log = Logger.getLogger(CatalogManager.class.getName());
+    private final Logger log = LogManager.getLogger();
 
     /**
      * Parent pages

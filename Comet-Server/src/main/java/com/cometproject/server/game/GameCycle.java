@@ -15,7 +15,8 @@ import com.cometproject.server.storage.queries.player.PlayerDao;
 import com.cometproject.server.storage.queries.system.StatisticsDao;
 import com.cometproject.server.tasks.CometTask;
 import com.cometproject.server.tasks.CometThreadManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.time.LocalDate;
 import java.util.Calendar;
@@ -28,7 +29,7 @@ public class GameCycle implements CometTask, Initialisable {
 
     private static GameCycle gameThreadInstance;
 
-    private static Logger log = Logger.getLogger(GameCycle.class.getName());
+    private static final Logger log = LogManager.getLogger();
 
     private ScheduledFuture gameFuture;
 

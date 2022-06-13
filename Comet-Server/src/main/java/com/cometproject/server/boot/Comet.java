@@ -3,16 +3,15 @@ package com.cometproject.server.boot;
 import com.cometproject.api.stats.CometStats;
 import com.cometproject.server.boot.utils.ConsoleCommands;
 import com.cometproject.server.boot.utils.ShutdownProcess;
-import com.cometproject.server.game.players.types.Player;
 import com.cometproject.server.game.rooms.RoomManager;
 import com.cometproject.server.network.NetworkManager;
 import com.cometproject.server.utilities.CometRuntime;
 import com.cometproject.server.utilities.TimeSpan;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import java.io.FileInputStream;
 import java.lang.management.ManagementFactory;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -27,7 +26,7 @@ public class Comet {
     /**
      * Is a debugger attached?
      */
-    public static volatile boolean isDebugging = false;
+    public static volatile boolean isDebugging = true;
     /**
      * Is Comet running?
      */
@@ -43,7 +42,7 @@ public class Comet {
     /**
      * Logging during start-up & console commands
      */
-    private static Logger log = Logger.getLogger(Comet.class.getName());
+    private static final Logger log = LogManager.getLogger();
     /**
      * The main server instance
      */
@@ -58,22 +57,13 @@ public class Comet {
         start = System.currentTimeMillis();
 
         try {
-            PropertyConfigurator.configure(new FileInputStream("./config/log4j.properties"));
+            PropertyConfigurator.configure("./config/log4j.properties");
         } catch (Exception e) {
             log.error("Error while loading log4j configuration", e);
             return;
         }
 
         log.info("Comet Server - " + getBuild());
-
-        log.info("  /$$$$$$                                      /$$    ");
-        log.info(" /$$__  $$                                    | $$    ");
-        log.info("| $$  \\__/  /$$$$$$  /$$$$$$/$$$$   /$$$$$$  /$$$$$$  ");
-        log.info("| $$       /$$__  $$| $$_  $$_  $$ /$$__  $$|_  $$_/  ");
-        log.info("| $$      | $$  \\ $$| $$ \\ $$ \\ $$| $$$$$$$$  | $$    ");
-        log.info("| $$    $$| $$  | $$| $$ | $$ | $$| $$_____/  | $$ /$$");
-        log.info("|  $$$$$$/|  $$$$$$/| $$ | $$ | $$|  $$$$$$$  |  $$$/");
-        log.info(" \\______/  \\______/ |__/ |__/ |__/ \\_______/   \\___/  ");
 
         for (String arg : ManagementFactory.getRuntimeMXBean().getInputArguments()) {
             if (arg.contains("dt_")) {
@@ -136,7 +126,6 @@ public class Comet {
             server = new CometServer(cometConfiguration);
         }
 
-        Logger.getRootLogger().setLevel(logLevel);
         server.init();
 
         if (!daemon) {
@@ -184,7 +173,7 @@ public class Comet {
      * @return The instance build of Comet
      */
     public static String getBuild() {
-        return Comet.class.getPackage().getImplementationVersion() == null ? "RavenProject" : Comet.class.getPackage().getImplementationVersion();
+        return Comet.class.getPackage().getImplementationVersion() == null ? "Comet-DEV" : Comet.class.getPackage().getImplementationVersion();
     }
 
     /**
