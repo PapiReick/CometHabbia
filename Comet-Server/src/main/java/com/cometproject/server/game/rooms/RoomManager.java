@@ -1,6 +1,5 @@
 package com.cometproject.server.game.rooms;
 
-import com.cometproject.api.caching.Cache;
 import com.cometproject.api.config.Configuration;
 import com.cometproject.api.game.GameContext;
 import com.cometproject.api.game.players.IPlayer;
@@ -10,7 +9,6 @@ import com.cometproject.api.game.rooms.settings.RoomAccessType;
 import com.cometproject.api.game.rooms.settings.RoomTradeState;
 import com.cometproject.api.networking.sessions.ISession;
 import com.cometproject.api.utilities.Initialisable;
-import com.cometproject.common.caching.LastReferenceCache;
 import com.cometproject.server.game.players.types.Player;
 import com.cometproject.server.game.rooms.filter.WordFilter;
 import com.cometproject.server.game.rooms.models.types.StaticRoomModel;
@@ -24,8 +22,8 @@ import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.storage.cache.CacheManager;
 import com.cometproject.server.storage.cache.objects.RoomDataObject;
 import com.cometproject.server.storage.queries.rooms.RoomDao;
-import com.cometproject.server.tasks.CometThreadManager;
 import org.apache.log4j.Logger;
+import org.apache.solr.util.ConcurrentLRUCache;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +40,7 @@ public class RoomManager implements Initialisable {
     public static final int LRU_MAX_ENTRIES = Integer.parseInt(Configuration.currentConfig().getProperty("comet.game.rooms.data.max"));
     public static final int LRU_MAX_LOWER_WATERMARK = Integer.parseInt(Configuration.currentConfig().getProperty("comet.game.rooms.data.lowerWatermark"));
     private static RoomManager roomManagerInstance;
-    private Cache<Integer, IRoomData> roomDataInstances;
+    private ConcurrentLRUCache<Integer, IRoomData> roomDataInstances;
 
     private Map<Integer, Room> loadedRoomInstances;
     private Map<Integer, Room> unloadingRoomInstances;
@@ -72,6 +70,7 @@ public class RoomManager implements Initialisable {
 
     @Override
     public void initialize() {
+        this.roomDataInstances = new ConcurrentLRUCache<>(LRU_MAX_ENTRIES, LRU_MAX_LOWER_WATERMARK);
 
         this.loadedRoomInstances = new ConcurrentHashMap<>();
         this.unloadingRoomInstances = new ConcurrentHashMap<>();
@@ -95,9 +94,6 @@ public class RoomManager implements Initialisable {
 
             return roomThread;
         });
-
-        this.roomDataInstances = new LastReferenceCache<>(43200 * 1000, 10000, (key, val) -> {
-        }, CometThreadManager.getInstance().getCoreExecutor());
 
         log.info("RoomManager initialized");
     }
@@ -261,16 +257,16 @@ public class RoomManager implements Initialisable {
         for (Map.Entry<Integer, IRoomData> roomEntry : rooms.entrySet()) {
             player.getRooms().add(roomEntry.getKey());
 
-            if (!this.getRoomDataInstances().contains(roomEntry.getKey())) {
-                this.getRoomDataInstances().add(roomEntry.getKey(), roomEntry.getValue());
+            if (!this.getRoomDataInstances().getMap().containsKey(roomEntry.getKey())) {
+                this.getRoomDataInstances().put(roomEntry.getKey(), roomEntry.getValue());
             }
         }
 
         for (Map.Entry<Integer, IRoomData> roomEntry : roomsWithRights.entrySet()) {
             player.getRoomsWithRights().add(roomEntry.getKey());
 
-            if (!this.getRoomDataInstances().contains(roomEntry.getKey())) {
-                this.getRoomDataInstances().add(roomEntry.getKey(), roomEntry.getValue());
+            if (!this.getRoomDataInstances().getMap().containsKey(roomEntry.getKey())) {
+                this.getRoomDataInstances().put(roomEntry.getKey(), roomEntry.getValue());
             }
         }
     }
@@ -291,8 +287,8 @@ public class RoomManager implements Initialisable {
         List<IRoomData> roomSearchResults = RoomDao.getRoomsByQuery(query);
 
         for (IRoomData data : roomSearchResults) {
-            if (!this.getRoomDataInstances().contains(data.getId())) {
-                this.getRoomDataInstances().add(data.getId(), data);
+            if (!this.getRoomDataInstances().getMap().containsKey(data.getId())) {
+                this.getRoomDataInstances().put(data.getId(), data);
             }
 
             rooms.add(data);
@@ -441,7 +437,7 @@ public class RoomManager implements Initialisable {
         return this.loadedRoomInstances;
     }
 
-    private Cache<Integer, IRoomData> getRoomDataInstances() {
+    private ConcurrentLRUCache<Integer, IRoomData> getRoomDataInstances() {
         return this.roomDataInstances;
     }
 
