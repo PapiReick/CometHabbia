@@ -570,14 +570,21 @@ public class ItemsComponent {
 
         RoomTile tile = this.getRoom().getMapping().getTile(newPosition.getX(), newPosition.getY());
 
-        if (!this.verifyItemPosition(item.getDefinition(), item, tile, item.getPosition(), rotation)) {
+        if (mover != null && mover.getEntity() != null) {
+            if ((mover.getEntity()).setzok) {
+                if (!verifyItemPositionSetZ(item.getDefinition(), tile, item.getPosition(), rotation))
+                    return false;
+            } else if (!verifyItemPosition(item.getDefinition(), item, tile, item.getPosition(), rotation)) {
+                return false;
+            }
+        } else if (!verifyItemPosition(item.getDefinition(), item, tile, item.getPosition(), rotation)) {
             return false;
         }
 
         double height = obeyStack ? tile.getStackHeight(item) : newPosition.getZ();
 
         if (mover != null) {
-            if (mover.getItemPlacementHeight() >= 0) {
+            if (mover.getEntity().setzok) {
                 height = mover.getItemPlacementHeight();
             }
         }
@@ -703,6 +710,31 @@ public class ItemsComponent {
         return true;
     }
 
+    private boolean verifyItemPositionSetZ(FurnitureDefinition item, RoomTile tile, Position currentPosition, int rotation) {
+        if (tile != null) {
+            if (currentPosition != null && currentPosition.getX() == tile.getPosition().getX() && currentPosition.getY() == tile.getPosition().getY())
+                return true;
+
+            List<AffectedTile> affectedTiles = AffectedTile.getAffectedBothTilesAt(item.getLength(), item.getWidth(), tile.getPosition().getX(), tile.getPosition().getY(), rotation);
+
+            for (AffectedTile affectedTile : affectedTiles) {
+                RoomTile roomTile = getRoom().getMapping().getTile(affectedTile.x, affectedTile.y);
+                if (roomTile != null && !verifyItemTilePositionSetz(roomTile))
+                    return false;
+            }
+        } else {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean verifyItemTilePositionSetz(RoomTile tile) {
+        if (!tile.canPlaceItemHere())
+            return false;
+        return true;
+    }
+
+
     private boolean verifyItemTilePosition(FurnitureDefinition item, RoomItemFloor floorItem, RoomTile tile, int rotation) {
         if (!tile.canPlaceItemHere()) {
             return false;
@@ -789,8 +821,18 @@ public class ItemsComponent {
             //System.out.print("\n\nSOCKET SYNC: I have no clue on what the fuck I'm actually doing. " + data + ".\n\n");
         }
 
-        if (!this.verifyItemPosition(item.getDefinition(), null, tile, null, rot))
+        if (player.getEntity() != null && player.getEntity().setzok)
+            height = player.getItemPlacementHeight();
+        if (player.getEntity() != null) {
+            if ((player.getEntity()).setzok) {
+                verifyItemPositionSetZ(item.getDefinition(), null, null, rot);
+                return;
+            } else if (!verifyItemPosition(item.getDefinition(), null, tile, null, rot)) {
+                return;
+            }
+        } else if (!verifyItemPosition(item.getDefinition(), null, tile, null, rot)) {
             return;
+        }
 
         if (item.getDefinition().getInteraction().equals("soundmachine")) {
             if (this.soundMachineId > 0) {

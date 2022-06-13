@@ -9,18 +9,32 @@ public class HeightCommand extends ChatCommand {
     public void execute(Session client, String[] params) {
         double height;
 
+        if (params[0] == null){
+            client.getPlayer().getEntity().setzok = false;
+            sendNotif("Setz Apagado", client);
+            return;
+        }
+
         try {
             height = Double.parseDouble(params[0]);
         } catch (Exception e) {
             height = -1;
         }
 
-        if (height < -1 || height > 100) {
+        if (height < -100 || height > 100) {
             sendNotif(Locale.get("command.height.invalid"), client);
+            client.getPlayer().getEntity().setzok = false;
+            return;
+        }
+
+        if (height == 0){
+            client.getPlayer().getEntity().setzok = false;
+            sendNotif("Setz Apagado", client);
             return;
         }
 
         client.getPlayer().setItemPlacementHeight(height);
+        client.getPlayer().getEntity().setzok = true;
         sendNotif(Locale.get("command.height.set").replace("%height%", "" + height), client);
     }
 

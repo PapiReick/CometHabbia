@@ -112,6 +112,8 @@ public class PlayerEntity extends RoomEntity implements PlayerEntityAccess, Attr
     private String lastMessage = "";
     private Set<PlayerItem> user1Items, user2Items;
 
+    public boolean setzok = false;
+
     public PlayerEntity(Player player, int identifier, Position startPosition, int startBodyRotation, int startHeadRotation, Room roomInstance) {
         super(identifier, startPosition, startBodyRotation, startHeadRotation, roomInstance);
 
