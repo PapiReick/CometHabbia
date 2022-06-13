@@ -12,6 +12,7 @@ public class HeightCommand extends ChatCommand {
         if (params[0] == null){
             client.getPlayer().getEntity().setzok = false;
             sendNotif("Setz Apagado", client);
+            client.flush();
             return;
         }
 
@@ -24,17 +25,20 @@ public class HeightCommand extends ChatCommand {
         if (height < -100 || height > 100) {
             sendNotif(Locale.get("command.height.invalid"), client);
             client.getPlayer().getEntity().setzok = false;
+            client.flush();
             return;
         }
 
         if (height == 0){
             client.getPlayer().getEntity().setzok = false;
             sendNotif("Setz Apagado", client);
+            client.flush();
             return;
         }
 
         client.getPlayer().setItemPlacementHeight(height);
         client.getPlayer().getEntity().setzok = true;
+        client.flush();
         sendNotif(Locale.get("command.height.set").replace("%height%", "" + height), client);
     }
 

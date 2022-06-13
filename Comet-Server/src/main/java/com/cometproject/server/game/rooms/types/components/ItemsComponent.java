@@ -729,9 +729,7 @@ public class ItemsComponent {
     }
 
     private boolean verifyItemTilePositionSetz(RoomTile tile) {
-        if (!tile.canPlaceItemHere())
-            return false;
-        return true;
+        return tile.canPlaceItemHere();
     }
 
 
@@ -823,10 +821,12 @@ public class ItemsComponent {
 
         if (player.getEntity() != null && player.getEntity().setzok)
             height = player.getItemPlacementHeight();
+
         if (player.getEntity() != null) {
-            if ((player.getEntity()).setzok) {
-                verifyItemPositionSetZ(item.getDefinition(), null, null, rot);
-                return;
+            if (player.getEntity().setzok) {
+                if(!verifyItemPositionSetZ(item.getDefinition(), null, null, rot)){
+                    return;
+                }
             } else if (!verifyItemPosition(item.getDefinition(), null, tile, null, rot)) {
                 return;
             }
