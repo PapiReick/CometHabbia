@@ -824,7 +824,8 @@ public class ItemsComponent {
 
         if (player.getEntity() != null) {
             if (player.getEntity().setzok) {
-                if(!verifyItemPositionSetZ(item.getDefinition(), null, null, rot)){
+                if(!verifyItemPositionSetZ(item.getDefinition(), tile, null, rot)){
+                    System.out.println("Erro 1");
                     return;
                 }
             } else if (!verifyItemPosition(item.getDefinition(), null, tile, null, rot)) {
