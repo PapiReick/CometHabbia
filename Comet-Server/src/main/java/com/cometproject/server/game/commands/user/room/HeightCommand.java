@@ -9,7 +9,7 @@ public class HeightCommand extends ChatCommand {
     public void execute(Session client, String[] params) {
         double height;
 
-        if (params[0] == null){
+        if (params.length != 1){
             client.getPlayer().getEntity().setzok = false;
             sendNotif("Setz Apagado", client);
             client.flush();
@@ -25,13 +25,6 @@ public class HeightCommand extends ChatCommand {
         if (height < -100 || height > 100) {
             sendNotif(Locale.get("command.height.invalid"), client);
             client.getPlayer().getEntity().setzok = false;
-            client.flush();
-            return;
-        }
-
-        if (height == 0){
-            client.getPlayer().getEntity().setzok = false;
-            sendNotif("Setz Apagado", client);
             client.flush();
             return;
         }
