@@ -159,6 +159,7 @@ public class CommandManager implements Initialisable {
         this.addCommand(Locale.get("command.mentions.name"), new MentionsCommand());
         this.addCommand(Locale.get("command.setidletimer.name"), new SetIdleTimerCommand());
         this.addCommand(Locale.get("command.flooredit.name"), new ChangeFloorEditCommand());
+        this.addCommand(Locale.get("command.superwired.name"), new SuperWiredCommand());
 
 
         // VIP commands
