@@ -66,7 +66,7 @@ public class Host {
             }
         }
 
-        System.out.println(applicationArguments.toString());
+        //System.out.println(applicationArguments.toString());
 
         final HttpHeaders headers = new HttpHeaders();
 

@@ -2,7 +2,8 @@ package com.cometproject.server.logging.database;
 
 import com.cometproject.server.logging.database.queries.LogQueries;
 import com.cometproject.server.storage.SqlHelper;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,7 +12,7 @@ import java.sql.SQLException;
 
 
 public class LogDatabaseHelper {
-    private static Logger log = Logger.getLogger(LogDatabaseHelper.class.getName());
+    private static Logger LOGGER = LoggerFactory.getLogger(LogDatabaseHelper.class.getName());
 
     public static void init() {
         LogQueries.updateRoomEntries();
@@ -78,7 +79,7 @@ public class LogDatabaseHelper {
     }
 
     public static void handleSqlException(SQLException e) {
-        log.error("Error while executing query", e);
+        LOGGER.error("Error while executing query", e);
     }
 
 }

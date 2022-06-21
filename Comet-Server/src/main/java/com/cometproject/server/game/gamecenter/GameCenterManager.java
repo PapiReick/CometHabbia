@@ -1,14 +1,11 @@
 package com.cometproject.server.game.gamecenter;
 
-
-import com.cometproject.api.config.CometSettings;
 import com.cometproject.api.utilities.Initialisable;
 import com.cometproject.server.game.players.data.GamePlayer;
 import com.cometproject.server.storage.queries.catalog.BetDao;
-import com.cometproject.server.storage.queries.config.ConfigDao;
-import com.cometproject.server.storage.queries.landing.LandingDao;
 import com.cometproject.server.tasks.CometThreadManager;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -19,7 +16,7 @@ public class GameCenterManager implements Initialisable {
     private static int gameId;
     private List<GamePlayer> currentWeek;
     private List<GamePlayer> lastWeek;
-    private Logger log = Logger.getLogger(GameCenterManager.class.getName());
+    private Logger LOGGER = LoggerFactory.getLogger(GameCenterManager.class.getName());
 
     private List<GameCenterInfo> gamesList;
 
@@ -33,7 +30,7 @@ public class GameCenterManager implements Initialisable {
         this.loadLeaderboards();
         this.loadGameCenterList();
 
-        log.info("GameCenter initialized.");
+        LOGGER.info("GameCenter initialized.");
     }
 
     private void loadLeaderboards() {

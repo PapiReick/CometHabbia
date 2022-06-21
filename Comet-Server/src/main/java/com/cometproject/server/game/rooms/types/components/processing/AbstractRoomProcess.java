@@ -21,12 +21,12 @@ import com.cometproject.server.game.rooms.objects.items.types.floor.wired.trigge
 import com.cometproject.server.game.rooms.objects.items.types.floor.wired.triggers.WiredTriggerWalksOnFurni;
 import com.cometproject.server.game.rooms.types.Room;
 import com.cometproject.server.game.rooms.types.mapping.RoomTile;
-import com.cometproject.server.network.messages.outgoing.notification.MassEventMessageComposer;
 import com.cometproject.server.network.messages.outgoing.room.avatar.AvatarUpdateMessageComposer;
 import com.cometproject.server.tasks.CometTask;
 import com.cometproject.server.tasks.CometThreadManager;
 import com.cometproject.server.utilities.TimeSpan;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +39,7 @@ import java.util.concurrent.TimeUnit;
 public abstract class AbstractRoomProcess implements CometTask {
     private Room room;
 
-    private Logger log;
+    private Logger LOGGER;
     private ScheduledFuture processFuture;
     private boolean active = false;
 
@@ -60,7 +60,7 @@ public abstract class AbstractRoomProcess implements CometTask {
     public AbstractRoomProcess(Room room, long delay) {
         this.room = room;
         this.delay = delay;
-        this.log = Logger.getLogger("Room Process [" + room.getData().getName() + ", #" + room.getId() + "]");
+        this.LOGGER = LoggerFactory.getLogger("Room Process [" + room.getData().getName() + ", #" + room.getId() + "]");
 
         this.adaptiveProcessTimes = CometSettings.adaptiveEntityProcessDelay;
     }
@@ -80,7 +80,7 @@ public abstract class AbstractRoomProcess implements CometTask {
         this.lastProcess = System.currentTimeMillis();
 
         if (this.getProcessTimes() != null && this.getProcessTimes().size() < 30) {
-            log.info("Time since last process: " + timeSinceLastProcess + "ms");
+            LOGGER.info("Time since last process: " + timeSinceLastProcess + "ms");
         }
 
         long timeStart = System.currentTimeMillis();
@@ -89,7 +89,7 @@ public abstract class AbstractRoomProcess implements CometTask {
             if (this.update)
                 this.getRoom().tick();
         } catch (Exception e) {
-            log.error("Error while cycling room: " + room.getData().getId() + ", " + room.getData().getName(), e);
+            LOGGER.error("Error while cycling room: " + room.getData().getId() + ", " + room.getData().getName(), e);
         }
 
         try {
@@ -126,9 +126,9 @@ public abstract class AbstractRoomProcess implements CometTask {
             playersToRemove = null;
             entitiesToUpdate = null;
 
-//            log.debug("Room processing took " + (System.currentTimeMillis() - timeStart) + "ms");
+//            LOGGER.debug("Room processing took " + (System.currentTimeMillis() - timeStart) + "ms");
         } catch (Exception e) {
-            log.warn("Error during room entity processing", e);
+            LOGGER.warn("Error during room entity processing", e);
         }
 
         TimeSpan span = new TimeSpan(timeStart, System.currentTimeMillis());
@@ -163,7 +163,7 @@ public abstract class AbstractRoomProcess implements CometTask {
 
         this.active = true;
 
-        log.debug("Processing started");
+        LOGGER.debug("Processing started");
     }
 
     public void stop() {
@@ -182,7 +182,7 @@ public abstract class AbstractRoomProcess implements CometTask {
             if (!this.adaptiveProcessTimes)
                 this.processFuture.cancel(false);
 
-            log.debug("Processing stopped");
+            LOGGER.debug("Processing stopped");
         }
     }
 
@@ -206,7 +206,7 @@ public abstract class AbstractRoomProcess implements CometTask {
                     return;
                 }
             } catch (Exception e) {
-                log.warn("Failed to remove null player from room - user data was null");
+                LOGGER.warn("Failed to remove null player from room - user data was null");
                 return;
             }
 

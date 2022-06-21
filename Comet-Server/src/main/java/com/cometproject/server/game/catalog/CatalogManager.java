@@ -11,8 +11,8 @@ import com.cometproject.server.storage.queries.catalog.CatalogDao;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.commons.collections4.map.ListOrderedMap;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -60,7 +60,7 @@ public class CatalogManager implements ICatalogService {
     /**
      * The logger for the catalog manager
      */
-    private final Logger log = LogManager.getLogger();
+    private final Logger LOGGER = LoggerFactory.getLogger(CatalogManager.class);
 
     /**
      * Parent pages
@@ -100,7 +100,7 @@ public class CatalogManager implements ICatalogService {
         this.loadRPProducts();
         this.loadOffers();
 
-        log.info("CatalogManager initialized");
+        LOGGER.info("CatalogManager initialized");
     }
 
     /**
@@ -137,7 +137,7 @@ public class CatalogManager implements ICatalogService {
             CatalogDao.getPages(this.pages);
             CatalogDao.getFeaturedPages(this.frontPageEntries);
         } catch (Exception e) {
-            log.error("Error while loading catalog pages/items", e);
+            LOGGER.error("Error while loading catalog pages/items", e);
         }
 
         for (ICatalogPage page : this.pages.values()) {
@@ -148,7 +148,7 @@ public class CatalogManager implements ICatalogService {
 
         this.sortCatalogChildren();
 
-        log.info("Loaded " + this.getPages().size() + " catalog pages and " + this.items.size() + " catalog items");
+        LOGGER.info("Loaded " + this.getPages().size() + " catalog pages and " + this.items.size() + " catalog items");
     }
 
     @Override
@@ -162,7 +162,7 @@ public class CatalogManager implements ICatalogService {
         }
 
         CatalogDao.loadGiftBoxes(this.giftBoxesOld, this.giftBoxesNew);
-        log.info("Loaded " + (this.giftBoxesNew.size() + this.giftBoxesOld.size()) + " gift wrappings");
+        LOGGER.info("Loaded " + (this.giftBoxesNew.size() + this.giftBoxesOld.size()) + " gift wrappings");
     }
 
     @Override
@@ -172,7 +172,7 @@ public class CatalogManager implements ICatalogService {
         }
 
         CatalogDao.getClothing(this.clothingItems);
-        log.info("Loaded " + clothingItems.size() + " clothing items");
+        LOGGER.info("Loaded " + clothingItems.size() + " clothing items");
     }
 
     /**
@@ -202,7 +202,7 @@ public class CatalogManager implements ICatalogService {
                 final ICatalogPage parentPage = this.getPage(catalogPage.getParentId());
 
                 if(parentPage == null) {
-                    log.warn("Page " + catalogPage.getId() + " with invalid parent id: " + catalogPage.getParentId());
+                    LOGGER.warn("Page " + catalogPage.getId() + " with invalid parent id: " + catalogPage.getParentId());
                 } else {
                     parentPage.getChildren().add(catalogPage);
                 }
@@ -401,7 +401,7 @@ public class CatalogManager implements ICatalogService {
         }
 
         this.roleplayProducts = CatalogDao.getRolePlayProducts();
-        log.info("Loaded " + this.roleplayProducts.size() + " RP products.");
+        LOGGER.info("Loaded " + this.roleplayProducts.size() + " RP products.");
     }
 
     public void loadOffers(){
@@ -410,6 +410,6 @@ public class CatalogManager implements ICatalogService {
         }
 
         this.cmsOffers = CatalogDao.getWebsiteOffers();
-        log.info("Loaded " + this.cmsOffers.size() + " CMS offers.");
+        LOGGER.info("Loaded " + this.cmsOffers.size() + " CMS offers.");
     }
 }

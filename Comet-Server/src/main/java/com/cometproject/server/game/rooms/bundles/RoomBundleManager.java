@@ -2,14 +2,15 @@ package com.cometproject.server.game.rooms.bundles;
 
 import com.cometproject.server.game.rooms.bundles.types.RoomBundle;
 import com.cometproject.server.storage.queries.rooms.BundleDao;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class RoomBundleManager {
     private static RoomBundleManager roomBundleManager;
-    private static Logger log = Logger.getLogger(RoomBundleManager.class.getName());
+    private static Logger LOGGER = LoggerFactory.getLogger(RoomBundleManager.class.getName());
 
     private Map<String, RoomBundle> bundles;
 
@@ -31,9 +32,9 @@ public class RoomBundleManager {
         }
 
         BundleDao.loadActiveBundles(this.bundles);
-        log.info("Loaded " + this.bundles.size() + " active room bundles");
+        LOGGER.info("Loaded " + this.bundles.size() + " active room bundles");
 
-        log.info("RoomBundleManager initialized");
+        LOGGER.info("RoomBundleManager initialized");
     }
 
     public void addBundle(RoomBundle bundle) {

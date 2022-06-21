@@ -68,8 +68,9 @@ import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.protocol.messages.MessageComposer;
 import com.cometproject.server.storage.queries.pets.RoomPetDao;
 import com.cometproject.server.utilities.attributes.Attributable;
-import org.apache.log4j.Logger;
 import org.mindrot.jbcrypt.BCrypt;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -78,7 +79,7 @@ import java.util.Set;
 
 
 public class PlayerEntity extends RoomEntity implements PlayerEntityAccess, Attributable, PlayerRoomEntity {
-    private static final Logger log = Logger.getLogger(PlayerEntity.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(PlayerEntity.class.getName());
     private Player player;
     private PlayerData playerData;
 
@@ -544,7 +545,7 @@ public class PlayerEntity extends RoomEntity implements PlayerEntityAccess, Attr
                 }
             }
         } catch (Exception e) {
-            log.error("Error while executing command", e);
+            LOGGER.error("Error while executing command", e);
             return false;
         }
 

@@ -1,7 +1,8 @@
 package com.cometproject.api.config;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
@@ -14,7 +15,7 @@ public class Configuration extends Properties {
     /**
      * The configuration logger
      */
-    private static final Logger log = LogManager.getLogger();
+    private static final Logger LOGGER = LoggerFactory.getLogger(Configuration.class);
 
     private static Configuration configuration;
 
@@ -33,7 +34,7 @@ public class Configuration extends Properties {
             this.load(stream);
             stream.close();
         } catch (Exception e) {
-            log.error("Failed to fetch the server configuration (" + file + ")");
+            LOGGER.error("Failed to fetch the server configuration (" + file + ")");
             System.exit(1);
         }
     }

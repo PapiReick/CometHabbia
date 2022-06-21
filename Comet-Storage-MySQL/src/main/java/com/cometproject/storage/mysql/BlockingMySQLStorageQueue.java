@@ -3,7 +3,8 @@ package com.cometproject.storage.mysql;
 import com.cometproject.api.game.GameContext;
 import com.cometproject.api.utilities.Pair;
 import com.google.common.collect.Maps;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,7 +17,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 public abstract class BlockingMySQLStorageQueue<T, O> extends Thread {
-    private static final Logger log = Logger.getLogger(BlockingMySQLStorageQueue.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BlockingMySQLStorageQueue.class);
 
     private final MySQLConnectionProvider connectionProvider;
 
@@ -65,7 +66,7 @@ public abstract class BlockingMySQLStorageQueue<T, O> extends Thread {
                 this.processEntries(entriesToProcess);
             }
         } catch (Exception e) {
-            log.error("Failed to process batch", e);
+            LOGGER.error("Failed to process batch", e);
         }
     }
 
@@ -87,14 +88,14 @@ public abstract class BlockingMySQLStorageQueue<T, O> extends Thread {
                     this.mapping.remove(obj.getLeft());
                     this.processBatch(preparedStatement, obj.getLeft(), obj.getRight());
                 } catch (Exception e) {
-                    log.error("Failed to process batch entry", e);
+                    LOGGER.error("Failed to process batch entry", e);
                 }
             }
 
             preparedStatement.executeBatch();
             entriesToProcess.clear();
         } catch (Exception e) {
-            log.error("Failed to prepare batch process");
+            LOGGER.error("Failed to prepare batch process");
         } finally {
             this.connectionProvider.closeStatement(preparedStatement);
             this.connectionProvider.closeConnection(sqlConnection);

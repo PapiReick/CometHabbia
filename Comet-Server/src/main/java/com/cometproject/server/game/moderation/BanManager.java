@@ -7,7 +7,8 @@ import com.cometproject.server.game.moderation.types.BanType;
 import com.cometproject.server.storage.queries.moderation.BanDao;
 import com.corundumstudio.socketio.misc.ConcurrentHashSet;
 import com.google.common.collect.Lists;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
@@ -16,7 +17,7 @@ import java.util.Set;
 
 public class BanManager implements Initialisable {
     public static BanManager banManagerInstance;
-    Logger log = Logger.getLogger(BanManager.class.getName());
+    Logger LOGGER = LoggerFactory.getLogger(BanManager.class.getName());
     private Map<String, Ban> bans;
     private Set<Integer> mutedPlayers;
 
@@ -36,7 +37,7 @@ public class BanManager implements Initialisable {
         this.mutedPlayers = new ConcurrentHashSet<>();
 
         loadBans();
-        log.info("BanManager initialized");
+        LOGGER.info("BanManager initialized");
     }
 
     public void loadBans() {
@@ -45,9 +46,9 @@ public class BanManager implements Initialisable {
 
         try {
             this.bans = BanDao.getActiveBans();
-            log.info("Loaded " + this.bans.size() + " bans");
+            LOGGER.info("Loaded " + this.bans.size() + " bans");
         } catch (Exception e) {
-            log.error("Error while loading bans", e);
+            LOGGER.error("Error while loading bans", e);
         }
     }
 

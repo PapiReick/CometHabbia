@@ -8,15 +8,14 @@ import com.cometproject.storage.mysql.data.results.ResultSetReader;
 import com.cometproject.storage.mysql.data.transactions.MySQLTransaction;
 import com.cometproject.storage.mysql.data.transactions.Transaction;
 import com.cometproject.storage.mysql.data.transactions.TransactionConsumer;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.validation.UnexpectedTypeException;
 import java.sql.*;
-import java.util.Arrays;
-import java.util.function.Consumer;
 
 public abstract class MySQLRepository {
-    protected final Logger log = Logger.getLogger(MySQLRepository.class);
+    protected final Logger LOGGER = LoggerFactory.getLogger(MySQLRepository.class);
 
     private final MySQLConnectionProvider connectionProvider;
 
@@ -50,7 +49,7 @@ public abstract class MySQLRepository {
                 resultConsumer.accept(reader);
             }
         } catch (Exception e) {
-            log.error("Failed to select data", e);
+            LOGGER.error("Failed to select data", e);
         } finally {
             this.connectionProvider.closeResults(resultSet);
             this.connectionProvider.closeStatement(preparedStatement);
@@ -90,7 +89,7 @@ public abstract class MySQLRepository {
             // We could return or accept a consumer of the affected rows or something?
             preparedStatement.executeUpdate();
         } catch (Exception e) {
-            log.error("Failed to update data", e);
+            LOGGER.error("Failed to update data", e);
         } finally {
             this.connectionProvider.closeStatement(preparedStatement);
 
@@ -122,7 +121,7 @@ public abstract class MySQLRepository {
             // We could return or accept a consumer of the affected rows or something?
             preparedStatement.executeBatch();
         } catch (Exception e) {
-            log.error("Failed to update data", e);
+            LOGGER.error("Failed to update data", e);
         } finally {
             this.connectionProvider.closeStatement(preparedStatement);
 
@@ -173,7 +172,7 @@ public abstract class MySQLRepository {
                 keyConsumer.accept(resultReader);
             }
         } catch (Exception e) {
-            log.error("Failed to update data", e);
+            LOGGER.error("Failed to update data", e);
         } finally {
             this.connectionProvider.closeResults(resultSet);
             this.connectionProvider.closeStatement(preparedStatement);
@@ -237,7 +236,7 @@ public abstract class MySQLRepository {
                 keyConsumer.accept(resultReader);
             }
         } catch (Exception e) {
-            log.error("Failed to update data", e);
+            LOGGER.error("Failed to update data", e);
         } finally {
             this.connectionProvider.closeResults(resultSet);
             this.connectionProvider.closeStatement(preparedStatement);
@@ -272,16 +271,16 @@ public abstract class MySQLRepository {
                     //       connection leaks!
                 }
             } catch (Exception ex) {
-                log.error("Failed to rollback transaction", ex);
+                LOGGER.error("Failed to rollback transaction", ex);
             }
 
-            log.error("Failed to run transaction, rolling back", e);
+            LOGGER.error("Failed to run transaction, rolling back", e);
         } finally {
             try {
                 if (transaction != null)
                     transaction.getConnection().close();
             } catch (SQLException e) {
-                log.error("Failed to close connection");
+                LOGGER.error("Failed to close connection");
             }
         }
     }

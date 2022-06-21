@@ -3,11 +3,11 @@ package com.cometproject.server.protocol.messages;
 import com.cometproject.api.networking.messages.IComposer;
 import com.cometproject.api.networking.messages.IMessageComposer;
 import io.netty.buffer.ByteBuf;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class MessageComposer implements IMessageComposer {
-    private static final Logger log = LogManager.getLogger(MessageComposer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MessageComposer.class);
 
     public MessageComposer() {
     }
@@ -23,7 +23,7 @@ public abstract class MessageComposer implements IMessageComposer {
         try {
             this.compose(composer);
         } catch (Exception e) {
-            log.error("Error composing message " + this.getId() + " / " + this.getClass().getSimpleName(), e);
+            LOGGER.error("Error composing message " + this.getId() + " / " + this.getClass().getSimpleName(), e);
             throw e;
         } finally {
             this.dispose();

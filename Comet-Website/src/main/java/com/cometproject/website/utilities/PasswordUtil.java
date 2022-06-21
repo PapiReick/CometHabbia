@@ -2,11 +2,12 @@ package com.cometproject.website.utilities;
 
 import com.cometproject.website.config.Configuration;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.log4j.Logger;
 import org.mindrot.jbcrypt.BCrypt;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PasswordUtil {
-    private static final Logger log = Logger.getLogger(PasswordUtil.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(PasswordUtil.class);
 
     public static String hash(String password) {
         String hash = "";
@@ -23,7 +24,7 @@ public class PasswordUtil {
             }
 
         } catch(Exception e) {
-            log.error("Error while hashing password", e);
+            LOGGER.error("Error while hashing password", e);
         }
 
         return hash;

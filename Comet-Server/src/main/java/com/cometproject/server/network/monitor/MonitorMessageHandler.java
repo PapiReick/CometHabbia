@@ -2,7 +2,8 @@ package com.cometproject.server.network.monitor;
 
 
 import io.netty.channel.ChannelHandlerContext;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -11,7 +12,7 @@ import java.util.List;
 
 public class MonitorMessageHandler {
     private List<String> messageRegistry;
-    private Logger log = Logger.getLogger(MonitorMessageHandler.class.getName());
+    private Logger LOGGER = LoggerFactory.getLogger(MonitorMessageHandler.class.getName());
 
     public MonitorMessageHandler() {
         this.messageRegistry = new ArrayList<>();
@@ -34,7 +35,7 @@ public class MonitorMessageHandler {
             Method method = MonitorMessageLibrary.class.getMethod(messageHeader);
             method.invoke(new Object[0]);
         } catch (Exception e) {
-            log.error("Error while handling monitor packet", e);
+            LOGGER.error("Error while handling monitor packet", e);
             return false;
         }
 

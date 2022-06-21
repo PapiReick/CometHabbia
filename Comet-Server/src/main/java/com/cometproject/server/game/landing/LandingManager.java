@@ -3,19 +3,19 @@ package com.cometproject.server.game.landing;
 import com.cometproject.api.config.CometSettings;
 import com.cometproject.api.game.players.data.PlayerAvatar;
 import com.cometproject.api.utilities.Initialisable;
-import com.cometproject.server.boot.Comet;
 import com.cometproject.server.game.landing.calendar.CalendarDay;
 import com.cometproject.server.game.landing.types.PromoArticle;
 import com.cometproject.server.storage.queries.landing.LandingDao;
 import com.cometproject.server.tasks.CometThreadManager;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 
 public class LandingManager implements Initialisable {
-    private static final Logger log = Logger.getLogger(LandingManager.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(LandingManager.class.getName());
     private static LandingManager landingManagerInstance;
     private Map<Integer, PromoArticle> articles;
     private Map<Integer, CalendarDay> calendarDays;
@@ -39,7 +39,7 @@ public class LandingManager implements Initialisable {
         this.loadHallOfFame();
         this.loadCalendar();
 
-        log.info("LandingManager initialized");
+        LOGGER.info("LandingManager initialized");
     }
 
     public void loadArticles() {

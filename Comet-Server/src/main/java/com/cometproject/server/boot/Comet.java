@@ -1,5 +1,8 @@
 package com.cometproject.server.boot;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.ConsoleAppender;
 import com.cometproject.api.stats.CometStats;
 import com.cometproject.server.boot.utils.ConsoleCommands;
 import com.cometproject.server.boot.utils.ShutdownProcess;
@@ -7,12 +10,9 @@ import com.cometproject.server.game.rooms.RoomManager;
 import com.cometproject.server.network.NetworkManager;
 import com.cometproject.server.utilities.CometRuntime;
 import com.cometproject.server.utilities.TimeSpan;
-import org.apache.log4j.PropertyConfigurator;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.lang.management.ManagementFactory;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -26,7 +26,7 @@ public class Comet {
     /**
      * Is a debugger attached?
      */
-    public static volatile boolean isDebugging = true;
+    public static volatile boolean isDebugging = false;
     /**
      * Is Comet running?
      */
@@ -42,11 +42,14 @@ public class Comet {
     /**
      * Logging during start-up & console commands
      */
-    private static final Logger log = LogManager.getLogger();
+    private static final Logger LOGGER = LoggerFactory.getLogger(Comet.class);
     /**
      * The main server instance
      */
     private static CometServer server;
+
+    private static final String OS_NAME = System.getProperty("os.name");
+    private static final String CLASS_PATH = System.getProperty("java.class.path");
 
     /**
      * Start the server!
@@ -56,76 +59,28 @@ public class Comet {
     public static void run(String[] args) {
         start = System.currentTimeMillis();
 
-        try {
-            PropertyConfigurator.configure("./config/log4j.properties");
-        } catch (Exception e) {
-            log.error("Error while loading log4j configuration", e);
-            return;
+        // Check if running on Windows and not in IntelliJ.
+        // If so, we need to reconfigure the console appender and enable Jansi for colors.
+        if (OS_NAME.startsWith("Windows") && !CLASS_PATH.contains("idea_rt.jar")) {
+            ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+            ConsoleAppender<ILoggingEvent> appender = (ConsoleAppender<ILoggingEvent>) root.getAppender("Console");
+
+            appender.stop();
+            appender.setWithJansi(true);
+            appender.start();
         }
 
-        log.info("Comet Server - " + getBuild());
 
-        for (String arg : ManagementFactory.getRuntimeMXBean().getInputArguments()) {
-            if (arg.contains("dt_")) {
-                isDebugging = true;
-                break;
-            }
+        LOGGER.info("Comet Server - " + getBuild());
+
+        if (isDebugging) {
+            ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+            root.setLevel(Level.DEBUG);
+            LOGGER.debug("Debugging enabled.");
         }
 
-        Level logLevel = Level.INFO;
 
-        if (args.length < 1) {
-            log.debug("No config args found, falling back to default configuration!");
-            server = new CometServer(null);
-        } else {
-            Map<String, String> cometConfiguration = new HashMap<>();
-
-            // Parse args
-            List<String> arguments = new ArrayList<>();
-
-            for (int i = 0; i < args.length; i++) {
-                final String arg = args[i];
-
-                if (arg.contains(" ")) {
-                    final String[] splitString = arg.split(" ");
-
-                    for (int j = 0; j < splitString.length; j++) {
-                        arguments.add(splitString[j]);
-                    }
-                } else {
-                    arguments.add(arg);
-                }
-            }
-
-            for (String arg : arguments) {
-                if (arg.equals("--debug-logging")) {
-                    logLevel = Level.TRACE;
-                }
-
-                if (arg.equals("--gui")) {
-                    // start GUI!
-                    showGui = true;
-                }
-
-                if (arg.equals("--daemon")) {
-                    daemon = true;
-                }
-
-                if (arg.startsWith("--instance-name=")) {
-                    instanceId = arg.replace("--instance-name=", "");
-                }
-
-                if (!arg.contains("="))
-                    continue;
-
-                String[] splitArgs = arg.split("=");
-
-                cometConfiguration.put(splitArgs[0], splitArgs.length != 1 ? splitArgs[1] : "");
-            }
-
-            server = new CometServer(cometConfiguration);
-        }
-
+        server = new CometServer(null);
         server.init();
 
         if (!daemon) {
@@ -141,7 +96,7 @@ public class Comet {
      * @param message The message to display to the console
      */
     public static void exit(String message) {
-        log.error("Comet has shutdown. Reason: \"" + message + "\"");
+        LOGGER.error("Comet has shutdown. Reason: \"" + message + "\"");
         System.exit(0);
     }
 

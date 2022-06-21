@@ -1,13 +1,13 @@
 package com.cometproject.website.utilities;
 
-import org.apache.log4j.Logger;
-
 import java.io.FileInputStream;
 import java.io.StringWriter;
 import org.apache.commons.io.IOUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FileUtils {
-    private static Logger log = Logger.getLogger(FileUtils.class.getName());
+    private static Logger LOGGER = LoggerFactory.getLogger(FileUtils.class);
 
     public static String getContents(String file) {
         FileInputStream fileInputStream = null;
@@ -18,13 +18,13 @@ public class FileUtils {
 
             IOUtil.copy(fileInputStream, stringWriter, "UTF-8");
         } catch(Exception e) {
-            log.error("Error while loading file", e);
+            LOGGER.error("Error while loading file", e);
         } finally {
             try {
                 if (fileInputStream != null)
                     fileInputStream.close();
             } catch(Exception e) {
-                log.warn("Failed to close stream", e);
+                LOGGER.warn("Failed to close stream", e);
             }
         }
 

@@ -2,9 +2,9 @@ package com.cometproject.server.storage.queries.player.inventory;
 
 import com.cometproject.api.game.players.data.components.inventory.PlayerItem;
 import com.cometproject.server.game.players.components.types.inventory.InventoryItem;
-import com.cometproject.server.game.players.types.PlayerSettings;
 import com.cometproject.server.storage.SqlHelper;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class InventoryDao {
     public static String ITEMS_USERID_INDEX = "";
-    private static Logger log = Logger.getLogger(InventoryDao.class.getName());
+    private static Logger LOGGER = LoggerFactory.getLogger(InventoryDao.class.getName());
 
     public static Map<Long, PlayerItem> getInventoryByPlayerId(int playerId) {
         Connection sqlConnection = null;
@@ -44,7 +44,7 @@ public class InventoryDao {
                 if (playerItem.getDefinition() != null) {
                     data.put(resultSet.getLong("id"), playerItem);
                 } else {
-                    log.warn("InventoryItem: " + playerItem.getId() + " with invalid definition ID: " + playerItem.getBaseId());
+                    LOGGER.warn("InventoryItem: " + playerItem.getId() + " with invalid definition ID: " + playerItem.getBaseId());
                 }
             }
         } catch (SQLException e) {

@@ -191,7 +191,7 @@ public class SaveRoomDataMessageEvent implements Event {
                 playerEntity.getPlayer().flush();
             }
         } catch (Exception e) {
-            RoomManager.log.error("Error while saving room data", e);
+            RoomManager.LOGGER.error("Error while saving room data", e);
         }
     }
 }

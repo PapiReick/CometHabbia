@@ -13,14 +13,14 @@ import com.cometproject.server.network.messages.outgoing.room.items.UpdateFloorI
 import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.protocol.messages.MessageEvent;
 import com.google.common.collect.Maps;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
 
 public class MoveFloorItemMessageEvent implements Event {
-    private static final Logger log = LogManager.getLogger();
+    private static final Logger LOGGER = LoggerFactory.getLogger(MoveFloorItemMessageEvent.class);
 
     public void handle(Session client, MessageEvent msg) {
         if(client.getPlayer().getPermissions().getRank().modTool() && !client.getPlayer().getSettings().isPinSuccess()) {
@@ -77,7 +77,7 @@ public class MoveFloorItemMessageEvent implements Event {
                 room.getEntities().broadcastMessage(new UpdateFloorItemMessageComposer(floorItem));
             }
         } catch (Exception e) {
-            log.error("Error whilst changing floor item position!", e);
+            LOGGER.error("Error whilst changing floor item position!", e);
         }
     }
 }

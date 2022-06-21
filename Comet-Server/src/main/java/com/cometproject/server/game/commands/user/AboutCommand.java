@@ -3,27 +3,17 @@ package com.cometproject.server.game.commands.user;
 import com.cometproject.api.config.CometSettings;
 import com.cometproject.api.stats.CometStats;
 import com.cometproject.server.boot.Comet;
-import com.cometproject.server.composers.group.GroupEditErrorMessageComposer;
 import com.cometproject.server.config.Locale;
 import com.cometproject.server.game.GameCycle;
 import com.cometproject.server.game.commands.ChatCommand;
-import com.cometproject.server.network.messages.outgoing.notification.AdvancedAlertMessageComposer;
 import com.cometproject.server.network.messages.outgoing.notification.WiredAlertMessageComposer;
 import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.utilities.CometRuntime;
-import com.mrpowergamerbr.temmiewebhook.DiscordEmbed;
-import com.mrpowergamerbr.temmiewebhook.DiscordMessage;
-import com.mrpowergamerbr.temmiewebhook.TemmieWebhook;
-import com.mrpowergamerbr.temmiewebhook.embed.FieldEmbed;
-import com.mrpowergamerbr.temmiewebhook.embed.FooterEmbed;
-import com.mrpowergamerbr.temmiewebhook.embed.ThumbnailEmbed;
 import java.lang.management.ManagementFactory;
 import java.text.NumberFormat;
-import java.util.Arrays;
 
 
 public class AboutCommand extends ChatCommand {
-    static TemmieWebhook banLog;
 
     @Override
     public void execute(Session client, String message[]) {

@@ -3,7 +3,7 @@ package com.cometproject.api.networking.sessions;
 import com.cometproject.api.game.players.IPlayer;
 import com.cometproject.api.networking.messages.IMessageComposer;
 import io.netty.channel.ChannelHandlerContext;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 
 public interface ISession {
     IPlayer getPlayer();

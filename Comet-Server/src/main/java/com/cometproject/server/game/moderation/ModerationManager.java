@@ -11,7 +11,8 @@ import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.storage.queries.moderation.PresetDao;
 import com.cometproject.server.storage.queries.moderation.TicketDao;
 import com.cometproject.server.utilities.collections.ConcurrentHashSet;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,7 +34,7 @@ public class ModerationManager implements Initialisable {
     private ConcurrentHashSet<Session> police;
     private ConcurrentHashSet<Session> logChatUsers;
 
-    private Logger log = Logger.getLogger(ModerationManager.class.getName());
+    private Logger LOGGER = LoggerFactory.getLogger(ModerationManager.class.getName());
 
     public ModerationManager() {
 
@@ -56,7 +57,7 @@ public class ModerationManager implements Initialisable {
         loadPresets();
         loadActiveTickets();
 
-        log.info("ModerationManager initialized");
+        LOGGER.info("ModerationManager initialized");
     }
 
     public void loadPresets() {
@@ -86,9 +87,9 @@ public class ModerationManager implements Initialisable {
             PresetDao.getPresets(userPresets, roomPresets);
             PresetDao.getPresetActions(actionCategories);
 
-            log.info("Loaded " + (this.getRoomPresets().size() + this.getUserPresets().size() + this.getActionCategories().size()) + " moderation presets");
+            LOGGER.info("Loaded " + (this.getRoomPresets().size() + this.getUserPresets().size() + this.getActionCategories().size()) + " moderation presets");
         } catch (Exception e) {
-            log.error("Error while loading moderation presets", e);
+            LOGGER.error("Error while loading moderation presets", e);
         }
     }
 
@@ -125,9 +126,9 @@ public class ModerationManager implements Initialisable {
 
         try {
             this.tickets = TicketDao.getOpenTickets();
-            log.info("Loaded " + this.tickets.size() + " active help tickets");
+            LOGGER.info("Loaded " + this.tickets.size() + " active help tickets");
         } catch (Exception e) {
-            log.error("Error while loading active tickets", e);
+            LOGGER.error("Error while loading active tickets", e);
         }
     }
 

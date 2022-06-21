@@ -12,7 +12,8 @@ import com.cometproject.server.storage.queries.player.PlayerDao;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +26,7 @@ import java.util.concurrent.Executors;
 
 public class PlayerManager implements IPlayerService, Initialisable {
     private static PlayerManager playerManagerInstance;
-    private static Logger log = Logger.getLogger(PlayerManager.class.getName());
+    private static Logger LOGGER = LoggerFactory.getLogger(PlayerManager.class.getName());
 
     private Map<Integer, Integer> playerIdToSessionId;
     private Map<String, Integer> playerUsernameToPlayerId;
@@ -63,10 +64,10 @@ public class PlayerManager implements IPlayerService, Initialisable {
 
         this.playerLoginService = Executors.newFixedThreadPool(4);// TODO: configure this.
 
-        log.info("Resetting player online status");
+        LOGGER.info("Resetting player online status");
         PlayerDao.resetOnlineStatus();
 
-        log.info("PlayerManager initialized");
+        LOGGER.info("PlayerManager initialized");
     }
 
     public void submitLoginRequest(ISession client, String ticket) {

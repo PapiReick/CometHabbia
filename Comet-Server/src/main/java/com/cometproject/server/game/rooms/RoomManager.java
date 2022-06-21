@@ -22,8 +22,9 @@ import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.storage.cache.CacheManager;
 import com.cometproject.server.storage.cache.objects.RoomDataObject;
 import com.cometproject.server.storage.queries.rooms.RoomDao;
-import org.apache.log4j.Logger;
 import org.apache.solr.util.ConcurrentLRUCache;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +37,7 @@ import java.util.concurrent.Executors;
 
 public class RoomManager implements Initialisable {
 
-    public static final Logger log = Logger.getLogger(RoomManager.class.getName());
+    public static final Logger LOGGER = LoggerFactory.getLogger(RoomManager.class);
     public static final int LRU_MAX_ENTRIES = Integer.parseInt(Configuration.currentConfig().getProperty("comet.game.rooms.data.max"));
     public static final int LRU_MAX_LOWER_WATERMARK = Integer.parseInt(Configuration.currentConfig().getProperty("comet.game.rooms.data.lowerWatermark"));
     private static RoomManager roomManagerInstance;
@@ -95,14 +96,14 @@ public class RoomManager implements Initialisable {
             return roomThread;
         });
 
-        log.info("RoomManager initialized");
+        LOGGER.info("RoomManager initialized");
     }
 
     public void loadPromotedRooms() {
         RoomDao.deleteExpiredRoomPromotions();
         RoomDao.getActivePromotions(this.roomPromotions);
 
-        log.info("Loaded " + this.getRoomPromotions().size() + " room promotions");
+        LOGGER.info("Loaded " + this.getRoomPromotions().size() + " room promotions");
     }
 
     public void initializeRoom(Session initializer, int roomId, String password) {
@@ -120,14 +121,14 @@ public class RoomManager implements Initialisable {
 //
 //        this.models = RoomDao.getModels();
 //
-//        log.info("Loaded " + this.getModels().size() + " room models");
+//        LOGGER.info("Loaded " + this.getModels().size() + " room models");
 //    }
 
 //    public StaticRoomModel getModel(String id) {
 //        if (this.models.containsKey(id))
 //            return this.models.get(id);
 //
-//        log.debug("Couldn't find model: " + id);
+//        LOGGER.debug("Couldn't find model: " + id);
 //
 //        return null;
 //    }

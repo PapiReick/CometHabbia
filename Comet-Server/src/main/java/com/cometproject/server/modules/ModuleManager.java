@@ -15,7 +15,8 @@ import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
 import io.coerce.commons.io.FileUtil;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Constructor;
 import java.net.URL;
@@ -25,7 +26,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ModuleManager implements Initialisable {
-    private static final Logger log = Logger.getLogger(ModuleManager.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(ModuleManager.class.getName());
     private static ModuleManager moduleManagerInstance;
     private EventHandler eventHandler;
     private CometGameService gameService;
@@ -65,7 +66,7 @@ public class ModuleManager implements Initialisable {
 //            try {
 //                this.loadModule(moduleName);
 //            } catch (Exception e) {
-//                log.warn("Error while loading module: " + moduleName, e);
+//                LOGGER.warn("Error while loading module: " + moduleName, e);
 //            }
 //        }
     }
@@ -81,7 +82,7 @@ public class ModuleManager implements Initialisable {
 
             this.modules.put(moduleClass.getSimpleName(), cometModule);
         } catch (Exception e) {
-            log.error("Failed to load system module: " + moduleClass.getName(), e);
+            LOGGER.error("Failed to load system module: " + moduleClass.getName(), e);
         }
     }
 
@@ -103,7 +104,7 @@ public class ModuleManager implements Initialisable {
                 loadModule(module);
                 cometModules.add(module);
             } catch (Exception e) {
-                log.error("Failed to load module: " + module.getAlias(), e);
+                LOGGER.error("Failed to load module: " + module.getAlias(), e);
             }
         }
 
@@ -140,13 +141,13 @@ public class ModuleManager implements Initialisable {
 
         if (this.modules.containsKey(moduleConfig.getName())) {
             if (!this.modules.get(moduleConfig.getName()).getConfig().getVersion().equals(moduleConfig.getVersion())) {
-                log.warn("Modules with same name but different version was detected: " + moduleConfig.getName());
+                LOGGER.warn("Modules with same name but different version was detected: " + moduleConfig.getName());
             }
 
             return;
         }
 
-        log.info("Loaded module: " + moduleConfig.getName() + ", alias: " + module.getAlias());
+        LOGGER.info("Loaded module: " + moduleConfig.getName() + ", alias: " + module.getAlias());
 
         Class<?> clazz = Class.forName(moduleConfig.getEntryPoint(), true, loader);
         Class<? extends BaseModule> runClass = clazz.asSubclass(BaseModule.class);

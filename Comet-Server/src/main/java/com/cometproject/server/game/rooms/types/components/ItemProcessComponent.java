@@ -1,7 +1,6 @@
 package com.cometproject.server.game.rooms.types.components;
 
 import com.cometproject.api.game.rooms.objects.IRoomItemData;
-import com.cometproject.api.game.rooms.objects.data.RoomItemData;
 import com.cometproject.server.boot.Comet;
 import com.cometproject.server.game.rooms.objects.entities.WiredTriggerExecutor;
 import com.cometproject.server.game.rooms.objects.items.RoomItem;
@@ -10,18 +9,16 @@ import com.cometproject.server.game.rooms.objects.items.RoomItemWall;
 import com.cometproject.server.game.rooms.objects.items.types.floor.RollerFloorItem;
 import com.cometproject.server.game.rooms.objects.items.types.floor.wired.triggers.WiredTriggerPeriodically;
 import com.cometproject.server.game.rooms.types.Room;
-import com.cometproject.server.storage.queries.rooms.RoomItemDao;
 import com.cometproject.server.tasks.CometTask;
 import com.cometproject.server.tasks.CometThreadManager;
 import com.cometproject.server.utilities.TimeSpan;
 import com.cometproject.storage.api.StorageContext;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Queues;
 import com.google.common.collect.Sets;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ScheduledFuture;
@@ -32,7 +29,7 @@ public class ItemProcessComponent implements CometTask {
     private static final int INTERVAL = 500;
     private static final int FLAG = 600;
     private final Room room;
-    private final Logger log;
+    private final Logger LOGGER;
 
     private ScheduledFuture future;
     private ScheduledFuture saveFuture;
@@ -44,7 +41,7 @@ public class ItemProcessComponent implements CometTask {
     public ItemProcessComponent(Room room) {
         this.room = room;
 
-        log = Logger.getLogger("Item Process [" + room.getData().getName() + "]");
+        LOGGER = LoggerFactory.getLogger("Item Process [" + room.getData().getName() + "]");
     }
 
     public void start() {
@@ -62,7 +59,7 @@ public class ItemProcessComponent implements CometTask {
         this.future = CometThreadManager.getInstance().executePeriodic(this, 0, INTERVAL, TimeUnit.MILLISECONDS);
         this.saveFuture = CometThreadManager.getInstance().executePeriodic(this::saveQueueTick, 1000, 1000, TimeUnit.MILLISECONDS);
 
-        log.debug("Processing started");
+        LOGGER.debug("Processing started");
     }
 
     private void saveQueueTick() {
@@ -91,7 +88,7 @@ public class ItemProcessComponent implements CometTask {
 
             this.saveQueueTick();
 
-            log.debug("Processing stopped");
+            LOGGER.debug("Processing stopped");
         }
     }
 
@@ -147,7 +144,7 @@ public class ItemProcessComponent implements CometTask {
         TimeSpan span = new TimeSpan(timeStart, System.currentTimeMillis());
 
         if (span.toMilliseconds() > FLAG && Comet.isDebugging) {
-            log.warn("ItemProcessComponent process took: " + span.toMilliseconds() + "ms to execute.");
+            LOGGER.warn("ItemProcessComponent process took: " + span.toMilliseconds() + "ms to execute.");
         }
     }
 
@@ -168,7 +165,7 @@ public class ItemProcessComponent implements CometTask {
     }
 
     protected void handleException(RoomItem item, Exception e) {
-        log.error("Error while processing item: " + item.getId() + " (" + item.getClass().getSimpleName() + ")", e);
+        LOGGER.error("Error while processing item: " + item.getId() + " (" + item.getClass().getSimpleName() + ")", e);
     }
 
     public Room getRoom() {

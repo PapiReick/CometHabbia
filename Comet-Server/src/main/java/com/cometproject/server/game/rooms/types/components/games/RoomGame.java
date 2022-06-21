@@ -1,15 +1,12 @@
 package com.cometproject.server.game.rooms.types.components.games;
 
-import com.cometproject.server.game.rooms.objects.items.types.floor.wired.addons.WiredAddonBlob;
 import com.cometproject.server.game.rooms.types.Room;
 import com.cometproject.server.game.rooms.types.components.GameComponent;
 import com.cometproject.server.tasks.CometTask;
 import com.cometproject.server.tasks.CometThreadManager;
-import com.cometproject.server.utilities.RandomUtil;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -23,11 +20,11 @@ public abstract class RoomGame implements CometTask {
     private GameType type;
     private ScheduledFuture future;
 
-    private Logger log;
+    private Logger LOGGER;
 
     public RoomGame(Room room, GameType gameType) {
         this.type = gameType;
-        this.log = Logger.getLogger("RoomGame [" + room.getData().getName() + "][" + room.getData().getId() + "][" + this.type + "]");
+        this.LOGGER = LoggerFactory.getLogger("RoomGame [" + room.getData().getName() + "][" + room.getData().getId() + "][" + this.type + "]");
         this.room = room;
     }
 
@@ -60,7 +57,7 @@ public abstract class RoomGame implements CometTask {
 
                 tick();
             } catch (Exception e) {
-                log.error("Failed to process game tick", e);
+                LOGGER.error("Failed to process game tick", e);
             }
 
             if (timer >= gameLength) {
@@ -71,7 +68,7 @@ public abstract class RoomGame implements CometTask {
 
             timer++;
         } catch (Exception e) {
-            log.error("Error during game process", e);
+            LOGGER.error("Error during game process", e);
         }
     }
 
@@ -99,7 +96,7 @@ public abstract class RoomGame implements CometTask {
         this.gameLength = amount;
         this.active = true;
 
-        log.debug("Game active for " + amount + " seconds");
+        LOGGER.debug("Game active for " + amount + " seconds");
     }
 
     protected GameComponent getGameComponent() {
@@ -117,7 +114,7 @@ public abstract class RoomGame implements CometTask {
     }
 
     public Logger getLog() {
-        return this.log;
+        return this.LOGGER;
     }
 
     public boolean isActive() {

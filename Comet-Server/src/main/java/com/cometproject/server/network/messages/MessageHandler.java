@@ -121,19 +121,16 @@ import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.protocol.headers.Events;
 import com.cometproject.server.protocol.messages.MessageEvent;
 import com.google.common.collect.Maps;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ForkJoinPool;
 
-import static com.cometproject.server.protocol.headers.Events.MonsterPlantBreedMessageEvent;
-
 public final class MessageHandler {
-    public static Logger log = LogManager.getLogger();
+    public static Logger LOGGER = LoggerFactory.getLogger(MessageHandler.class);
 
     private final Map<Short, Event> messages = Maps.newConcurrentMap();
     private final Map<Short, IMessageEventHandler> eventHandlers = Maps.newConcurrentMap();
@@ -148,12 +145,12 @@ public final class MessageHandler {
         if (this.asyncEventExecution) {
             switch ((String) Configuration.currentConfig().getOrDefault("comet.network.alternativePacketHandling.type", "threadpool")) {
                 default:
-                    log.info("Using fixed thread-pool event executor");
+                    LOGGER.info("Using fixed thread-pool event executor");
                     this.eventExecutor = Executors.newFixedThreadPool(32);
                     break;
 
                 case "forkjoin":
-                    log.info("Using fork-join event executor");
+                    LOGGER.info("Using fork-join event executor");
                     this.eventExecutor = new ForkJoinPool(Integer.parseInt((String) Configuration.currentConfig().getOrDefault("comet.network.alternativePacketHandling.coreSize", 16)), ForkJoinPool.defaultForkJoinWorkerThreadFactory, null, true);
                     break;
 
@@ -195,7 +192,7 @@ public final class MessageHandler {
         this.registerSnowStorm();
         this.registerCrafting();
 
-        log.info("Loaded " + this.getMessages().size() + " message events");
+        LOGGER.info("Loaded " + this.getMessages().size() + " message events");
     }
 
     private void registerGameCenter() {
@@ -596,7 +593,7 @@ public final class MessageHandler {
         final Short header = message.getId();
 
         if (Comet.isDebugging) {
-            log.debug(message.toString());
+            LOGGER.debug(message.toString());
         }
 
         if (!Comet.isRunning)
@@ -611,7 +608,7 @@ public final class MessageHandler {
                         this.eventExecutor.submit(new MessageEventTask(event, client, message));
                     } else {
                         final long start = System.currentTimeMillis();
-                        log.debug("Started packet process for packet: [" + event.getClass().getSimpleName() + "][" + header + "]");
+                        LOGGER.debug("Started packet process for packet: [" + event.getClass().getSimpleName() + "][" + header + "]");
 
                         event.handle(client, message);
 
@@ -620,9 +617,9 @@ public final class MessageHandler {
                         // If the packet took more than 100ms to be handled, red flag!
                         if (timeTakenSinceCreation >= 100) {
                             if (client.getPlayer() != null && client.getPlayer().getData() != null)
-                                log.trace("[" + event.getClass().getSimpleName() + "][" + message.getId() + "][" + client.getPlayer().getId() + "][" + client.getPlayer().getData().getUsername() + "] Packet took " + timeTakenSinceCreation + "ms to execute");
+                                LOGGER.trace("[" + event.getClass().getSimpleName() + "][" + message.getId() + "][" + client.getPlayer().getId() + "][" + client.getPlayer().getData().getUsername() + "] Packet took " + timeTakenSinceCreation + "ms to execute");
                             else
-                                log.trace("[" + event.getClass().getSimpleName() + "][" + message.getId() + "] Packet took " + timeTakenSinceCreation + "ms to execute");
+                                LOGGER.trace("[" + event.getClass().getSimpleName() + "][" + message.getId() + "] Packet took " + timeTakenSinceCreation + "ms to execute");
                         }
 
                         if(CometSettings.console_debugging) {
@@ -630,17 +627,17 @@ public final class MessageHandler {
                             client.getLogger().error("Receive: [" + header + "][" + event.getClass().getSimpleName() + "][" + message.toString() + "]");
                         }
 
-                        log.debug("Finished packet process for packet: [" + event.getClass().getSimpleName() + "][" + header + "] in " + ((System.currentTimeMillis() - start)) + "ms");
+                        LOGGER.debug("Finished packet process for packet: [" + event.getClass().getSimpleName() + "][" + header + "] in " + ((System.currentTimeMillis() - start)) + "ms");
                     }
                 }
             } catch (Exception e) {
                 if (client.getLogger() != null)
                     client.getLogger().error("Error while handling event: " + this.getMessages().get(header).getClass().getSimpleName(), e);
                 else
-                    log.error("Error while handling event: " + this.getMessages().get(header).getClass().getSimpleName(), e);
+                    LOGGER.error("Error while handling event: " + this.getMessages().get(header).getClass().getSimpleName(), e);
             }
         } else if (Comet.isDebugging) {
-            log.debug("Unhandled message: " + Events.valueOfId(header) + " / " + header);
+            LOGGER.debug("Unhandled message: " + Events.valueOfId(header) + " / " + header);
         }
     }
 

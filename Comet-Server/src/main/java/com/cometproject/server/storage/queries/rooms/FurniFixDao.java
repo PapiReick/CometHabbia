@@ -1,7 +1,6 @@
 package com.cometproject.server.storage.queries.rooms;
 
 import com.cometproject.server.storage.SqlHelper;
-import org.apache.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,8 +8,6 @@ import java.sql.SQLException;
 
 
 public class FurniFixDao {
-
-    private static Logger log = Logger.getLogger(RoomItemDao.class.getName());
 
     public static void changeName(String name, long itemId) {
         Connection sqlConnection = null;

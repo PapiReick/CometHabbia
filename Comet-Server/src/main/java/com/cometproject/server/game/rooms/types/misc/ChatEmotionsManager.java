@@ -67,7 +67,7 @@ public class ChatEmotionsManager {
             put("minette", ChatEmotion.SHOCKED); // mathis' cat
         }};
 
-        RoomManager.log.info("Loaded " + this.emotions.size() + " chat emotions");
+        RoomManager.LOGGER.info("Loaded " + this.emotions.size() + " chat emotions");
     }
 
     public ChatEmotion getEmotion(String message) {

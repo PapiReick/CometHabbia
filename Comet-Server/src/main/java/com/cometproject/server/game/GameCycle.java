@@ -15,8 +15,8 @@ import com.cometproject.server.storage.queries.player.PlayerDao;
 import com.cometproject.server.storage.queries.system.StatisticsDao;
 import com.cometproject.server.tasks.CometTask;
 import com.cometproject.server.tasks.CometThreadManager;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.util.Calendar;
@@ -29,7 +29,7 @@ public class GameCycle implements CometTask, Initialisable {
 
     private static GameCycle gameThreadInstance;
 
-    private static final Logger log = LogManager.getLogger();
+    private static final Logger LOGGER = LoggerFactory.getLogger(GameCycle.class);
 
     private ScheduledFuture gameFuture;
 
@@ -86,7 +86,7 @@ public class GameCycle implements CometTask, Initialisable {
             this.processSession();
 
         } catch (Exception e) {
-            log.error("Error during game thread", e);
+            LOGGER.error("Error during game thread", e);
         }
     }
 
@@ -158,7 +158,7 @@ public class GameCycle implements CometTask, Initialisable {
                         client.getPlayer().composeCreditBalance();
                     }
                 } catch (Exception e) {
-                    log.error("Error while cycling rewards", e);
+                    LOGGER.error("Error while cycling rewards", e);
                 }
             }
 

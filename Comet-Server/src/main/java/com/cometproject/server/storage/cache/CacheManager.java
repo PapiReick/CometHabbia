@@ -8,7 +8,8 @@ import com.cometproject.server.storage.cache.subscribers.ISubscriber;
 import com.cometproject.server.storage.cache.subscribers.RefreshDataSubscriber;
 import com.cometproject.server.tasks.CometThreadManager;
 import com.cometproject.server.utilities.TimeSpan;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
@@ -19,7 +20,7 @@ import java.io.IOException;
 
 public class CacheManager extends CachableObject implements Initialisable {
     private static CacheManager cacheManager;
-    private final Logger log = Logger.getLogger(CacheManager.class.getName());
+    private final Logger LOGGER = LoggerFactory.getLogger(CacheManager.class.getName());
     private final String keyPrefix;
     private final String host;
     private final int port;
@@ -43,12 +44,12 @@ public class CacheManager extends CachableObject implements Initialisable {
     @Override
     public void initialize() {
         if (!this.enabled) {
-            log.error("Cancer got removed from emulator properly.");
+            LOGGER.error("Cancer got removed from emulator properly.");
             return;
         }
 
         if (this.host.isEmpty()) {
-            log.error("Invalid redis connection string");
+            LOGGER.error("Invalid redis connection string");
 
             this.enabled = false;
             return;
@@ -56,14 +57,14 @@ public class CacheManager extends CachableObject implements Initialisable {
 
         // Initializes the com.cometproject.networking.api.config for the cache
         if (!this.initializeConfig()) {
-            log.error("Failed to load Redis cache configuration, disabling caching");
+            LOGGER.error("Failed to load Redis cache configuration, disabling caching");
 
             this.enabled = false;
             return;
         }
 
         if (!this.initializeJedis()) {
-            log.error("Failed to initialize Redis cluster, disabling caching");
+            LOGGER.error("Failed to initialize Redis cluster, disabling caching");
 
             this.enabled = false;
             return;
@@ -74,7 +75,7 @@ public class CacheManager extends CachableObject implements Initialisable {
                 new GoToRoomSubscriber()
         });
 
-        log.info("Redis caching is enabled");
+        LOGGER.info("Redis caching is enabled");
 
     }
 
@@ -91,7 +92,7 @@ public class CacheManager extends CachableObject implements Initialisable {
                 try {
                     reader.close();
                 } catch (IOException e) {
-                    log.warn("Failed to close BufferedReader", e);
+                    LOGGER.warn("Failed to close BufferedReader", e);
                 }
             }
         }
@@ -120,7 +121,7 @@ public class CacheManager extends CachableObject implements Initialisable {
 
             CometThreadManager.getInstance().executeOnce(subscriber::subscribe);
 
-            log.info("Subscriber " + subscriber.getClass().getSimpleName() + " initialized");
+            LOGGER.info("Subscriber " + subscriber.getClass().getSimpleName() + " initialized");
         }
     }
 
@@ -138,12 +139,12 @@ public class CacheManager extends CachableObject implements Initialisable {
 
                 jedis.set(this.getKey(key), objectData);
 
-                log.info("Data put to redis: " + object.getClass().getSimpleName() + " in " + new TimeSpan(startTime, System.currentTimeMillis()).toMilliseconds() + "ms");
+                LOGGER.info("Data put to redis: " + object.getClass().getSimpleName() + " in " + new TimeSpan(startTime, System.currentTimeMillis()).toMilliseconds() + "ms");
             } catch (Exception e) {
                 throw e;
             }
         } catch (Exception e) {
-            log.error("Error while setting object in Redis with key: " + key + ", type: " +
+            LOGGER.error("Error while setting object in Redis with key: " + key + ", type: " +
                     object.getClass().getSimpleName(), e);
         }
     }
@@ -162,12 +163,12 @@ public class CacheManager extends CachableObject implements Initialisable {
                 if (setter && setterKey != null)
                     jedis.set(this.getKey(setterKey), value);
 
-                log.info("Data published to redis channel: " + key + " in " + new TimeSpan(startTime, System.currentTimeMillis()).toMilliseconds() + "ms");
+                LOGGER.info("Data published to redis channel: " + key + " in " + new TimeSpan(startTime, System.currentTimeMillis()).toMilliseconds() + "ms");
             } catch (Exception e) {
                 throw e;
             }
         } catch (Exception e) {
-            log.error("Error while setting string with key: " + key, e);
+            LOGGER.error("Error while setting string with key: " + key, e);
         }
     }
 
@@ -182,12 +183,12 @@ public class CacheManager extends CachableObject implements Initialisable {
 
                 jedis.set(this.getKey(key), value);
 
-                log.info("Data put to redis with key: " + key + " in " + new TimeSpan(startTime, System.currentTimeMillis()).toMilliseconds() + "ms");
+                LOGGER.info("Data put to redis with key: " + key + " in " + new TimeSpan(startTime, System.currentTimeMillis()).toMilliseconds() + "ms");
             } catch (Exception e) {
                 throw e;
             }
         } catch (Exception e) {
-            log.error("Error while setting string with key: " + key, e);
+            LOGGER.error("Error while setting string with key: " + key, e);
         }
     }
 
@@ -199,7 +200,7 @@ public class CacheManager extends CachableObject implements Initialisable {
                 throw e;
             }
         } catch (Exception e) {
-            log.error("Error while reading string from Redis with key: " + key, e);
+            LOGGER.error("Error while reading string from Redis with key: " + key, e);
         }
 
         return null;
@@ -220,7 +221,7 @@ public class CacheManager extends CachableObject implements Initialisable {
                 throw e;
             }
         } catch (Exception e) {
-            log.error("Error while reading object from Redis with key: " + key + ", type: " + clazz.getSimpleName(), e);
+            LOGGER.error("Error while reading object from Redis with key: " + key + ", type: " + clazz.getSimpleName(), e);
         }
 
         return null;
@@ -234,7 +235,7 @@ public class CacheManager extends CachableObject implements Initialisable {
                 throw e;
             }
         } catch (Exception e) {
-            log.error("Error while reading EXISTS from redis, key: " + key, e);
+            LOGGER.error("Error while reading EXISTS from redis, key: " + key, e);
         }
 
         return false;

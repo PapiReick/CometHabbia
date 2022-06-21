@@ -45,7 +45,7 @@ public class FoodPlate {
 
     public void tick(FastFoodGameSession gameSession, FastFoodGame game) {
         // (System.currentTimeMillis() - this.timeDropped) >= (this.state == 2 ? 4500 : 2500)
-        System.out.print("FoodPlate - ID: " + this.getObjectId() + " - State: " + this.getState() + " - Location: " + this.location + " - Finalized: " + finalized + "\n");
+        //System.out.print("FoodPlate - ID: " + this.getObjectId() + " - State: " + this.getState() + " - Location: " + this.location + " - Finalized: " + finalized + "\n");
         if(!this.openedParachute && (System.currentTimeMillis() - this.timeDropped) >= 1800 && !this.finalized){
             if(this.hasShield){
                 this.state = 3;
@@ -100,7 +100,7 @@ public class FoodPlate {
 
         this.dropTime = (((long)((this.location / this.speed) / 3.1) * 1000) + this.timeOpened);
 
-        System.out.print("\nLOCATION ON DROP:" + this.location + " - DropTime : " + this.dropTime + " DIFF DROP: " + difference + " \n");
+        //System.out.print("\nLOCATION ON DROP:" + this.location + " - DropTime : " + this.dropTime + " DIFF DROP: " + difference + " \n");
 
         game.broadcast(new FoodUpdateMessageComposer(this.getPlayerId(), this.getObjectId(), this.getState(), -1, 0));
     }

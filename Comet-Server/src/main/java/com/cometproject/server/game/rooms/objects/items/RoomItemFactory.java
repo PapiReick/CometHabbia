@@ -46,8 +46,8 @@ import com.cometproject.server.game.rooms.objects.items.types.wall.MoodlightWall
 import com.cometproject.server.game.rooms.objects.items.types.wall.PostItWallItem;
 import com.cometproject.server.game.rooms.objects.items.types.wall.WheelWallItem;
 import com.cometproject.server.game.rooms.types.Room;
-import com.cometproject.server.network.messages.outgoing.room.items.GetGuestRoomResultMessageComposer;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
@@ -60,7 +60,7 @@ public class RoomItemFactory {
     public static final String TELEPORT_PAD = "teleport_pad";
     private static final int processMs = 500;
     private static final String GIFT_DATA = "GIFT::##";
-    private static final Logger log = Logger.getLogger(RoomItemFactory.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(RoomItemFactory.class);
 
     private static final Map<String, Class<? extends RoomItemFloor>> itemDefinitionMap;
     private static final Map<String, Constructor<? extends RoomItemFloor>> itemConstructorCache;
@@ -362,7 +362,7 @@ public class RoomItemFactory {
                     if (constructor != null)
                         floorItem = constructor.newInstance(itemData, room);
                 } catch (Exception e) {
-                    log.warn("Failed to create instance for item: " + itemData.getId() + ", type: " + def.getInteraction(), e);
+                    LOGGER.warn("Failed to create instance for item: " + itemData.getId() + ", type: " + def.getInteraction(), e);
                 }
             }
         }

@@ -52,7 +52,7 @@ public class RoomBotComponent {
                 }
             }
         } catch (Exception e) {
-            room.log.error("Error while deploying bots", e);
+            room.LOGGER.error("Error while deploying bots", e);
         }
     }
 

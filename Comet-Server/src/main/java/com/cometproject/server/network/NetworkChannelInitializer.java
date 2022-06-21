@@ -14,13 +14,14 @@ import io.netty.handler.codec.string.StringEncoder;
 import io.netty.handler.timeout.IdleStateHandler;
 import io.netty.util.CharsetUtil;
 import io.netty.util.concurrent.EventExecutorGroup;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class NetworkChannelInitializer extends ChannelInitializer<SocketChannel> {
-    private static final Logger log = Logger.getLogger(NetworkChannelInitializer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(NetworkChannelInitializer.class.getName());
 
     private final EventExecutorGroup executor;
     private final INetSessionFactory sessionFactory;
@@ -46,7 +47,7 @@ public class NetworkChannelInitializer extends ChannelInitializer<SocketChannel>
 
             if (sessionAccessLog.isSuspicious()) {
                 ch.disconnect();
-                log.warn(String.format("Client denied, address: %s", ipAddress));
+                LOGGER.warn(String.format("Client denied, address: %s", ipAddress));
                 return;
             }
 

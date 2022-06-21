@@ -3,7 +3,8 @@ package com.cometproject.server.storage;
 import com.cometproject.api.messaging.performance.QueryRequest;
 import com.cometproject.server.network.NetworkManager;
 import com.cometproject.storage.mysql.MySQLConnectionProvider;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -18,7 +19,7 @@ public class SqlHelper {
     public static boolean queryLogEnabled = false;
     public static Map<Integer, QueryLog> queryLog = new ConcurrentHashMap<>();
     private static MySQLConnectionProvider connectionProvider;
-    private static Logger log = Logger.getLogger(SqlHelper.class.getName());
+    private static Logger LOGGER = LoggerFactory.getLogger(SqlHelper.class.getName());
     private static Map<String, AtomicInteger> queryCounters = new ConcurrentHashMap<>();
 
     public static void init(MySQLConnectionProvider connectionProvider) {
@@ -33,7 +34,7 @@ public class SqlHelper {
         } catch (SQLException e) {
             throw e;
         } catch (Exception e) {
-            log.error("Unexpected error while retrieving connection", e);
+            LOGGER.error("Unexpected error while retrieving connection", e);
         }
 
         return connection;
@@ -108,7 +109,7 @@ public class SqlHelper {
 
     public static PreparedStatement prepare(String query, Connection con, boolean returnKeys) throws SQLException {
         if (Thread.currentThread().getName().startsWith("Room-Processor"))
-            log.trace("Executing query from room processor: " + query);
+            LOGGER.trace("Executing query from room processor: " + query);
 
         if (!queryCounters.containsKey(query)) {
             queryCounters.put(query, new AtomicInteger(1));
@@ -131,7 +132,7 @@ public class SqlHelper {
     public static void handleSqlException(SQLException e) {
         if (e.getMessage().equals("Pool has been shutdown") || e.getMessage().contains("Data too long for column"))
             return;
-        log.error("Error while executing query", e);
+        LOGGER.error("Error while executing query", e);
     }
 
     public static String escapeWildcards(String s) {

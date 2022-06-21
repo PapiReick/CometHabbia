@@ -1,8 +1,8 @@
 package com.cometproject.server.config;
 
 import com.cometproject.server.storage.queries.config.LocaleDao;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
@@ -11,7 +11,7 @@ public class Locale {
     /**
      * Logging for locale object
      */
-    private static final Logger log = LogManager.getLogger();
+    private static final Logger LOGGER = LoggerFactory.getLogger(Locale.class);
 
     /**
      * Store locale in memory
@@ -33,7 +33,7 @@ public class Locale {
             locale.clear();
 
         locale = LocaleDao.getAll();
-        log.info("Loaded " + locale.size() + " locale strings");
+        LOGGER.info("Loaded " + locale.size() + " locale strings");
     }
 
     /**

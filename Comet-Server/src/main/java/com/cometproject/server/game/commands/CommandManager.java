@@ -42,7 +42,8 @@ import com.cometproject.server.network.messages.outgoing.messenger.InstantChatMe
 import com.cometproject.server.network.sessions.Session;
 import com.google.common.collect.Lists;
 import gnu.trove.map.hash.THashMap;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -51,7 +52,7 @@ import java.util.concurrent.Executors;
 
 public class CommandManager implements Initialisable {
     private static CommandManager commandManagerInstance;
-    private static final Logger log = org.apache.logging.log4j.LogManager.getLogger();
+    private static final Logger LOGGER = LoggerFactory.getLogger(CommandManager.class);
 
     private NotificationManager notifications;
     private Map<String, ChatCommand> commands;
@@ -84,10 +85,10 @@ public class CommandManager implements Initialisable {
         this.commands = new HashMap<>();
 
         this.reloadAllCommands();
-        log.info("Loaded " + commands.size() + " chat commands");
+        LOGGER.info("Loaded " + commands.size() + " chat commands");
 
         this.notifications = new NotificationManager();
-        log.info("CommandManager initialized");
+        LOGGER.info("CommandManager initialized");
     }
 
     public void reloadAllCommands() {

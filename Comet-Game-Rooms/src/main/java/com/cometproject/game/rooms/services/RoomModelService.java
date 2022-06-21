@@ -1,15 +1,15 @@
 package com.cometproject.game.rooms.services;
 
 import com.cometproject.api.game.rooms.models.*;
-import com.cometproject.game.rooms.models.RoomModel;
 import com.cometproject.storage.api.repositories.IRoomRepository;
 import com.google.common.collect.Maps;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
 public class RoomModelService implements IRoomModelService {
-    private static final Logger log = Logger.getLogger(RoomModelService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RoomModelService.class);
 
     private final IRoomRepository roomRepository;
     private final IRoomModelFactory roomModelFactory;
@@ -36,11 +36,11 @@ public class RoomModelService implements IRoomModelService {
                         this.models.put(roomModelData.getKey(), roomModel);
                     }
                 } catch (InvalidModelException e) {
-                    log.error("Failed to load model " + roomModelData.getKey(), e);
+                    LOGGER.error("Failed to load model " + roomModelData.getKey(), e);
                 }
             }
 
-            log.info("Loaded " + this.models.size() + " static room models");
+            LOGGER.info("Loaded " + this.models.size() + " static room models");
         });
     }
 

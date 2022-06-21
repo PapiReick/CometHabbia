@@ -3,9 +3,13 @@ package com.cometproject.game.rooms.factories;
 import com.cometproject.api.game.rooms.models.*;
 import com.cometproject.api.utilities.ModelUtils;
 import com.cometproject.game.rooms.models.RoomModel;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RoomModelFactory implements IRoomModelFactory {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(RoomModelFactory.class);
+
     @Override
     public IRoomModel createModel(RoomModelData roomModelData) throws InvalidModelException {
         String[] axes = roomModelData.getHeightmap().split("\r");
@@ -61,7 +65,7 @@ public class RoomModelFactory implements IRoomModelFactory {
                 throw e;
             }
 
-            Logger.getLogger(RoomModelFactory.class.getName()).error("Failed to parse heightmap for model: " + roomModelData.getName(), e);
+            LOGGER.error("Failed to parse heightmap for model: " + roomModelData.getName(), e);
         }
 
         if (maxTileHeight >= 29) {

@@ -3,13 +3,14 @@ package com.cometproject.server.utilities;
 import com.sun.jna.Library;
 import com.sun.jna.Native;
 import com.sun.jna.platform.win32.Kernel32;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class CometRuntime {
     public static final String operatingSystem = System.getProperty("os.name");
     public static final String operatingSystemArchitecture = System.getProperty("os.arch");
-    private static final Logger log = Logger.getLogger(CometRuntime.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(CometRuntime.class.getName());
     public static int processId = 0;
 
     static {
@@ -23,7 +24,7 @@ public class CometRuntime {
         }
 
         if (processId < 1)
-            log.warn("Failed to get process identifier - OS: " + operatingSystem + " (" + operatingSystemArchitecture + ")");
+            LOGGER.warn("Failed to get process identifier - OS: " + operatingSystem + " (" + operatingSystemArchitecture + ")");
     }
 
     private interface CLibrary extends Library {

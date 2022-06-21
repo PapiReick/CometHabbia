@@ -3,8 +3,8 @@ package com.cometproject.server.game.commands.notifications;
 import com.cometproject.server.game.commands.notifications.types.Notification;
 import com.cometproject.server.game.players.types.Player;
 import com.cometproject.server.storage.queries.system.NotificationCommandsDao;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
@@ -12,12 +12,12 @@ import java.util.Map;
 public class NotificationManager {
     private Map<String, Notification> notifications;
 
-    private Logger log = LogManager.getLogger();
+    private Logger LOGGER = LoggerFactory.getLogger(NotificationManager.class);
 
     public NotificationManager() {
         this.notifications = NotificationCommandsDao.getAll();
 
-        log.info("Loaded " + notifications.size() + " notification commands");
+        LOGGER.info("Loaded " + notifications.size() + " notification commands");
     }
 
     public boolean isNotificationExecutor(String text, int rank) {

@@ -7,7 +7,8 @@ import com.cometproject.server.network.websocket.listeners.MessageListener;
 import com.cometproject.server.network.websocket.listeners.types.AuthenticationRequest;
 import com.corundumstudio.socketio.Configuration;
 import com.corundumstudio.socketio.SocketIOServer;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class WebSocketServer implements Initialisable {
     private static WebSocketServer instance;
@@ -19,7 +20,7 @@ public class WebSocketServer implements Initialisable {
     /**
      * Logging
      */
-    private final Logger log = Logger.getLogger(WebSocketServer.class.getName());
+    private final Logger LOGGER = LoggerFactory.getLogger(WebSocketServer.class.getName());
     /**
      * The SocketIO server instance
      */
@@ -84,6 +85,6 @@ public class WebSocketServer implements Initialisable {
      * @param e The exception to be handled
      */
     private void handleException(Exception e) {
-        log.error("Error caught from SocketIO server", e);
+        LOGGER.error("Error caught from SocketIO server", e);
     }
 }

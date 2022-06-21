@@ -13,7 +13,8 @@ import io.netty.handler.codec.TooLongFrameException;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.util.AttributeKey;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
@@ -21,7 +22,7 @@ import java.io.IOException;
 public class ClientHandler extends SimpleChannelInboundHandler<MessageEvent> {
     private static final AttributeKey<INetSession> ATTR_SESSION = AttributeKey.newInstance("NetSession");
 
-    private static Logger log = Logger.getLogger(ClientHandler.class.getName());
+    private static Logger LOGGER = LoggerFactory.getLogger(ClientHandler.class.getName());
 
     private static ClientHandler clientHandlerInstance;
     private final INetSessionFactory sessionFactory;
@@ -91,7 +92,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<MessageEvent> {
 
         if (cause instanceof IOException || cause instanceof TooLongFrameException) return;
 
-        log.error("Exception caught in ClientHandler", cause);
+        LOGGER.error("Exception caught in ClientHandler", cause);
     }
 
     @Override
@@ -103,7 +104,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<MessageEvent> {
                 session.getMessageHandler().handleMessage(event, session);
             }
         } catch (Exception e) {
-            log.error("Error while receiving message", e);
+            LOGGER.error("Error while receiving message", e);
         }
     }
 

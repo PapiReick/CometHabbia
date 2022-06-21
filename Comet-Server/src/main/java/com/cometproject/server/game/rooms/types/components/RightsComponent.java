@@ -33,7 +33,7 @@ public class RightsComponent {
             }
         } catch (Exception e) {
             this.rights = new CopyOnWriteArrayList<>();
-            this.room.log.error("Error while loading room rights", e);
+            this.room.LOGGER.error("Error while loading room rights", e);
         }
 
         this.bannedPlayers = RightsDao.getRoomBansByRoomId(this.room.getId());

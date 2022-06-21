@@ -6,7 +6,8 @@ import com.cometproject.server.game.navigator.types.categories.NavigatorCategory
 import com.cometproject.server.game.navigator.types.publics.PublicRoom;
 import com.cometproject.server.storage.queries.navigator.NavigatorDao;
 import com.google.common.collect.Lists;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.Set;
 
 public class NavigatorManager implements Initialisable {
     private static NavigatorManager navigatorManagerInstance;
-    private final Logger log = Logger.getLogger(NavigatorManager.class.getName());
+    private final Logger LOGGER = LoggerFactory.getLogger(NavigatorManager.class.getName());
     private Map<Integer, Category> categories;
     private List<Category> userCategories;
     private Map<Integer, PublicRoom> publicRooms;
@@ -40,7 +41,7 @@ public class NavigatorManager implements Initialisable {
         this.loadStaffPicks();
         this.loadRolePlayRooms();
 
-        log.info("NavigatorManager initialized");
+        LOGGER.info("NavigatorManager initialized");
     }
 
     public void loadPublicRooms() {
@@ -52,10 +53,10 @@ public class NavigatorManager implements Initialisable {
             this.publicRooms = NavigatorDao.getPublicRooms();
 
         } catch (Exception e) {
-            log.error("Error while loading public rooms", e);
+            LOGGER.error("Error while loading public rooms", e);
         }
 
-        log.info("Loaded " + this.publicRooms.size() + " featured rooms");
+        LOGGER.info("Loaded " + this.publicRooms.size() + " featured rooms");
     }
 
     public void loadStaffPicks() {
@@ -67,10 +68,10 @@ public class NavigatorManager implements Initialisable {
             this.staffPicks = NavigatorDao.getStaffPicks();
 
         } catch (Exception e) {
-            log.error("Error while loading staff picked rooms", e);
+            LOGGER.error("Error while loading staff picked rooms", e);
         }
 
-        log.info("Loaded " + this.publicRooms.size() + " staff picks");
+        LOGGER.info("Loaded " + this.publicRooms.size() + " staff picks");
     }
 
     public void loadRolePlayRooms() {
@@ -82,10 +83,10 @@ public class NavigatorManager implements Initialisable {
             this.rolePlayRooms = NavigatorDao.getRPRooms();
 
         } catch (Exception e) {
-            log.error("Error while loading roleplay picked rooms", e);
+            LOGGER.error("Error while loading roleplay picked rooms", e);
         }
 
-        log.info("Loaded " + this.rolePlayRooms.size() + " roleplay picks");
+        LOGGER.info("Loaded " + this.rolePlayRooms.size() + " roleplay picks");
     }
 
     public void loadCategories() {
@@ -108,10 +109,10 @@ public class NavigatorManager implements Initialisable {
                 }
             }
         } catch (Exception e) {
-            log.error("Error while loading navigator categories", e);
+            LOGGER.error("Error while loading navigator categories", e);
         }
 
-        log.info("Loaded " + (this.getCategories() == null ? 0 : this.getCategories().size()) + " room categories");
+        LOGGER.info("Loaded " + (this.getCategories() == null ? 0 : this.getCategories().size()) + " room categories");
     }
 
     public Category getCategory(int id) {

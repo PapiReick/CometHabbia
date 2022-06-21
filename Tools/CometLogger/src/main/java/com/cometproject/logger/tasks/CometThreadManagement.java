@@ -2,7 +2,6 @@ package com.cometproject.logger.tasks;
 
 import com.cometproject.api.networking.messages.IMessageComposer;
 import javolution.util.FastTable;
-import org.apache.log4j.Logger;
 
 import java.lang.ref.WeakReference;
 import java.util.UUID;

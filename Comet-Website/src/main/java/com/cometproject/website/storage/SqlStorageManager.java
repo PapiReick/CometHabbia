@@ -4,10 +4,11 @@ import com.cometproject.website.config.Configuration;
 import com.cometproject.website.storage.dao.DaoHelper;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SqlStorageManager {
-    private static Logger log = Logger.getLogger(SqlStorageManager.class.getName());
+    private static Logger LOGGER = LoggerFactory.getLogger(SqlStorageManager.class);
     private HikariDataSource connections = null;
 
     public SqlStorageManager() {
@@ -32,11 +33,11 @@ public class SqlStorageManager {
             DaoHelper.init(this);
         } catch (Exception e) {
             isConnectionFailed = true;
-            log.error("Failed to connect to MySQL server", e);
+            LOGGER.error("Failed to connect to MySQL server", e);
             System.exit(0);
         } finally {
             if (!isConnectionFailed) {
-                log.info("Connection to MySQL server was successful");
+                LOGGER.info("Connection to MySQL server was successful");
             }
         }
     }

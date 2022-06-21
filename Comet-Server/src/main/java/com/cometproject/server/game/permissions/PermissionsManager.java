@@ -4,16 +4,16 @@ import com.cometproject.api.utilities.Initialisable;
 import com.cometproject.server.game.permissions.types.*;
 import com.cometproject.server.game.players.types.Player;
 import com.cometproject.server.storage.queries.permissions.PermissionsDao;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 
 public class PermissionsManager implements Initialisable {
     private static PermissionsManager permissionsManagerInstance;
-    private static final Logger log = Logger.getLogger(PermissionsManager.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(PermissionsManager.class.getName());
     private Map<Integer, Perk> perks;
     private Map<Integer, Rank> permissions;
     private Map<String, OverrideCommandPermission> overridecommands;
@@ -47,7 +47,7 @@ public class PermissionsManager implements Initialisable {
         this.loadEffectsOverride();
         this.loadChatBubbles();
 
-        log.info("PermissionsManager initialized");
+        LOGGER.info("PermissionsManager initialized");
     }
 
     public void loadPerks() {
@@ -59,11 +59,11 @@ public class PermissionsManager implements Initialisable {
             this.perks = PermissionsDao.getPerks();
 
         } catch (Exception e) {
-            log.error("Error while loading perk permissions", e);
+            LOGGER.error("Error while loading perk permissions", e);
             return;
         }
 
-        log.info("Loaded " + this.getPerks().size() + " perks");
+        LOGGER.info("Loaded " + this.getPerks().size() + " perks");
     }
 
     public void loadPermissions() {
@@ -74,11 +74,11 @@ public class PermissionsManager implements Initialisable {
 
             this.permissions = PermissionsDao.getPermissions();
         } catch (Exception e) {
-            log.error("Error while loading rank permissions", e);
+            LOGGER.error("Error while loading rank permissions", e);
             return;
         }
 
-        log.info("Loaded " + this.getPermissions().size() + " ranks");
+        LOGGER.info("Loaded " + this.getPermissions().size() + " ranks");
     }
 
 
@@ -91,11 +91,11 @@ public class PermissionsManager implements Initialisable {
             this.effects = PermissionsDao.getEffects();
 
         } catch (Exception e) {
-            log.error("Error while reloading effect permissions", e);
+            LOGGER.error("Error while reloading effect permissions", e);
             return;
         }
 
-        log.info("Loaded " + this.getEffects().size() + " effect permissions");
+        LOGGER.info("Loaded " + this.getEffects().size() + " effect permissions");
     }
 
     public void loadEffectsOverride() {
@@ -107,11 +107,11 @@ public class PermissionsManager implements Initialisable {
             this.overrideEffects = PermissionsDao.getOverrideEffects();
 
         } catch (Exception e) {
-            log.error("Error while reloading effect override permissions", e);
+            LOGGER.error("Error while reloading effect override permissions", e);
             return;
         }
 
-        log.info("Loaded " + this.getEffects().size() + " override effect permissions");
+        LOGGER.info("Loaded " + this.getEffects().size() + " override effect permissions");
     }
 
     public void loadChatBubbles() {
@@ -121,7 +121,7 @@ public class PermissionsManager implements Initialisable {
 
         this.chatBubbles = PermissionsDao.getChatBubbles();
 
-        log.info("Loaded " + this.getEffects().size() + " chat bubbles");
+        LOGGER.info("Loaded " + this.getEffects().size() + " chat bubbles");
     }
 
 
@@ -129,7 +129,7 @@ public class PermissionsManager implements Initialisable {
         final Rank rank = this.permissions.get(playerRankId);
 
         if (rank == null) {
-            log.warn("Failed to find rank by rank ID: " + playerRankId + ", are you sure it exists?");
+            LOGGER.warn("Failed to find rank by rank ID: " + playerRankId + ", are you sure it exists?");
             return this.permissions.get(1);
         }
 

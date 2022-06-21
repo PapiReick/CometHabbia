@@ -2,7 +2,6 @@ package com.cometproject.server.boot;
 
 import com.cometproject.api.config.Configuration;
 import com.cometproject.api.game.GameContext;
-import com.cometproject.games.snowwar.SnowWar;
 import com.cometproject.games.snowwar.thread.WorkerTasks;
 import com.cometproject.server.api.APIManager;
 import com.cometproject.server.boot.utils.gui.CometGui;
@@ -34,13 +33,15 @@ import com.cometproject.server.network.websockets.WebSocketManager;
 import com.cometproject.server.storage.StorageManager;
 import com.cometproject.server.storage.queries.config.ConfigDao;
 import com.cometproject.server.tasks.CometThreadManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Map;
 
 
 public class CometServer {
     public static final String CLIENT_VERSION = "PRODUCTION-201709192204-203982672";
-    private final Logger log = org.apache.logging.log4j.LogManager.getLogger();
+    private final Logger LOGGER = LoggerFactory.getLogger(CometServer.class);
 
     public CometServer(Map<String, String> overridenConfig) {
         Configuration.setConfiguration(new Configuration("./config/comet.properties"));
@@ -111,10 +112,6 @@ public class CometServer {
             CometGui gui = new CometGui();
             gui.setVisible(true);
         }
-
-        if (Comet.isDebugging) {
-            log.debug("Comet Server is debugging");
-        }
     }
 
     /**
@@ -127,6 +124,6 @@ public class CometServer {
     }
 
     public Logger getLogger() {
-        return log;
+        return LOGGER;
     }
 }

@@ -7,17 +7,13 @@ import com.cometproject.api.game.players.data.components.inventory.PlayerItem;
 import com.cometproject.api.game.quests.IQuest;
 import com.cometproject.api.game.quests.QuestType;
 import com.cometproject.api.game.rooms.entities.PlayerRoomEntity;
-import com.cometproject.api.game.rooms.entities.RoomEntity;
 import com.cometproject.server.boot.Comet;
 import com.cometproject.server.composers.catalog.UnseenItemsMessageComposer;
 import com.cometproject.server.config.Locale;
 import com.cometproject.server.game.items.ItemManager;
-import com.cometproject.server.game.permissions.PermissionsManager;
 import com.cometproject.server.game.players.components.types.inventory.InventoryItem;
-import com.cometproject.server.game.players.types.Player;
 import com.cometproject.server.game.players.types.PlayerComponent;
 import com.cometproject.server.game.quests.QuestManager;
-import com.cometproject.server.game.rooms.objects.entities.types.PlayerEntity;
 import com.cometproject.server.network.messages.outgoing.notification.NotificationMessageComposer;
 import com.cometproject.server.network.messages.outgoing.quests.QuestCompletedMessageComposer;
 import com.cometproject.server.network.messages.outgoing.quests.QuestListMessageComposer;
@@ -25,20 +21,17 @@ import com.cometproject.server.network.messages.outgoing.quests.QuestStartedMess
 import com.cometproject.server.network.messages.outgoing.room.engine.RoomForwardMessageComposer;
 import com.cometproject.server.network.messages.outgoing.user.inventory.UpdateInventoryMessageComposer;
 import com.cometproject.server.network.messages.outgoing.user.purse.UpdateActivityPointsMessageComposer;
-import com.cometproject.server.storage.queries.player.PlayerDao;
 import com.cometproject.server.storage.queries.quests.PlayerQuestsDao;
-import com.cometproject.server.utilities.RandomUtil;
 import com.cometproject.storage.api.StorageContext;
 import com.cometproject.storage.api.data.Data;
 import com.google.common.collect.Sets;
-import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
-import java.util.Random;
 
 public class QuestComponent extends PlayerComponent implements PlayerQuests {
-    private static final Logger log = Logger.getLogger(QuestComponent.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(QuestComponent.class.getName());
 
     private Map<Integer, Integer> questProgression;
 
@@ -247,7 +240,7 @@ public class QuestComponent extends PlayerComponent implements PlayerQuests {
                     this.getPlayer().getInventory().addBadge(quest.getBadgeId(), true);
                 }
             } catch (Exception e) {
-                log.error("Failed to deliver reward to player: " + this.getPlayer().getData().getUsername());
+                LOGGER.error("Failed to deliver reward to player: " + this.getPlayer().getData().getUsername());
             }
 
             if (refreshCreditBalance) {

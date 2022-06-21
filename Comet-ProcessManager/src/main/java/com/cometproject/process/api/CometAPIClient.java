@@ -12,7 +12,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.http.HttpMethod;
 
 import java.io.InputStream;
@@ -22,8 +21,6 @@ import java.util.Map;
 
 public class CometAPIClient {
     private static CometAPIClient instance;
-
-    private final Logger log = org.apache.logging.log4j.LogManager.getLogger(CometAPIClient.class);
 
     public CometAPIClient() {
 

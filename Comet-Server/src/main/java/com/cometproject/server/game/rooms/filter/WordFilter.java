@@ -4,7 +4,7 @@ import com.cometproject.api.config.CometSettings;
 import com.cometproject.api.game.rooms.filter.FilterMode;
 import com.cometproject.server.storage.queries.filter.FilterDao;
 import com.cometproject.server.utilities.FilterUtil;
-import org.apache.log4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
@@ -23,7 +23,7 @@ public class WordFilter {
 
         this.wordfilter = FilterDao.loadWordfilter();
 
-        Logger.getLogger(WordFilter.class.getName()).info("Loaded " + wordfilter.size() + " filtered words");
+        LoggerFactory.getLogger(WordFilter.class.getName()).info("Loaded " + wordfilter.size() + " filtered words");
     }
 
     public FilterResult filter(String message) {

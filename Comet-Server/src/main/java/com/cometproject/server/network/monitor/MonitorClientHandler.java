@@ -10,7 +10,8 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.EventLoop;
 import io.netty.channel.SimpleChannelInboundHandler;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.charset.Charset;
 import java.util.concurrent.TimeUnit;
@@ -19,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 public class MonitorClientHandler extends SimpleChannelInboundHandler {
     public static boolean isConnected = false;
 
-    private Logger log = Logger.getLogger(MonitorClientHandler.class.getName());
+    private Logger LOGGER = LoggerFactory.getLogger(MonitorClientHandler.class.getName());
     private ByteBuf handshakeMessage;
     private MonitorMessageHandler messageHandler;
     private Gson gson = new Gson();
@@ -72,7 +73,7 @@ public class MonitorClientHandler extends SimpleChannelInboundHandler {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        log.error("Exception caught from MonitorClient", cause);
+        LOGGER.error("Exception caught from MonitorClient", cause);
         ctx.close();
     }
 

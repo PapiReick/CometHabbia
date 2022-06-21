@@ -5,7 +5,8 @@ import com.cometproject.server.tasks.CometTask;
 import com.cometproject.server.tasks.CometThreadManager;
 import com.cometproject.server.utilities.TimeSpan;
 import com.google.common.collect.Lists;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.concurrent.ScheduledFuture;
@@ -15,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 public class RoomCycle implements CometTask {
     private final static int PERIOD = 500;
     private final static int FLAG = 2000;
-    private Logger log = Logger.getLogger(RoomCycle.class.getName());
+    private Logger LOGGER = LoggerFactory.getLogger(RoomCycle.class.getName());
     private ScheduledFuture myFuture;
 
     public RoomCycle() {
@@ -73,10 +74,10 @@ public class RoomCycle implements CometTask {
             TimeSpan span = new TimeSpan(start, System.currentTimeMillis());
 
             if (span.toMilliseconds() > FLAG) {
-                log.warn("Global room processing (" + RoomManager.getInstance().getRoomInstances().size() + " rooms) took: " + span.toMilliseconds() + "ms to execute.");
+                LOGGER.warn("Global room processing (" + RoomManager.getInstance().getRoomInstances().size() + " rooms) took: " + span.toMilliseconds() + "ms to execute.");
             }
         } catch (Exception e) {
-            log.error("Error while cycling rooms", e);
+            LOGGER.error("Error while cycling rooms", e);
         }
     }
 }

@@ -6,14 +6,14 @@ import com.cometproject.api.networking.messages.IMessageEvent;
 import com.cometproject.gamecenter.fastfood.FastFoodGame;
 import com.cometproject.gamecenter.fastfood.net.composers.AuthenticationOKMessageComposer;
 import com.cometproject.gamecenter.fastfood.net.composers.MyPowerUpsMessageComposer;
-import com.cometproject.gamecenter.fastfood.net.composers.PlayerScoresMessageComposer;
 import com.cometproject.gamecenter.fastfood.net.composers.SetClientLocalisationMessageComposer;
 import com.cometproject.gamecenter.fastfood.storage.MySQLFastFoodRepository;
 import com.cometproject.networking.api.messages.IMessageHandler;
 import com.cometproject.networking.api.sessions.INetSession;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.Set;
@@ -21,7 +21,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.BiConsumer;
 
 public class FastFoodMessageHandler implements IMessageHandler {
-    private static final Logger log = Logger.getLogger(FastFoodMessageHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FastFoodMessageHandler.class);
 
     private final MySQLFastFoodRepository fastFoodRepository;
     private final IPlayerService playerService;
@@ -130,7 +130,7 @@ public class FastFoodMessageHandler implements IMessageHandler {
 
         final int type = messageEvent.readInt();
 
-        System.out.print("Basejump Launch Type: " + type + "\n");
+        LOGGER.info("Basejump Launch Type: " + type + "\n");
 
         session.getGameSession().getCurrentGame().launch(type, session.getGameSession(), false);
     }
@@ -158,10 +158,10 @@ public class FastFoodMessageHandler implements IMessageHandler {
         final short messageId = messageEvent.getId();
 
         if (!this.messageHandlers.containsKey(messageId)) {
-            log.debug("Unhandled message event: " + messageId);
+            LOGGER.debug("Unhandled message event: " + messageId);
         } else {
             this.messageHandlers.get(messageId).accept(messageEvent, (FastFoodNetSession) session);
-            log.debug("Handled message event: " + messageId);
+            LOGGER.debug("Handled message event: " + messageId);
         }
     }
 }

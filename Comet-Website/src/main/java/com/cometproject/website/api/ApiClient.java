@@ -3,9 +3,9 @@ package com.cometproject.website.api;
 import com.cometproject.website.config.Configuration;
 import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.Response;
-import com.ning.http.client.StringPart;
-import org.apache.log4j.Logger;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -13,7 +13,7 @@ import java.util.concurrent.Future;
 
 public class ApiClient {
     private AsyncHttpClient asyncHttpClient;
-    private static final Logger log = Logger.getLogger(ApiClient.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(ApiClient.class.getName());
 
     // oh hahah
     private static final String RECAPTCHA_SECRET = "6LfDiv8SAAAAAKtNon-NPLdyRf4Rgro6FtT-dNGS";
@@ -43,7 +43,6 @@ public class ApiClient {
             Future<Response> responseFuture = builder.addHeader("authToken", Configuration.getInstance().getApiAuthToken()).execute();
             Response response = responseFuture.get();
 
-            System.out.println(response.getResponseBody());
             return new JSONObject(response.getResponseBody());
         } catch (Exception e) {
             if(e instanceof ExecutionException) {
@@ -51,7 +50,7 @@ public class ApiClient {
                 this.isOffline = true;
             } else {
                 // probably failed to connect or received invalid JSON data.
-                log.error("Error while executing API request", e);
+                LOGGER.error("Error while executing API request", e);
             }
         }
 

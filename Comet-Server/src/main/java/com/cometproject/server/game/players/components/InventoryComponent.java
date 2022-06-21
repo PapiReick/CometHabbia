@@ -23,12 +23,14 @@ import com.cometproject.server.storage.queries.player.PlayerDao;
 import com.cometproject.server.storage.queries.player.inventory.InventoryDao;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import org.apache.log4j.Logger;
 
 public class InventoryComponent extends PlayerComponent implements PlayerInventory {
     private Map<Long, PlayerItem> inventoryItems;
@@ -43,7 +45,7 @@ public class InventoryComponent extends PlayerComponent implements PlayerInvento
     private int equippedEffect = -1;
     private Set<Integer> effects;
 
-    private Logger log = Logger.getLogger(InventoryComponent.class.getName());
+    private Logger LOGGER = LoggerFactory.getLogger(InventoryComponent.class.getName());
 
     public InventoryComponent(Player player) {
         super(player);
@@ -83,7 +85,7 @@ public class InventoryComponent extends PlayerComponent implements PlayerInvento
                 this.inventoryItems.put(item.getKey(), item.getValue());
             }
         } catch (Exception e) {
-            log.error("Error while loading user inventory", e);
+            LOGGER.error("Error while loading user inventory", e);
         }
     }
 
@@ -93,7 +95,7 @@ public class InventoryComponent extends PlayerComponent implements PlayerInvento
             // TODO: redo this so we can seperate achievement badges to other badges. Maybe a "badge type" or something.
             this.badges = InventoryDao.getBadgesByPlayerId(this.getPlayer().getId());
         } catch (Exception e) {
-            log.error("Error while loading user badges");
+            LOGGER.error("Error while loading user badges");
         }
     }
 

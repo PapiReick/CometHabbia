@@ -1,7 +1,8 @@
 package com.cometproject.website.storage.dao;
 
 import com.cometproject.website.storage.SqlStorageManager;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,7 +10,7 @@ import java.sql.ResultSet;
 
 public class DaoHelper {
     private static SqlStorageManager storageManager;
-    private static Logger log = Logger.getLogger(DaoHelper.class.getName());
+    private static Logger LOGGER = LoggerFactory.getLogger(DaoHelper.class);
 
     public static void init(SqlStorageManager sqlStorageManager) {
         storageManager = sqlStorageManager;
@@ -41,6 +42,6 @@ public class DaoHelper {
 
 
     public static void handleException(Exception e) {
-        log.error("Exception thrown from DAO", e);
+        LOGGER.error("Exception thrown from DAO", e);
     }
 }

@@ -11,8 +11,8 @@ import com.cometproject.server.game.permissions.PermissionsManager;
 import com.cometproject.server.modules.ModuleManager;
 import com.cometproject.server.network.NetworkManager;
 import com.cometproject.server.storage.SqlHelper;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class ConsoleCommands {
-    private static final Logger log = LogManager.getLogger();
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConsoleCommands.class);
 
     public static void init() {
         // Console commands
@@ -40,7 +40,7 @@ public class ConsoleCommands {
                             handleCommand(input);
                         }
                     } catch (Exception e) {
-                        log.error("Error while parsing console command");
+                        LOGGER.error("Error while parsing console command");
                     }
                 }
             }
@@ -53,7 +53,7 @@ public class ConsoleCommands {
         if (line.startsWith("/")) {
             switch (line.split(" ")[0]) {
                 default:
-                    log.error("Invalid command");
+                    LOGGER.error("Invalid command");
                     break;
 
                 case "/query-log":
@@ -63,90 +63,90 @@ public class ConsoleCommands {
                 case "/":
                 case "/help":
                 case "/commands":
-                    log.info("Commands available: /about, /reload_messages, /gc, /reload_permissions, /changemotd, /reload_catalog, /reload_bans, /reload_locale, /reload_permissions, /queries, /queries");
+                    LOGGER.info("Commands available: /about, /reload_messages, /gc, /reload_permissions, /changemotd, /reload_catalog, /reload_bans, /reload_locale, /reload_permissions, /queries, /queries");
                     break;
 
                 case "/reload_modules":
                     ModuleManager.getInstance().initialize();
-                    log.info("Modules reloaded successfully.");
+                    LOGGER.info("Modules reloaded successfully.");
                     break;
 
                 case "/about":
                     final CometStats stats = Comet.getStats();
 
-                    log.info("This server is powered by Comet (" + Comet.getBuild() + ")");
-                    log.info("    Players online: " + stats.getPlayers());
-                    log.info("    Active rooms: " + stats.getRooms());
-                    log.info("    Uptime: " + stats.getUptime());
-                    log.info("    Process ID: " + stats.getProcessId());
-                    log.info("    Memory allocated: " + stats.getAllocatedMemory() + "MB");
-                    log.info("    Memory usage: " + stats.getUsedMemory() + "MB");
+                    LOGGER.info("This server is powered by Comet (" + Comet.getBuild() + ")");
+                    LOGGER.info("    Players online: " + stats.getPlayers());
+                    LOGGER.info("    Active rooms: " + stats.getRooms());
+                    LOGGER.info("    Uptime: " + stats.getUptime());
+                    LOGGER.info("    Process ID: " + stats.getProcessId());
+                    LOGGER.info("    Memory allocated: " + stats.getAllocatedMemory() + "MB");
+                    LOGGER.info("    Memory usage: " + stats.getUsedMemory() + "MB");
                     break;
 
                 case "/reload_messages":
                     NetworkManager.getInstance().getMessages().load();
-                    log.info("Message handlers were reloaded");
+                    LOGGER.info("Message handlers were reloaded");
                     break;
 
                 case "/gc":
                     System.gc();
-                    log.info("GC was run");
+                    LOGGER.info("GC was run");
                     break;
 
                 case "/changemotd":
                     String motd = line.replace("/changemotd ", "");
                     CometSettings.setMotd(motd);
-                    log.info("Message of the day was set.");
+                    LOGGER.info("Message of the day was set.");
                     break;
 
                 case "/reload_permissions":
                     PermissionsManager.getInstance().loadPerks();
                     PermissionsManager.getInstance().loadPermissions();
-                    log.info("Permissions cache was reloaded.");
+                    LOGGER.info("Permissions cache was reloaded.");
                     break;
 
                 case "/reload_catalog":
                     CatalogManager.getInstance().loadItemsAndPages();
                     CatalogManager.getInstance().loadGiftBoxes();
-                    log.info("Catalog cache was reloaded.");
+                    LOGGER.info("Catalog cache was reloaded.");
                     break;
 
                 case "/reload_bans":
                     BanManager.getInstance().loadBans();
-                    log.info("Bans were reloaded.");
+                    LOGGER.info("Bans were reloaded.");
                     break;
 
                 case "/reload_navigator":
                     NavigatorManager.getInstance().loadPublicRooms();
                     NavigatorManager.getInstance().loadCategories();
-                    log.info("Navigator was reloaded.");
+                    LOGGER.info("Navigator was reloaded.");
                     break;
 
                 case "/reload_locale":
                     Locale.initialize();
-                    log.info("Locale configuration was reloaded.");
+                    LOGGER.info("Locale configuration was reloaded.");
                     break;
 
                 case "/queries":
 
-                    log.info("Queries");
-                    log.info("================================================");
+                    LOGGER.info("Queries");
+                    LOGGER.info("================================================");
 
                     for (Map.Entry<String, AtomicInteger> query : SqlHelper.getQueryCounters().entrySet()) {
-                        log.info("Query:" + query.getKey());
-                        log.info("Count: " + query.getValue().get());
-                        log.info("");
+                        LOGGER.info("Query:" + query.getKey());
+                        LOGGER.info("Count: " + query.getValue().get());
+                        LOGGER.info("");
                     }
 
                     break;
 
                 case "/clear_queries":
                     SqlHelper.getQueryCounters().clear();
-                    log.info("Query counters have been cleared.");
+                    LOGGER.info("Query counters have been cleared.");
                     break;
             }
         } else {
-            log.error("Invalid command");
+            LOGGER.error("Invalid command");
         }
     }
 }

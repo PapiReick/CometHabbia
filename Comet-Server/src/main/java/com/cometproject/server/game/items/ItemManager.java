@@ -5,15 +5,14 @@ import com.cometproject.api.game.furniture.types.CrackableReward;
 import com.cometproject.api.game.furniture.types.FurnitureDefinition;
 import com.cometproject.api.game.furniture.types.IMusicData;
 import com.cometproject.server.game.items.crafting.CraftingMachine;
-import com.cometproject.server.game.items.types.ItemDefinition;
 import com.cometproject.server.storage.queries.catalog.CraftingDao;
 import com.cometproject.server.storage.queries.items.ItemDao;
 import com.cometproject.server.storage.queries.items.MusicDao;
 import com.cometproject.server.storage.queries.items.TeleporterDao;
 import com.cometproject.storage.api.StorageContext;
 import com.cometproject.storage.api.data.Data;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,7 +25,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ItemManager implements IFurnitureService {
     private static ItemManager itemManagerInstance;
 
-    private Logger log = LogManager.getLogger();
+    private Logger LOGGER = LoggerFactory.getLogger(ItemManager.class);
 
     private Map<Integer, FurnitureDefinition> itemDefinitions;
 
@@ -69,7 +68,7 @@ public class ItemManager implements IFurnitureService {
         this.loadMusicData();
         this.loadCraftingMachines();
 
-        log.info("ItemManager initialized");
+        LOGGER.info("ItemManager initialized");
     }
 
     public void loadCraftingMachines() {
@@ -83,7 +82,7 @@ public class ItemManager implements IFurnitureService {
                 CraftingDao.loadAllowedItems(machine);
                 CraftingDao.loadRecipes(machine);
                 this.craftingMachines.add(machine);
-                System.out.print("Crafting manager: handled " + machine.getBaseId() + " crafting machine.\n");
+                LOGGER.info("Crafting manager: handled " + machine.getBaseId() + " crafting machine.\n");
             }
         }
     }
@@ -109,7 +108,7 @@ public class ItemManager implements IFurnitureService {
             this.crackableRewards = ItemDao.getCrackableRewards();
             this.itemSpriteIdToDefinitionId = new HashMap<>();
         } catch (Exception e) {
-            log.error("Error while loading item definitions", e);
+            LOGGER.error("Error while loading item definitions", e);
         }
 
         if (tempMap.size() >= 1) {
@@ -127,7 +126,7 @@ public class ItemManager implements IFurnitureService {
             }
         }
 
-        log.info("Loaded " + this.getItemDefinitions().size() + " item definitions");
+        LOGGER.info("Loaded " + this.getItemDefinitions().size() + " item definitions");
     }
 
     public FurnitureDefinition getByBaseId(int baseId) {
@@ -141,7 +140,7 @@ public class ItemManager implements IFurnitureService {
         }
 
         MusicDao.getMusicData(this.musicData);
-        log.info("Loaded " + this.musicData.size() + " songs");
+        LOGGER.info("Loaded " + this.musicData.size() + " songs");
     }
 
     @Override
@@ -230,7 +229,7 @@ public class ItemManager implements IFurnitureService {
 
     @Override
     public Logger getLogger() {
-        return log;
+        return LOGGER;
     }
 
     @Override

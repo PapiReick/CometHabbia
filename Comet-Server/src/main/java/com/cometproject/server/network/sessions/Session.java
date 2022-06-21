@@ -17,13 +17,10 @@ import com.cometproject.server.network.messages.outgoing.room.avatar.AvatarUpdat
 import com.cometproject.server.network.messages.outgoing.room.items.UpdateFloorItemMessageComposer;
 import com.cometproject.server.protocol.messages.MessageEvent;
 import com.cometproject.server.protocol.security.exchange.DiffieHellman;
-import com.cometproject.server.storage.cache.CachableObject;
 import com.cometproject.server.storage.queries.player.PlayerDao;
-import com.corundumstudio.socketio.SocketIOClient;
-import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 import java.util.UUID;
@@ -33,7 +30,7 @@ public class Session implements ISession {
     public static int CLIENT_VERSION = 0;
     private final ChannelHandlerContext channel;
     private final UUID uuid = UUID.randomUUID();
-    private Logger logger = LogManager.getLogger("Session");
+    private Logger LOGGER = LoggerFactory.getLogger("session");
     private SessionEventHandler eventHandler;
     private boolean isClone = false;
     private int loginAt = 0;
@@ -164,11 +161,11 @@ public class Session implements ISession {
         }
 
         if (msg.getId() == 0) {
-            logger.debug("Unknown header ID for message: " + msg.getClass().getSimpleName());
+            LOGGER.debug("Unknown header ID for message: " + msg.getClass().getSimpleName());
         }
 
         if (!(msg instanceof AvatarUpdateMessageComposer) && !(msg instanceof UpdateFloorItemMessageComposer))
-            logger.debug("Sent message: " + msg.getClass().getSimpleName() + " / " + msg.getId());
+            LOGGER.debug("Sent message: " + msg.getClass().getSimpleName() + " / " + msg.getId());
 
         if (!queue) {
             this.channel.writeAndFlush(msg, channel.voidPromise());
@@ -184,7 +181,7 @@ public class Session implements ISession {
     }
 
     public Logger getLogger() {
-        return this.logger;
+        return this.LOGGER;
     }
 
     public Player getPlayer() {
@@ -198,7 +195,7 @@ public class Session implements ISession {
 
         String username = player.getData().getUsername();
 
-        this.logger = LogManager.getLogger("[" + username + "][" + player.getId() + "]");
+        this.LOGGER = LoggerFactory.getLogger("[" + username + "][" + player.getId() + "]");
         this.player = player;
         this.snowWarPlayerData = new SnowWarPlayerData(player);
 

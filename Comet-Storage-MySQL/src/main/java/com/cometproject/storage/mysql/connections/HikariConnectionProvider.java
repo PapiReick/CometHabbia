@@ -4,7 +4,8 @@ import com.cometproject.api.config.Configuration;
 import com.cometproject.storage.mysql.MySQLConnectionProvider;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,7 +13,7 @@ import java.sql.ResultSet;
 
 public class HikariConnectionProvider extends MySQLConnectionProvider {
 
-    private final Logger log = Logger.getLogger(HikariConnectionProvider.class);
+    private final Logger LOGGER = LoggerFactory.getLogger(HikariConnectionProvider.class);
 
     private HikariDataSource hikariDataSource;
     private boolean isConnectionFailed = true;
@@ -40,17 +41,17 @@ public class HikariConnectionProvider extends MySQLConnectionProvider {
 //
 //            config.setAcquireRetryAttempts(Integer.valueOf(Configuration.currentConfig().get("comet.db.pool.acquireRetryAttempts")));
 
-            log.info("Connecting to the MySQL server");
+            LOGGER.info("Connecting to the MySQL server");
 
             this.isConnectionFailed = false;
             this.hikariDataSource = new HikariDataSource(config);
         } catch (Exception e) {
             isConnectionFailed = true;
-            log.error("Failed to connect to MySQL server", e);
+            LOGGER.error("Failed to connect to MySQL server", e);
             System.exit(0);
         } finally {
             if (!isConnectionFailed) {
-                log.info("Connection to MySQL server was successful");
+                LOGGER.info("Connection to MySQL server was successful");
             }
         }
 
@@ -66,7 +67,7 @@ public class HikariConnectionProvider extends MySQLConnectionProvider {
         try {
             connection.close();
         } catch(Exception e) {
-            log.error("Failed to close Hikari connection", e);
+            LOGGER.error("Failed to close Hikari connection", e);
         }
     }
 
@@ -75,7 +76,7 @@ public class HikariConnectionProvider extends MySQLConnectionProvider {
         try {
             statement.close();
         } catch (Exception e) {
-            log.error("Failed to close prepared statement", e);
+            LOGGER.error("Failed to close prepared statement", e);
         }
     }
 
@@ -84,7 +85,7 @@ public class HikariConnectionProvider extends MySQLConnectionProvider {
         try {
             resultSet.close();
         } catch (Exception e) {
-            log.error("Failed to close the result set");
+            LOGGER.error("Failed to close the result set");
         }
     }
 

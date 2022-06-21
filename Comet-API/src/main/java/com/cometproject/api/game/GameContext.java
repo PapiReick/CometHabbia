@@ -6,8 +6,8 @@ import com.cometproject.api.game.groups.IGroupService;
 import com.cometproject.api.game.players.IPlayerService;
 import com.cometproject.api.game.rooms.IRoomService;
 import com.cometproject.api.game.rooms.models.IRoomModelService;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GameContext {
     private static GameContext gameContext;
@@ -19,14 +19,14 @@ public class GameContext {
     private IRoomService roomService;
     private IRoomModelService roomModelService;
 
-    private final Logger logger = LogManager.getLogger();
+    private static final Logger LOGGER = LoggerFactory.getLogger(GameContext.class);
 
     public ICatalogService getCatalogService() {
         return catalogService;
     }
 
     public void setCatalogService(ICatalogService catalogService) {
-        logger.info("CatalogService initialised, " + catalogService.getClass().getName());
+        LOGGER.info("CatalogService initialised, " + catalogService.getClass().getName());
 
         this.catalogService = catalogService;
     }
@@ -36,7 +36,7 @@ public class GameContext {
     }
 
     public void setFurnitureService(IFurnitureService furnitureService) {
-        logger.info("FurnitureService initialised, " + furnitureService.getClass().getName());
+        LOGGER.info("FurnitureService initialised, " + furnitureService.getClass().getName());
 
         this.furnitureService = furnitureService;
     }
@@ -46,7 +46,7 @@ public class GameContext {
     }
 
     public void setGroupService(IGroupService groupService) {
-        logger.info("GroupService initialised, " + groupService.getClass().getName());
+        LOGGER.info("GroupService initialised, " + groupService.getClass().getName());
 
         this.groupService = groupService;
     }
@@ -61,7 +61,7 @@ public class GameContext {
 
     public static GameContext getCurrent() {
         if(gameContext == null) {
-            System.out.println("GameContext not configured");
+            LOGGER.info("GameContext not configured");
             System.exit(0);
         }
 
@@ -77,7 +77,7 @@ public class GameContext {
     }
 
     public void setRoomService(IRoomService roomService) {
-        logger.info("RoomService initialised, " + roomService.getClass().getName());
+        LOGGER.info("RoomService initialised, " + roomService.getClass().getName());
 
         this.roomService = roomService;
     }
@@ -87,7 +87,7 @@ public class GameContext {
     }
 
     public void setRoomModelService(IRoomModelService roomModelService) {
-        logger.info("RoomModelService initialised, " + roomModelService.getClass().getName());
+        LOGGER.info("RoomModelService initialised, " + roomModelService.getClass().getName());
 
         this.roomModelService = roomModelService;
     }

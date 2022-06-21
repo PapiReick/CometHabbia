@@ -2,13 +2,14 @@ package com.cometproject.networking.api.messages;
 
 import com.cometproject.api.networking.messages.IMessageEvent;
 import com.cometproject.api.networking.messages.IMessageEventHandler;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.function.Consumer;
 
 public abstract class MessageEventHandler<T extends MessageParser> implements IMessageEventHandler {
 
-    private static Logger log = Logger.getLogger(MessageEventHandler.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(MessageEventHandler.class);
 
     private final short messageId;
     private final Consumer<T> parserConsumer;
@@ -26,7 +27,7 @@ public abstract class MessageEventHandler<T extends MessageParser> implements IM
             this.parserType = ((Class<T>)
                     this.getClass().getDeclaredField("parserTypeField").getType());
         } catch (Exception e) {
-            log.error("Failed to get parser type for event: " + this.getClass().getName(), e);
+            LOGGER.error("Failed to get parser type for event: " + this.getClass().getName(), e);
         }
     }
 

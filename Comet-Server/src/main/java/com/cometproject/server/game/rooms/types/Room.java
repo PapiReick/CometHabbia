@@ -38,7 +38,8 @@ import com.cometproject.server.storage.cache.objects.items.WallItemDataObject;
 import com.cometproject.server.utilities.attributes.Attributable;
 import com.cometproject.storage.mysql.models.factories.rooms.RoomModelDataFactory;
 import com.google.common.collect.Sets;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -48,7 +49,7 @@ public class Room implements Attributable, IRoom {
     public static final boolean useCycleForItems = false;
     public static final boolean useCycleForEntities = false;
 
-    public final Logger log;
+    public final Logger LOGGER;
 
     private final IRoomData data;
 
@@ -84,7 +85,7 @@ public class Room implements Attributable, IRoom {
 
     public Room(IRoomData data) {
         this.data = data;
-        this.log = Logger.getLogger("Room \"" + this.getData().getName() + "\"");
+        this.LOGGER = LoggerFactory.getLogger("Room \"" + this.getData().getName() + "\"");
         this.cachedData = null;
     }
 
@@ -112,7 +113,7 @@ public class Room implements Attributable, IRoom {
                     this.model = GameContext.getCurrent().getRoomModelService().getRoomModelFactory().createModel(roomModelData);
                 }
             } catch (Exception e) {
-                log.error("Failed to load dynamic room model", e);
+                LOGGER.error("Failed to load dynamic room model", e);
             }
         }
 
@@ -144,7 +145,7 @@ public class Room implements Attributable, IRoom {
             RoomQueue.getInstance().addQueue(this.getId(), 0);
         }
 
-        this.log.debug("Room loaded");
+        this.LOGGER.debug("Room loaded");
         return this;
     }
 
@@ -274,10 +275,10 @@ public class Room implements Attributable, IRoom {
         long timeTaken = System.currentTimeMillis() - currentTime;
 
         if (timeTaken >= 250) {
-            this.log.warn("Room [" + this.getData().getId() + "][" + this.getData().getName() + "] took " + timeTaken + "ms to dispose");
+            this.LOGGER.warn("Room [" + this.getData().getId() + "][" + this.getData().getName() + "] took " + timeTaken + "ms to dispose");
         }
 
-        this.log.debug("[ROOM " + this.getData().getId() + "] > DISPOSED.");
+        this.LOGGER.debug("[ROOM " + this.getData().getId() + "] > DISPOSED.");
     }
 
     public void tick() {

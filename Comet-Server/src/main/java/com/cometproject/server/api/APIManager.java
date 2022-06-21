@@ -7,7 +7,8 @@ import com.cometproject.server.api.routes.PlayerRoutes;
 import com.cometproject.server.api.routes.RoomRoutes;
 import com.cometproject.server.api.routes.SystemRoutes;
 import com.cometproject.server.api.transformers.JsonTransformer;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import spark.Spark;
 
 
@@ -15,7 +16,7 @@ public class APIManager implements Initialisable {
     /**
      * Logger
      */
-    private static final Logger log = Logger.getLogger(APIManager.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(APIManager.class.getName());
     /**
      * Create an array of config properties that are required before enabling the API
      * If none of these properties exist, the API will be automatically disabled
@@ -80,7 +81,7 @@ public class APIManager implements Initialisable {
     private void initializeConfiguration() {
         for (String configProperty : configProperties) {
             if (!Configuration.currentConfig().containsKey(configProperty)) {
-                log.warn("API configuration property not available: " + configProperty + ", API is disabled");
+                LOGGER.warn("API configuration property not available: " + configProperty + ", API is disabled");
                 this.enabled = false;
 
                 return;
@@ -115,7 +116,7 @@ public class APIManager implements Initialisable {
             boolean authenticated = request.headers("authToken") != null && request.headers("authToken").equals(this.authToken);
 
             if (!authenticated) {
-                log.error("Unauthenticated request from: " + request.ip() + "; " + request.contextPath());
+                LOGGER.error("Unauthenticated request from: " + request.ip() + "; " + request.contextPath());
                 response.type("application/json");
                 Spark.halt("{\"error\":\"Invalid authentication token\"}");
             }

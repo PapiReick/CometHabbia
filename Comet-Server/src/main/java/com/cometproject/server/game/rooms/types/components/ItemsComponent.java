@@ -42,7 +42,8 @@ import com.cometproject.storage.api.data.Data;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -50,7 +51,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ItemsComponent {
 
-    private final Logger log;
+    private final Logger LOGGER;
     private final Map<Long, RoomItemFloor> floorItems = new ConcurrentHashMap<>();
     private final Map<Long, RoomItemWall> wallItems = new ConcurrentHashMap<>();
     private final Map<Integer, String> itemOwners = new ConcurrentHashMap<>();
@@ -62,7 +63,7 @@ public class ItemsComponent {
 
     public ItemsComponent(Room room) {
         this.room = room;
-        this.log = Logger.getLogger("Room Items Component [" + room.getData().getName() + "]");
+        this.LOGGER = LoggerFactory.getLogger("Room Items Component [" + room.getData().getName() + "]");
 
         if (room.getCachedData() != null) {
             for (FloorItemDataObject floorItemDataObject : room.getCachedData().getFloorItems()) {
@@ -495,7 +496,7 @@ public class ItemsComponent {
                 }
             }
         } catch (Exception e) {
-            log.error("Failed to update entity positions for changing item position", e);
+            LOGGER.error("Failed to update entity positions for changing item position", e);
         }
 
         item.getPosition().setX(newPosition.getX());
@@ -652,7 +653,7 @@ public class ItemsComponent {
                 }
             }
         } catch (Exception e) {
-            log.error("Failed to update entity positions for changing item position", e);
+            LOGGER.error("Failed to update entity positions for changing item position", e);
         }
 
         item.getPosition().setX(newPosition.getX());

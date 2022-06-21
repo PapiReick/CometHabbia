@@ -1,29 +1,20 @@
 package com.cometproject.process.processes;
 
-import com.cometproject.process.api.CometAPIClient;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.google.gson.JsonObject;
-import org.apache.http.cookie.CookiePathComparator;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.eclipse.jetty.http.HttpMethod;
 import org.eclipse.jetty.util.ConcurrentHashSet;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zeroturnaround.exec.ProcessExecutor;
 import org.zeroturnaround.exec.ProcessResult;
 import org.zeroturnaround.exec.stream.LogOutputStream;
-import org.zeroturnaround.exec.stream.slf4j.Slf4jStream;
 
-import java.io.IOException;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.TimeoutException;
 
 public abstract class AbstractProcess extends Thread {
     private final String processName;
-    private final Logger log;
+    private final Logger LOGGER;
 
     private ProcessStatus processStatus;
 
@@ -41,7 +32,7 @@ public abstract class AbstractProcess extends Thread {
         this.processName = processName;
         this.processStatus = ProcessStatus.STARTING;
 
-        this.log = LogManager.getLogger(this.getClass().getName() + "#" + processName);
+        this.LOGGER = LoggerFactory.getLogger(this.getClass().getName() + "#" + processName);
     }
 
     public abstract String[] executionCommand();
@@ -60,34 +51,34 @@ public abstract class AbstractProcess extends Thread {
 
     public void performStatusCheck() {
         if (this.requiresStatusCheck()) {
-            log.trace("Processing status check for instance");
+            LOGGER.trace("Processing status check for instance");
 
             if(this.getProcessStatus() == ProcessStatus.STARTING) {
-                log.info("Starting instance");
+                LOGGER.info("Starting instance");
 
                 // start the instance.
                 try {
                     this.start();
 
                 } catch(Exception e) {
-                    log.warn("Failed to start process", e);
+                    LOGGER.warn("Failed to start process", e);
                 }
             } else if(this.getProcessStatus() == ProcessStatus.RESTARTING) {
-                log.info("Restarting instance");
+                LOGGER.info("Restarting instance");
 
                 try {
                     // todo: First we need to send the shutdown request, if it fails then we'll interrupt.
                     this.interrupt();
                 } catch(Exception e) {
-                    log.error(e);
+                    LOGGER.error(String.valueOf(e));
                 }
             } else if(this.getProcessStatus() == ProcessStatus.STOPPING) {
-                log.info("Stopping service");
+                LOGGER.info("Stopping service");
 
                 try {
                     this.interrupt();
                 } catch (Exception e) {
-                    log.error(e);
+                    LOGGER.error(String.valueOf(e));
                 }
 
                 this.setProcessStatus(ProcessStatus.DOWN);
@@ -126,18 +117,18 @@ public abstract class AbstractProcess extends Thread {
                             }
                             // Here we'll pipe the lines to the user via a websocket or something,
                             // so (if they have permission), they can see the output of the server.
-                            log.info(line);
+                            LOGGER.info(line);
                         }
                     }).execute();
 
-            log.warn("Process exited with code: {}", processResult.getExitValue());
+            LOGGER.warn("Process exited with code: {}", processResult.getExitValue());
         } catch(Exception e) {
             if(e instanceof InterruptedException) {
                 // process was stopped.
             }
         }
 
-        log.info("Process exited");
+        LOGGER.info("Process exited");
     }
 
     public void performShutdown() {

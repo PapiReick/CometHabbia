@@ -14,7 +14,6 @@ import com.cometproject.networking.api.config.NetworkingServerConfig;
 import com.cometproject.networking.api.sessions.INetSessionFactory;
 import com.cometproject.server.boot.Comet;
 import com.cometproject.server.boot.utils.ConsoleCommands;
-import com.cometproject.server.game.bots.DiscordAI;
 import com.cometproject.server.network.messages.GameMessageHandler;
 import com.cometproject.server.network.messages.MessageHandler;
 import com.cometproject.server.network.monitor.MonitorClient;
@@ -24,32 +23,16 @@ import com.cometproject.server.protocol.security.exchange.RSA;
 import com.google.common.collect.Sets;
 import io.coerce.commons.config.CoerceConfiguration;
 import io.coerce.services.messaging.client.MessagingClient;
-import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.SocketChannel;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.http.HttpObjectAggregator;
-import io.netty.handler.codec.http.HttpRequestDecoder;
-import io.netty.handler.codec.http.HttpResponseEncoder;
-import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.util.ResourceLeakDetector;
 import io.netty.util.internal.logging.InternalLoggerFactory;
 import io.netty.util.internal.logging.Log4JLoggerFactory;
-import org.apache.log4j.Logger;
-import org.javacord.api.DiscordApi;
-import org.javacord.api.DiscordApiBuilder;
-import org.javacord.api.entity.activity.Activity;
-import org.javacord.api.entity.message.MessageAuthor;
-import org.javacord.api.entity.message.embed.EmbedBuilder;
-import org.javacord.api.exception.MissingPermissionsException;
-import org.javacord.api.util.logging.ExceptionLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
 import java.util.Set;
 
 
@@ -59,7 +42,7 @@ public class NetworkManager {
     public static int IDLE_TIMER_WRITER_TIME = Integer.parseInt(Configuration.currentConfig().get("comet.network.idleTimer.writerIdleTime", "0"));
     public static int IDLE_TIMER_ALL_TIME = Integer.parseInt(Configuration.currentConfig().get("comet.network.idleTimer.allIdleTime", "0"));
     private static NetworkManager networkManagerInstance;
-    private static Logger log = Logger.getLogger(NetworkManager.class.getName());
+    private static Logger LOGGER = LoggerFactory.getLogger(NetworkManager.class.getName());
     private int serverPort;
     private SessionManager sessions;
     private MessageHandler messageHandler;
@@ -134,7 +117,7 @@ public class NetworkManager {
 
         this.rsa.init();
 
-        InternalLoggerFactory.setDefaultFactory(new Log4JLoggerFactory());
+        //InternalLoggerFactory.setDefaultFactory(new Log4JLoggerFactory());
 
         System.setProperty("io.netty.leakDetectionLevel", "disabled");
         ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.DISABLED);

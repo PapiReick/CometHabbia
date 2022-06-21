@@ -7,7 +7,8 @@ import com.cometproject.api.events.EventHandler;
 import com.cometproject.api.networking.sessions.ISession;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
@@ -17,7 +18,7 @@ import java.util.function.BiConsumer;
 
 public class EventHandlerService implements EventHandler {
     private final ExecutorService asyncEventExecutor;
-    private final Logger log = Logger.getLogger(EventHandlerService.class);
+    private final Logger LOGGER = LoggerFactory.getLogger(EventHandlerService.class.getName());
 
     private final Map<Class<?>, List<Event>> listeners;
 
@@ -64,16 +65,16 @@ public class EventHandlerService implements EventHandler {
             this.listeners.put(consumer.getClass(), Lists.newArrayList(consumer));
         }
 
-        log.debug(String.format("Registered event listener for %s", consumer.getClass().getSimpleName()));
+        LOGGER.debug(String.format("Registered event listener for %s", consumer.getClass().getSimpleName()));
     }
 
     @Override
     public <T extends EventArgs> boolean handleEvent(Class<? extends Event> eventClass, T args) {
         if (this.listeners.containsKey(eventClass)) {
             this.invoke(eventClass, args);
-            log.debug(String.format("Event handled: %s\n", eventClass.getSimpleName()));
+            LOGGER.debug(String.format("Event handled: %s\n", eventClass.getSimpleName()));
         } else {
-            log.debug(String.format("Unhandled event: %s\n", eventClass.getSimpleName()));
+            LOGGER.debug(String.format("Unhandled event: %s\n", eventClass.getSimpleName()));
         }
 
         return args.isCancelled();
@@ -101,7 +102,7 @@ public class EventHandlerService implements EventHandler {
         try {
             chatCommand.accept(session, arguments);
         } catch (Exception e) {
-            log.warn("Failed to execute module command: " + commandExectutor);
+            LOGGER.warn("Failed to execute module command: " + commandExectutor);
         }
 
         return true;

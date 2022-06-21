@@ -5,14 +5,14 @@ import com.cometproject.api.game.achievements.types.AchievementType;
 import com.cometproject.api.game.achievements.types.IAchievementGroup;
 import com.cometproject.api.game.achievements.types.ITalentTrackLevel;
 import com.cometproject.server.storage.queries.achievements.AchievementDao;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class AchievementManager implements IAchievementsService {
-    private static final Logger log = LogManager.getLogger();
+    private static final Logger LOGGER = LoggerFactory.getLogger(AchievementManager.class);
     private static AchievementManager achievementManager;
     private final Map<AchievementType, IAchievementGroup> achievementGroups;
     private final Map<Integer, Map<AchievementType, IAchievementGroup>> gameCenterAchievements;
@@ -37,7 +37,7 @@ public class AchievementManager implements IAchievementsService {
         this.loadAchievements();
         this.loadGameCenterAchievements();
         this.loadTalentTrack();
-        log.info("AchievementManager initialized");
+        LOGGER.info("AchievementManager initialized");
     }
 
     @Override
@@ -54,7 +54,7 @@ public class AchievementManager implements IAchievementsService {
 
         final int achievementCount = AchievementDao.getAchievements(this.achievementGroups);
 
-        log.info("Loaded " + achievementCount + " achievements (" + this.achievementGroups.size() + " groups)");
+        LOGGER.info("Loaded " + achievementCount + " achievements (" + this.achievementGroups.size() + " groups)");
 
     }
 
@@ -74,7 +74,7 @@ public class AchievementManager implements IAchievementsService {
 
         final int gameCenterAchievementCount = AchievementDao.getGameCenterAchievements(this.gameCenterAchievements);
 
-        log.info("Loaded " + gameCenterAchievementCount + " game-center achievements (" + this.gameCenterAchievements.size() + " groups)");
+        LOGGER.info("Loaded " + gameCenterAchievementCount + " game-center achievements (" + this.gameCenterAchievements.size() + " groups)");
     }
 
     @Override
@@ -85,7 +85,7 @@ public class AchievementManager implements IAchievementsService {
 
         final int talentTrackCount = AchievementDao.getTalents(this.talentTrack);
 
-        log.info("Loaded " + talentTrackCount + " talent levels.");
+        LOGGER.info("Loaded " + talentTrackCount + " talent levels.");
     }
 
     @Override

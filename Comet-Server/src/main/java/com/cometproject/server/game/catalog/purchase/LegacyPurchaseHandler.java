@@ -65,18 +65,17 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadLocalRandom;
 
 
 public class LegacyPurchaseHandler implements ICatalogPurchaseHandler {
-    private final Logger log = LogManager.getLogger();
+    private final Logger LOGGER = LoggerFactory.getLogger(LegacyPurchaseHandler.class);
     private ExecutorService executorService;
 
     public LegacyPurchaseHandler() {
@@ -576,7 +575,7 @@ public class LegacyPurchaseHandler implements ICatalogPurchaseHandler {
                 }
             }
         } catch (Exception e) {
-            log.error("Error while buying catalog item", e);
+            LOGGER.error("Error while buying catalog item", e);
         } finally {
             // Clean up the purchase - even if there was an exception!!
             PlayerDao.updatePlayerCurrencies(client.getPlayer().getId(), client.getPlayer().getData().getCredits(), client.getPlayer().getData().getVipPoints(), client.getPlayer().getData().getActivityPoints(), client.getPlayer().getData().getSeasonalPoints(), client.getPlayer().getData().getBlackMoney());

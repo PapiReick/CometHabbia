@@ -33,7 +33,8 @@ import com.cometproject.server.network.messages.outgoing.room.items.SlideObjectB
 import com.cometproject.server.tasks.CometTask;
 import com.cometproject.server.tasks.CometThreadManager;
 import com.cometproject.server.utilities.TimeSpan;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,7 +48,7 @@ import java.util.concurrent.TimeUnit;
 public class ProcessComponent implements CometTask {
     private Room room;
 
-    private Logger log;
+    private Logger LOGGER;
     private ScheduledFuture processFuture;
     private boolean active = false;
 
@@ -65,7 +66,7 @@ public class ProcessComponent implements CometTask {
 
     public ProcessComponent(Room room) {
         this.room = room;
-        this.log = Logger.getLogger("Room Process [" + room.getData().getName() + ", #" + room.getId() + "]");
+        this.LOGGER = LoggerFactory.getLogger("Room Process [" + room.getData().getName() + ", #" + room.getId() + "]");
 
         this.adaptiveProcessTimes = CometSettings.adaptiveEntityProcessDelay;
     }
@@ -85,7 +86,7 @@ public class ProcessComponent implements CometTask {
         this.lastProcess = System.currentTimeMillis();
 
         if (this.getProcessTimes() != null && this.getProcessTimes().size() < 30) {
-            log.info("Time since last process: " + timeSinceLastProcess + "ms");
+            LOGGER.info("Time since last process: " + timeSinceLastProcess + "ms");
         }
 
         long timeStart = System.currentTimeMillis();
@@ -94,7 +95,7 @@ public class ProcessComponent implements CometTask {
             if (this.update)
                 this.getRoom().tick();
         } catch (Exception e) {
-            log.error("Error while cycling room: " + room.getData().getId() + ", " + room.getData().getName(), e);
+            LOGGER.error("Error while cycling room: " + room.getData().getId() + ", " + room.getData().getName(), e);
         }
 
         try {
@@ -136,9 +137,9 @@ public class ProcessComponent implements CometTask {
             playersToRemove = null;
             entitiesToUpdate = null;
 
-            //log.debug("Room processing took " + (System.currentTimeMillis() - timeStart) + "ms");
+            //LOGGER.debug("Room processing took " + (System.currentTimeMillis() - timeStart) + "ms");
         } catch (Exception e) {
-            log.warn("Error during room entity processing", e);
+            LOGGER.warn("Error during room entity processing", e);
         }
 
         TimeSpan span = new TimeSpan(timeStart, System.currentTimeMillis());
@@ -173,7 +174,7 @@ public class ProcessComponent implements CometTask {
 
         this.active = true;
 
-        log.debug("Processing started");
+        LOGGER.debug("Processing started");
     }
 
     public void stop() {
@@ -192,7 +193,7 @@ public class ProcessComponent implements CometTask {
             if (!this.adaptiveProcessTimes)
                 this.processFuture.cancel(false);
 
-            log.debug("Processing stopped");
+            LOGGER.debug("Processing stopped");
         }
     }
 
@@ -216,7 +217,7 @@ public class ProcessComponent implements CometTask {
                     return;
                 }
             } catch (Exception e) {
-                log.warn("Failed to remove null player from room - user data was null");
+                LOGGER.warn("Failed to remove null player from room - user data was null");
                 return;
             }
 
@@ -241,7 +242,7 @@ public class ProcessComponent implements CometTask {
                     }
                 }
             } catch (Exception e) {
-                log.error(String.format("Error while processing entity %s", entity.getId()), e);
+                LOGGER.error(String.format("Error while processing entity %s", entity.getId()), e);
             }
         }
 
