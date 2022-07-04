@@ -266,6 +266,6 @@ public class WebSocketServer {
     }
 
     private final DataListener<String> dataListener = (socketIOClient, data, request) -> {
-        System.out.println(data);
+        //System.out.println(data);
     };
 }

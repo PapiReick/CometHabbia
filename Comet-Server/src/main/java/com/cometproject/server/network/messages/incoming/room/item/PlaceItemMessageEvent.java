@@ -87,7 +87,7 @@ public class PlaceItemMessageEvent implements Event {
                     return;
                 }
 
-                if(item.getDefinition().getInteraction().equals("monsterplant_seed") && client.getPlayer().getEntity().getRoom().getGroup() != null && client.getPlayer().getEntity().getRoom().getGroup().getData().getCategory() != 3 && !client.getPlayer().getGroups().contains(client.getPlayer().getEntity().getRoom().getGroup().getId())){
+                if(item.getDefinition().getInteraction().equals("monsterplant_seed") && client.getPlayer().getEntity().getRoom().getGroup() != null  && !client.getPlayer().getGroups().contains(client.getPlayer().getEntity().getRoom().getGroup().getId())){
                     client.send(new WhisperMessageComposer(-1, Locale.getOrDefault("requires.mafia.room", "La sala en la que estás intentando colocar este objeto no es la de tu mafia."), 34));
                     return;
                 }

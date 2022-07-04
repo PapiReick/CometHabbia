@@ -30,8 +30,6 @@ public class RenderRoomMessageEvent implements Event {
 
         int timestamp = (int) Comet.getTime();
 
-        System.out.println("TAMAÑO : " + length);
-
         String URL = client.getPlayer().getData().getId() + "_" + timestamp + ".png";
         String URL_small = client.getPlayer().getData().getId() + "_" + timestamp + "_small.png";
         String base = CometSettings.cameraPhotoUrl.replace("%photoId%", "");

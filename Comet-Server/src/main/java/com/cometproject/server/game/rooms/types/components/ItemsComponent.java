@@ -573,7 +573,7 @@ public class ItemsComponent {
 
         if (mover != null && mover.getEntity() != null) {
             if ((mover.getEntity()).setzok) {
-                if (!verifyItemPositionSetZ(item.getDefinition(), tile, item.getPosition(), rotation))
+                if (!verifyItemPositionSetZ(item.getDefinition(), tile, item.getPosition(), rotation, mover))
                     return false;
             } else if (!verifyItemPosition(item.getDefinition(), item, tile, item.getPosition(), rotation)) {
                 return false;
@@ -711,7 +711,7 @@ public class ItemsComponent {
         return true;
     }
 
-    private boolean verifyItemPositionSetZ(FurnitureDefinition item, RoomTile tile, Position currentPosition, int rotation) {
+    private boolean verifyItemPositionSetZ(FurnitureDefinition item, RoomTile tile, Position currentPosition, int rotation, Player player) {
         if (tile != null) {
             if (currentPosition != null && currentPosition.getX() == tile.getPosition().getX() && currentPosition.getY() == tile.getPosition().getY())
                 return true;
@@ -720,7 +720,7 @@ public class ItemsComponent {
 
             for (AffectedTile affectedTile : affectedTiles) {
                 RoomTile roomTile = getRoom().getMapping().getTile(affectedTile.x, affectedTile.y);
-                if (roomTile != null && !verifyItemTilePositionSetz(roomTile))
+                if (roomTile != null && !verifyItemTilePositionSetz(roomTile, player))
                     return false;
             }
         } else {
@@ -729,8 +729,8 @@ public class ItemsComponent {
         return true;
     }
 
-    private boolean verifyItemTilePositionSetz(RoomTile tile) {
-        return tile.canPlaceItemHere();
+    private boolean verifyItemTilePositionSetz(RoomTile tile, Player player) {
+        return true;
     }
 
 
@@ -808,7 +808,7 @@ public class ItemsComponent {
             return;
         }
 
-        double height = player.getItemPlacementHeight() >= 0 ? player.getItemPlacementHeight() : tile.getStackHeight();
+        double height = tile.getStackHeight();
         rot = player.getItemPlacementRotation() >= 0 ? player.getItemPlacementRotation() : rot;
         String data;
 
@@ -825,8 +825,7 @@ public class ItemsComponent {
 
         if (player.getEntity() != null) {
             if (player.getEntity().setzok) {
-                if(!verifyItemPositionSetZ(item.getDefinition(), tile, null, rot)){
-                    System.out.println("Erro 1");
+                if(!verifyItemPositionSetZ(item.getDefinition(), tile, null, rot, player)){
                     return;
                 }
             } else if (!verifyItemPosition(item.getDefinition(), null, tile, null, rot)) {

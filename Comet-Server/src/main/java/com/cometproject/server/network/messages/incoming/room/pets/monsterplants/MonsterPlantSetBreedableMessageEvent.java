@@ -27,10 +27,6 @@ public class MonsterPlantSetBreedableMessageEvent implements Event {
             if(plantData.getOwnerId() != client.getPlayer().getId())
                 return;
 
-            IGroup group = client.getPlayer().getRPGroup();
-
-            if (group == null || !client.getPlayer().getGroups().contains(group.getId()))
-                return;
 
             int seedReward;
             seedReward = plantData.getRarity();
@@ -38,9 +34,6 @@ public class MonsterPlantSetBreedableMessageEvent implements Event {
             if(seedReward == 0){
                 seedReward = 1;
             }
-
-            group.getData().setCurrency(seedReward);
-            GameContext.getCurrent().getGroupService().saveGroupData(group.getData());
 
             client.getPlayer().sendBubble("seed_reward", Locale.getOrDefault("seed.sold",
                     "Acabas de vender una %name% en el mercado negro, tu mafia obtiene %value% en Dinero Negro, recibes una comisión de 1 Koin por tu trabajo realizado.")

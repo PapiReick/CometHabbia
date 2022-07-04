@@ -28,7 +28,6 @@ public class ManageGroupMessageComposer extends MessageComposer {
         msg.writeInt(group.getId());
         msg.writeString(group.getData().getTitle());
         msg.writeString(group.getData().getDescription());
-        msg.writeString(group.getData().getTag());
         msg.writeInt(1);
         msg.writeInt(group.getData().getColourA());
         msg.writeInt(group.getData().getColourB());

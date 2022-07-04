@@ -19,7 +19,6 @@ public class SubscriptionComponent extends PlayerComponent implements SubsCompon
 
     public SubscriptionComponent(IPlayer player) {
         super(player);
-
         this.load();
     }
 
@@ -27,19 +26,16 @@ public class SubscriptionComponent extends PlayerComponent implements SubsCompon
         this.expire = this.getExpireFromDao();
         this.start = this.getStartFromDao();
         this.presents = this.getPresentsFromDao();
-
         this.hasSub = this.isValid();
     }
 
     @Override
     public void add(int days) {
-        if(this.hasSub) {
+        if (this.hasSub) {
             SubscriptionDao.renewSubscription(this.player.getId(), this.getExpire() + 86400 * days);
+        } else {
+            SubscriptionDao.addSubscription(this.player.getId(), (int)Comet.getTime() + 86400 * days);
         }
-        else {
-            SubscriptionDao.addSubscription(player.getId(), (int)Comet.getTime() + 86400 * days);
-        }
-
         this.load();
     }
 
@@ -70,7 +66,7 @@ public class SubscriptionComponent extends PlayerComponent implements SubsCompon
 
     @Override
     public boolean isValid() {
-        return this.getExpire() >= Comet.getTime();
+        return (long)this.getExpire() >= Comet.getTime();
     }
 
     public boolean exists() {
@@ -89,37 +85,40 @@ public class SubscriptionComponent extends PlayerComponent implements SubsCompon
         return this.presents;
     }
 
-    public void decrementPresents(int playerId){
-        this.presents--;
+    public void decrementPresents(int playerId) {
+        --this.presents;
         SubscriptionDao.decrementPresents(playerId, this.presents);
     }
 
-    public int getTimeLeft(){
-        return this.getExpire() - (int) Comet.getTime();
+    public int getTimeLeft() {
+        return this.getExpire() - (int)Comet.getTime();
     }
 
-    public int getDaysLeft(){
-        return (this.getTimeLeft() / 86400);
+    public int getDaysLeft() {
+        return this.getTimeLeft() / 86400;
     }
 
-    public int getYearsLeft(){
-        return (int) Math.floor(this.getDaysLeft() / 365);
+    public int getYearsLeft() {
+        return (int)Math.floor(this.getDaysLeft() / 365);
     }
 
-    public int getMinutesLeft(){
-        return (int) Math.ceil(this.getTimeLeft() / 60.0);
+    public int getMinutesLeft() {
+        return (int)Math.ceil((double)this.getTimeLeft() / 60.0);
     }
 
     public int getExpireFromDao() {
         return SubscriptionDao.getExpireTime(this.player.getId());
     }
 
-    public int getStartFromDao() { return SubscriptionDao.getStartTime(this.player.getId()); }
+    public int getStartFromDao() {
+        return SubscriptionDao.getStartTime(this.player.getId());
+    }
 
     public int getPresentsFromDao() {
         return SubscriptionDao.getPresents(this.player.getId());
     }
 
+    @Override
     public IPlayer getPlayer() {
         return this.player;
     }

@@ -15,16 +15,6 @@ public class GroupData implements IGroupData {
     private int id;
 
     /**
-     * The category of the group
-     */
-    private int category;
-
-    /**
-     * The currency of the group
-     */
-    private int currency;
-
-    /**
      * The title of the group
      */
     private String title;
@@ -33,11 +23,6 @@ public class GroupData implements IGroupData {
      * The description of the group
      */
     private String description;
-
-    /**
-     * The tag of the group
-     */
-    private String tag;
 
     /**
      * The badge image created by the group owner
@@ -91,12 +76,10 @@ public class GroupData implements IGroupData {
      */
     private PlayerAvatar ownerAvatar;
 
-    public GroupData(int id, int category, String title, String description, String tag, String badge, int ownerId, String ownerName, int roomId, int created, GroupType type, int colourA, int colourB, boolean canMembersDecorate, boolean hasForum, int currency, PlayerAvatar playerAvatar) {
+    public GroupData(int id, String title, String description, String badge, int ownerId, String ownerName, int roomId, int created, GroupType type, int colourA, int colourB, boolean canMembersDecorate, boolean hasForum, PlayerAvatar playerAvatar) {
         this.id = id;
-        this.category = category;
         this.title = title;
         this.description = description;
-        this.tag = tag;
         this.badge = badge;
         this.ownerId = ownerId;
         this.roomId = roomId;
@@ -106,7 +89,6 @@ public class GroupData implements IGroupData {
         this.colourB = colourB;
         this.canMembersDecorate = canMembersDecorate;
         this.hasForum = hasForum;
-        this.currency = currency;
         this.ownerAvatar = playerAvatar;
     }
 
@@ -157,51 +139,6 @@ public class GroupData implements IGroupData {
     }
 
     /**
-     * Get the CATEGORY of the group
-     *
-     * @return The CATEGORY of the group
-     */
-    @Override
-    public int getCategory() {
-        return this.category;
-    }
-
-    /**
-     * Set the CATEGORY of the group
-     *
-     * @param category The CATEGORY of the group
-     */
-    @Override
-    public void setCategory(int category) {
-        this.category = category;
-    }
-
-    /**
-     * Get the CURRENCY of the group
-     *
-     * @return The CURRENCY of the group
-     */
-    @Override
-    public int getCurrency() {
-        return this.currency;
-    }
-
-    /**
-     * Set the CATEGORY of the group
-     *
-     * @param currency The CATEGORY of the group
-     */
-    @Override
-    public void setCurrency(int currency) {
-        this.currency += currency;
-    }
-
-    @Override
-    public void resetCurrency() {
-        this.currency = 0;
-    }
-
-    /**
      * Get the title of the group
      *
      * @return The title of the group
@@ -239,21 +176,6 @@ public class GroupData implements IGroupData {
     @Override
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    @Override
-    public String getTag() {
-        return this.tag;
-    }
-
-    /**
-     * Set the title of the group
-     *
-     * @param tag The title of the group
-     */
-    @Override
-    public void setTag(String tag) {
-        this.tag = tag;
     }
 
     /**

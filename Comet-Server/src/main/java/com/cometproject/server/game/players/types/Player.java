@@ -681,23 +681,6 @@ public class Player implements IPlayer {
     }
 
     @Override
-    public IGroup getRPGroup(){
-        if(groups != null) {
-            for (int id : groups) {
-                IGroup groupCheck = GameContext.getCurrent().getGroupService().getGroup(id);
-
-                if (groupCheck != null) {
-                    if (groupCheck.getData().getCategory() == 2 || groupCheck.getData().getCategory() == 3) {
-                        return groupCheck;
-                    }
-                }
-            }
-        }
-
-        return null;
-    }
-
-    @Override
     public int getNotifCooldown() {
         return this.notifCooldown;
     }

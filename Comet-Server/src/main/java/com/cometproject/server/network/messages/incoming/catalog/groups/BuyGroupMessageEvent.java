@@ -68,8 +68,8 @@ public class BuyGroupMessageEvent implements Event {
 
         final IGroupItemService itemService = GameContext.getCurrent().getGroupService().getItemService();
 
-        final IGroupData groupData = new GroupDataFactory().create(name, client.getPlayer().getGroupCreationType(), desc, "[TAG]", badge, client.getPlayer().getId(),
-                client.getPlayer().getData().getUsername(), roomId, colour1, colour2, client.getPlayer().getData());
+        final IGroupData groupData = new GroupDataFactory().create(name, desc, badge, client.getPlayer().getId(), client.getPlayer().getData().getUsername(), roomId, colour1, colour2, client.getPlayer().getData());
+
         final IGroup group = GameContext.getCurrent().getGroupService().createGroup(groupData, client.getPlayer().getId());
 
 //        group.getMembers().createMembership(new GroupMemberFactory().create(client.getPlayer().getId(), group.getId(), GroupAccessLevel.OWNER));*/

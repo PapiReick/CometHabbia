@@ -4,7 +4,6 @@ import com.cometproject.api.game.GameContext;
 import com.cometproject.api.game.groups.types.IGroup;
 import com.cometproject.api.game.groups.types.components.membership.GroupAccessLevel;
 import com.cometproject.api.game.groups.types.components.membership.IGroupMember;
-import com.cometproject.server.composers.group.GroupEditErrorMessageComposer;
 import com.cometproject.server.game.rooms.RoomManager;
 import com.cometproject.server.game.rooms.types.Room;
 import com.cometproject.server.network.messages.incoming.Event;
@@ -12,45 +11,40 @@ import com.cometproject.server.network.messages.outgoing.room.engine.RoomDataMes
 import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.protocol.messages.MessageEvent;
 
-
-public class ModifyGroupTitleMessageEvent implements Event {
+public class ModifyGroupTitleMessageEvent
+        implements Event {
     @Override
     public void handle(Session client, MessageEvent msg) throws Exception {
-        if(client.getPlayer().antiSpam(getClass().getName(), 0.5))
+        if (client.getPlayer().antiSpam(this.getClass().getName(), 0.5)) {
             return;
-
+        }
         int groupId = msg.readInt();
         String title = msg.readString();
         String description = msg.readString();
-        String tag = msg.readString();
-        boolean canTag = client.getPlayer().getSubscription().isValid();
 
-        if (!client.getPlayer().getGroups().contains(groupId))
+        if (!client.getPlayer().getGroups().contains(groupId)) {
             return;
+        }
 
         IGroup group = GameContext.getCurrent().getGroupService().getGroup(groupId);
 
-        if (group == null)
+        if (group == null) {
             return;
+        }
 
-        IGroupMember groupMember = group.getMembers().getAll().get(client.getPlayer().getId());
+        IGroupMember groupMember = (IGroupMember)group.getMembers().getAll().get(client.getPlayer().getId());
 
-        if (groupMember.getAccessLevel() != GroupAccessLevel.OWNER)
+        if (groupMember.getAccessLevel() != GroupAccessLevel.OWNER) {
             return;
+        }
 
         group.getData().setTitle(title);
         group.getData().setDescription(description);
-        group.getData().setTag(canTag ? tag : "");
-
-        if(!canTag && !(tag.isEmpty() || tag.contains("[TAG]"))){
-            client.send(new GroupEditErrorMessageComposer(2));
-        }
 
         GameContext.getCurrent().getGroupService().saveGroupData(group.getData());
 
         if (RoomManager.getInstance().isActive(group.getData().getRoomId())) {
             Room room = RoomManager.getInstance().get(group.getData().getRoomId());
-
             room.getEntities().broadcastMessage(new RoomDataMessageComposer(room));
         }
     }

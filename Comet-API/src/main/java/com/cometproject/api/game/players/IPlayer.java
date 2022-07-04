@@ -103,8 +103,6 @@ public interface IPlayer {
 
     Set<Integer> getGroups();
 
-    IGroup getRPGroup();
-
     int getNotifCooldown();
 
     void setNotifCooldown(int notifCooldown);

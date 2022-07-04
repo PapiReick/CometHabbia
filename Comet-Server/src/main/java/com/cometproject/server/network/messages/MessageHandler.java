@@ -623,8 +623,8 @@ public final class MessageHandler {
                         }
 
                         if(CometSettings.console_debugging) {
-                            System.out.println("Receive: [" + header + "][" + event.getClass().getSimpleName() + "][" + message.toString() + "]");
-                            client.getLogger().error("Receive: [" + header + "][" + event.getClass().getSimpleName() + "][" + message.toString() + "]");
+                            //System.out.println("Receive: [" + header + "][" + event.getClass().getSimpleName() + "][" + message.toString() + "]");
+                            client.getLogger().info("Receive: [" + header + "][" + event.getClass().getSimpleName() + "][" + message.toString() + "]");
                         }
 
                         LOGGER.debug("Finished packet process for packet: [" + event.getClass().getSimpleName() + "][" + header + "] in " + ((System.currentTimeMillis() - start)) + "ms");

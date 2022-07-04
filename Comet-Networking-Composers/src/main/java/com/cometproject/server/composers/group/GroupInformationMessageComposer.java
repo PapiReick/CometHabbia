@@ -37,7 +37,6 @@ public class GroupInformationMessageComposer extends MessageComposer {
         msg.writeInt(group.getId());
         msg.writeBoolean(true); //is visible
         msg.writeInt(group.getData().getType().getTypeId());
-        msg.writeInt(group.getData().getCategory()); // CUSTOM STRUCTURE
         msg.writeString(group.getData().getTitle());
         msg.writeString(group.getData().getDescription());
         msg.writeString(group.getData().getBadge());
@@ -45,7 +44,6 @@ public class GroupInformationMessageComposer extends MessageComposer {
         msg.writeString(roomData == null ? "Unknown Room" : roomData.getName());
         msg.writeInt(membership);
         msg.writeInt(group.getMembers().getAll().size());
-        msg.writeInt(group.getData().getCurrency()); // CUSTOM STRUCTURE
         msg.writeBoolean(false);
         msg.writeString(getDate(group.getData().getCreatedTimestamp()));
         msg.writeBoolean(isOwner);

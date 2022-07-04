@@ -266,7 +266,6 @@ public class PlayerLoginRequest implements CometTask {
     }
 
     public void clearSessions() {
-        System.out.println(NetworkManager.getInstance().getSessions().getSessions().size());
         for (ISession session : NetworkManager.getInstance().getSessions().getSessions().values()) {
             if (session.getPlayer() == null) {
                 if ((int) Comet.getTime() > session.getLoginAt() + 180) {

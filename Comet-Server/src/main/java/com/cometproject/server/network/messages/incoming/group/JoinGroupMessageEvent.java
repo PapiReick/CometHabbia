@@ -37,19 +37,6 @@ public class JoinGroupMessageEvent implements Event {
             return;
         }
 
-        if(group.getData().getCategory() == 3 || group.getData().getCategory() == 4) {
-            for (int id : client.getPlayer().getGroups()) {
-                IGroup groupCheck = GameContext.getCurrent().getGroupService().getGroup(id);
-
-                if(groupCheck != null){
-                    if(groupCheck.getData().getCategory() == 3 || groupCheck.getData().getCategory() == 4){
-                        client.getPlayer().sendBubble("already_mafia", "Ya perteneces a una mafia o pandilla, por favor sal de ella antes de formar parte de otra.");
-                        return;
-                    }
-                }
-            }
-        }
-
         if (group.getData().getType() == GroupType.REGULAR) {
             if (client.getPlayer().getData().getFavouriteGroup() == 0) {
                 client.getPlayer().getData().setFavouriteGroup(groupId);

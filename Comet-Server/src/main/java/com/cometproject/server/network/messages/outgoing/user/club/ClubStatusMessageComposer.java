@@ -21,42 +21,30 @@ public class ClubStatusMessageComposer extends MessageComposer {
 
     @Override
     public void compose(IComposer msg) {
-
-        int timeLeft = this.subscriptionComponent.getTimeLeft();
-        long timeLeftLong = timeLeft * 1000;
-
-        int days = this.subscriptionComponent.getDaysLeft();
-        int years = this.subscriptionComponent.getYearsLeft();
-        int minutes = this.subscriptionComponent.getMinutesLeft();
-
-        minutes = Math.max(minutes, 0);
-
-        //System.out.println("SUBSCRIPTION DATA:\nDAYS: " + days + "\nMINUTES: " + minutes + "\nYEARS:" + years + "\nTIMELEFT: " + timeLeft + "\n");
-
+        int timeLeft = 0;
+        int days = 0;
         int months = 0;
 
-        if (days > 31) {
-            months = (int) Math.floor(days / 31);
-            days = days - (months * 31);
-        }
-
-        months = days / 31;
-         /*else {
+        if (subscriptionComponent.isValid()) {
+            timeLeft = subscriptionComponent.getExpire() - (int) Comet.getTime();
+            days = (int) Math.ceil(timeLeft / 86400);
+            months = days / 31;
+        } else {
             if (subscriptionComponent.exists()) {
                 subscriptionComponent.delete();
             }
-        }*/
+        }
 
         msg.writeString("habbo_club");
 
-        msg.writeInt(this.subscriptionComponent.isValid() ? days : 0);
+        msg.writeInt(subscriptionComponent.isValid() ? days : 1);
+        msg.writeInt(2);
+        msg.writeInt(subscriptionComponent.isValid() ? months : 1);
+        msg.writeInt(1);
+        msg.writeBoolean(subscriptionComponent.isValid());
+        msg.writeBoolean(true);
         msg.writeInt(0);
-        msg.writeInt(0);
-        msg.writeInt(0);
-        msg.writeBoolean(this.subscriptionComponent.isValid());
-        msg.writeBoolean(this.subscriptionComponent.isValid());
-        msg.writeInt(this.subscriptionComponent.isValid() ? 1 : 0);
-        msg.writeInt(minutes);
-        msg.writeInt((int)timeLeftLong);
+        msg.writeInt(subscriptionComponent.isValid() ? days : 1);
+        msg.writeInt(subscriptionComponent.isValid() ? days : 1);
     }
 }

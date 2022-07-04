@@ -7,16 +7,6 @@ public interface IGroupData {
 
     void setId(int id);
 
-    int getCategory();
-
-    void setCategory(int category);
-
-    int getCurrency();
-
-    void resetCurrency();
-
-    void setCurrency(int currency);
-
     String getTitle();
 
     void setTitle(String title);
@@ -24,10 +14,6 @@ public interface IGroupData {
     String getDescription();
 
     void setDescription(String description);
-
-    String getTag();
-
-    void setTag(String tag);
 
     int getOwnerId();
 
