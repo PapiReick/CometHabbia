@@ -12,6 +12,7 @@ import com.cometproject.server.game.rooms.types.components.games.RoomGame;
 import com.cometproject.server.game.rooms.types.components.games.survival.SurvivalGame;
 import com.cometproject.server.game.rooms.types.components.games.survival.types.SurvivalPlayer;
 import com.cometproject.server.game.rooms.types.components.games.survival.types.SurvivalQueue;
+import com.cometproject.server.network.NetworkManager;
 import com.cometproject.server.network.messages.outgoing.notification.LogoutMessageComposer;
 import com.cometproject.server.network.messages.outgoing.room.avatar.AvatarUpdateMessageComposer;
 import com.cometproject.server.network.messages.outgoing.room.items.UpdateFloorItemMessageComposer;
@@ -111,7 +112,6 @@ public class Session implements ISession {
     }
 
     public void disconnect() {
-        getLogger().info("{} disconnected.", this.player.getData().getUsername());
         this.onDisconnect();
 
         this.getChannel().disconnect();
