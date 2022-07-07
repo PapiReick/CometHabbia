@@ -111,6 +111,7 @@ public class Session implements ISession {
     }
 
     public void disconnect() {
+        getLogger().info("{} disconnected.", this.player.getData().getUsername());
         this.onDisconnect();
 
         this.getChannel().disconnect();

@@ -16,9 +16,9 @@ import java.util.Map;
 
 public class AvatarUpdateMessageComposer extends MessageComposer {
 
-    private int count;
-    private AvatarState singleEntity;
-    private List<AvatarState> entities;
+    private final int count;
+    private final AvatarState singleEntity;
+    private final List<AvatarState> entities;
 
     public AvatarUpdateMessageComposer(final Collection<RoomEntity> entities) {
         this.entities = Lists.newArrayList();
@@ -77,12 +77,12 @@ public class AvatarUpdateMessageComposer extends MessageComposer {
         msg.writeString(entity.getStatusString());
     }
 
-    private class AvatarState {
-        private int id;
-        private Position position;
-        private int headRotation;
-        private int bodyRotation;
-        private String statusString;
+    private static class AvatarState {
+        private final int id;
+        private final Position position;
+        private final int headRotation;
+        private final int bodyRotation;
+        private final String statusString;
 
         public AvatarState(RoomEntity entity) {
             this.id = entity.getId();

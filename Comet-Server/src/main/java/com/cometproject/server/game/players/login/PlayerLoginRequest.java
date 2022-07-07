@@ -7,6 +7,7 @@ import com.cometproject.api.game.achievements.types.AchievementType;
 import com.cometproject.api.networking.sessions.ISession;
 import com.cometproject.server.boot.Comet;
 import com.cometproject.server.config.Locale;
+import com.cometproject.server.game.GameCycle;
 import com.cometproject.server.game.moderation.BanManager;
 import com.cometproject.server.game.moderation.ModerationManager;
 import com.cometproject.server.game.moderation.types.BanType;
@@ -41,6 +42,8 @@ import com.cometproject.server.storage.queries.player.PlayerDao;
 import com.cometproject.server.tasks.CometTask;
 import com.cometproject.server.tasks.CometThreadManager;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.util.concurrent.TimeUnit;
@@ -254,9 +257,7 @@ public class PlayerLoginRequest implements CometTask {
                 }
             }
 
-            if(client.getPlayer().getData().getUsername().equals("Rawx")) {
-                client.getPlayer().setLogsClientStaff(true);
-            }
+            player.getSession().getLogger().info("{} logged in from IP {}", player.getData().getUsername(), player.getData().getIpAddress());
 
             player.setSsoTicket(this.ticket);
             PlayerManager.getInstance().getSsoTicketToPlayerId().put(this.ticket, player.getId());
