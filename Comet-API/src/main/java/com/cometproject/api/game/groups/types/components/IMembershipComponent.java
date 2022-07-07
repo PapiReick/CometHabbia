@@ -15,6 +15,8 @@ public interface IMembershipComponent extends GroupComponent {
 
     boolean hasMembership(final int playerId);
 
+    boolean hasAdminPerm(final int playerId);
+
     Map<Integer, IGroupMember> getAll();
 
     List<IGroupMember> getMembersAsList();

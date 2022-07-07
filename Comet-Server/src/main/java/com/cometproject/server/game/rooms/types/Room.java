@@ -156,7 +156,7 @@ public class Room implements Attributable, IRoom {
     public RoomDataObject getCacheObject() {
         final List<FloorItemDataObject> floorItems = new ArrayList<>();
         final List<WallItemDataObject> wallItems = new ArrayList<>();
-        final List<Integer> rights = new ArrayList<>();
+
         final List<IPetData> petData = new ArrayList<>();
         final List<IBotData> botData = new ArrayList<>();
 
@@ -176,7 +176,7 @@ public class Room implements Attributable, IRoom {
             }
         }
 
-        rights.addAll(this.rights.getAll());
+        final List<Integer> rights = new ArrayList<>(this.rights.getAll());
 
         for (PetEntity petEntity : this.getEntities().getPetEntities()) {
             if (petEntity.getData() != null) {

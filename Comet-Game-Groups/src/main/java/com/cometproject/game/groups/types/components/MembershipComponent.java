@@ -47,13 +47,14 @@ public class MembershipComponent implements IMembershipComponent {
         // Not implemented yet, might be revisited when module api for messenger is fleshed out, this won't be needed
     }
 
-    public void getAvatars(int type) {
-
-    }
-
     @Override
     public boolean hasMembership(int playerId) {
         return this.groupMembers.containsKey(playerId);
+    }
+
+    @Override
+    public boolean hasAdminPerm(int playerId) {
+        return this.administrators.contains(playerId);
     }
 
     @Override

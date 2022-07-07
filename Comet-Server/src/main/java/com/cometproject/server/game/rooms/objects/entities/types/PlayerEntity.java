@@ -31,6 +31,7 @@ import com.cometproject.server.game.rooms.objects.entities.PlayerEntityAccess;
 import com.cometproject.server.game.rooms.objects.entities.RoomEntity;
 import com.cometproject.server.game.rooms.objects.entities.types.ai.bots.QuestAI;
 import com.cometproject.server.game.rooms.objects.entities.types.ai.bots.WaiterAI;
+import com.cometproject.server.game.rooms.objects.entities.types.enums.RoomControllerLevel;
 import com.cometproject.server.game.rooms.objects.items.RoomItemFloor;
 import com.cometproject.server.game.rooms.objects.items.types.floor.wired.triggers.WiredTriggerCollision;
 import com.cometproject.server.game.rooms.objects.items.types.floor.wired.triggers.WiredTriggerPlayerSaysKeyword;
@@ -240,33 +241,13 @@ public class PlayerEntity extends RoomEntity implements PlayerEntityAccess, Attr
             session.send(new RoomPropertyMessageComposer(decoration.getKey(), decoration.getValue()));
         }
 
-        int accessLevel = 0;
+        int accessLevel = this.getControllerLevel().getLevel();
 
         if (this.getRoom().getData().getOwnerId() == this.getPlayerId() || this.getPlayer().getPermissions().getRank().roomFullControl()) {
-            this.addStatus(RoomEntityStatus.CONTROLLER, "useradmin");
             session.send(new YouAreOwnerMessageComposer());
-            accessLevel = 4;
-        } else if (this.getRoom().getRights().hasRights(this.getPlayerId())) {
-            accessLevel = 1;
-        } else if(this.getRoom().getGroup() != null){
-            if(session.getPlayer().getGroups().contains(this.getRoom().getGroup().getId())){
-                IGroup group = this.getRoom().getGroup();
-                IGroupMember groupMember = group.getMembers().getAll().get(playerId);
-
-                if (groupMember != null) {
-                    if (group.getData().canMembersDecorate())
-                        accessLevel = 2;
-
-                    if (groupMember.getAccessLevel().isAdmin())
-                        accessLevel = 3;
-                }
-            }
         }
 
-        if(accessLevel != 4 && accessLevel != 0){
-            this.addStatus(RoomEntityStatus.CONTROLLER, accessLevel + "");
-        }
-
+        this.addStatus(RoomEntityStatus.CONTROLLER, Integer.toString(accessLevel));
         session.send(new YouAreControllerMessageComposer(accessLevel));
 
         boolean isSpectating = this.getPlayer().isSpectating(this.getRoom().getId());
@@ -274,6 +255,8 @@ public class PlayerEntity extends RoomEntity implements PlayerEntityAccess, Attr
         if (!isSpectating) {
             if (this.getRoom().getData().getRequiredBadge() != null) {
                 if (!this.getPlayer().getInventory().hasBadge(this.getRoom().getData().getRequiredBadge())) {
+                    isSpectating = true;
+                } else if (this.getPlayer().getInventory().getBadges().get(this.getRoom().getData().getRequiredBadge()) == 0) {
                     isSpectating = true;
                 }
             }
@@ -305,6 +288,7 @@ public class PlayerEntity extends RoomEntity implements PlayerEntityAccess, Attr
         this.getPlayer().setSpectatorRoomId(0);
         this.getPlayer().getAchievements().progressAchievement(AchievementType.ACH_48, 1);
     }
+
 
     public boolean canRateRoom() {
         return !this.getRoom().getRatings().contains(this.getPlayerId());
@@ -833,6 +817,21 @@ public class PlayerEntity extends RoomEntity implements PlayerEntityAccess, Attr
 
     public boolean hasRights() {
         return this.getRoom().getRights().hasRights(this.playerId);
+    }
+
+    public RoomControllerLevel getControllerLevel() {
+        if (this.getPlayer().getPermissions().getRank().roomFullControl()) {
+            return RoomControllerLevel.MODERATOR;
+        }else if (this.getRoom().getData().getOwnerId() == this.getPlayerId()) {
+            return RoomControllerLevel.ROOM_OWNER;
+        } else if(this.getRoom().getGroup() != null && this.getRoom().getGroup().getMembers().hasAdminPerm(this.getPlayerId())) {
+            return RoomControllerLevel.GUILD_ADMIN;
+        } else if(this.getRoom().getGroup() != null && this.getRoom().getGroup().getMembers().hasMembership(this.getPlayerId())) {
+            return RoomControllerLevel.GUILD_MEMBER;
+        } else if (this.getRoom().getRights().hasRights(this.getPlayerId())) {
+            return RoomControllerLevel.GUEST;
+        }
+        return RoomControllerLevel.NONE;
     }
 
     public boolean isBuilderFillFloor() {
