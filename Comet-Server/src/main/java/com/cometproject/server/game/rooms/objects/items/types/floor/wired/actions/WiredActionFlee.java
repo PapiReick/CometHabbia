@@ -56,8 +56,7 @@ public class WiredActionFlee extends WiredActionItem {
             return;
         }
 
-        for (Iterator localIterator = getWiredData().getSelectedIds().iterator(); localIterator.hasNext(); ) {
-            long itemId = (Long) localIterator.next();
+        for (long itemId : getWiredData().getSelectedIds()) {
             RoomItemFloor floorItem = getRoom().getItems().getFloorItem(itemId);
 
             if (floorItem == null) {
