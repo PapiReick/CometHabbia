@@ -55,7 +55,7 @@ public class AboutCommand extends ChatCommand {
         about.append("µ Leon.\n\n");
         about.append("Also thanks and special mention to Kev, Anis, Ken, Xdr, Finn, Carlos D, Beny, Laynester, NGH, LittleJ, for making this community a better place and helping in any way to make this possible.\n\n");
 
-        about.append("Licensed to HABBIA.\n\n");
+        about.append("Licensed to %hotel%.\n\n".replace("%hotel%", CometSettings.hotelName));
 
         about.append("Hotel Records:\n");
         about.append("Online record - " + GameCycle.getInstance().getOnlineRecord() + "\n");

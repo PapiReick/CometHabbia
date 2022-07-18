@@ -22,7 +22,7 @@ public class HelpCommand extends ChatCommand {
             client.send(new MassEventMessageComposer("help/tour"));
             client.getPlayer().setLastCFH(time);
 
-            String messageToClient = "El usuario **" + client.getPlayer().getEntity().getUsername() + "** está solicitando ayuda de un Staff. `:Follow " + client.getPlayer().getEntity().getUsername() + "` para seguir a este jugador.";
+            /*String messageToClient = "El usuario **" + client.getPlayer().getEntity().getUsername() + "** está solicitando ayuda de un Staff. `:Follow " + client.getPlayer().getEntity().getUsername() + "` para seguir a este jugador.";
 
             try {
                 DiscordClient dcClient = new DiscordClient("https://discord.com/api/webhooks/930300436454457424/KZfuyxHJWLNHXky2myhlwvEqQ8o3S9PX5ox8y1HQeYipp8Ki-7TjdxTi1Fkd4AYe_XAR");
@@ -34,7 +34,8 @@ public class HelpCommand extends ChatCommand {
                 client.send(new WhisperMessageComposer(client.getPlayer().getEntity().getId(), "Acabas de enviar un Ticket a los Soportes del Hotel, pronto te atenderan!", 2));
             } catch (IOException e) {
                 e.printStackTrace();
-            }
+            }*/
+            client.send(new WhisperMessageComposer(client.getPlayer().getEntity().getId(), "Acabas de enviar un Ticket a los Soportes del Hotel, pronto te atenderan!", 2));
             return;
         }
 
