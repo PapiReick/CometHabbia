@@ -1,5 +1,6 @@
 package com.cometproject.server.game.rooms.types.components.games.freeze;
 
+import com.cometproject.server.game.players.types.PlayerAvatarActions;
 import com.cometproject.server.game.rooms.objects.entities.RoomEntity;
 import com.cometproject.server.game.rooms.objects.entities.effects.PlayerEffect;
 import com.cometproject.server.game.rooms.objects.entities.types.PlayerEntity;
@@ -8,6 +9,9 @@ import com.cometproject.server.game.rooms.objects.items.types.floor.games.freeze
 import com.cometproject.server.game.rooms.objects.items.types.floor.games.freeze.FreezeExitFloorItem;
 import com.cometproject.server.game.rooms.objects.items.types.floor.games.freeze.FreezeTileFloorItem;
 import com.cometproject.server.game.rooms.objects.items.types.floor.games.freeze.FreezeTimerFloorItem;
+import com.cometproject.server.game.rooms.objects.items.types.floor.wired.highscore.HighscoreClassicFloorItem;
+import com.cometproject.server.game.rooms.objects.items.types.floor.wired.triggers.WiredTriggerGameEnds;
+import com.cometproject.server.game.rooms.objects.items.types.floor.wired.triggers.WiredTriggerGameStarts;
 import com.cometproject.server.game.rooms.types.Room;
 import com.cometproject.server.game.rooms.types.components.games.GameTeam;
 import com.cometproject.server.game.rooms.types.components.games.GameType;
@@ -20,6 +24,7 @@ import com.cometproject.server.network.messages.outgoing.room.avatar.ActionMessa
 import com.cometproject.server.network.messages.outgoing.room.freeze.UpdateFreezeLivesMessageComposer;
 import com.cometproject.server.utilities.Direction;
 import com.cometproject.server.utilities.RandomUtil;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
@@ -63,7 +68,7 @@ public class FreezeGame extends RoomGame {
 
         for (FreezeBall freezeBall : this.activeBalls) {
             if (freezeBall.getTicksUntilExplode() == FreezeBall.START_TICKS) {
-                freezeBall.getSource().tempState(freezeBall.isMega() ? 6000 : (freezeBall.getRange() <= 4 ? freezeBall.getRange() : 4) * 1000);
+                freezeBall.getSource().tempState(freezeBall.isMega() ? 6000 : (Math.min(freezeBall.getRange(), 4)) * 1000);
             }
 
             if (freezeBall.getTicksUntilExplode() > 0) {
@@ -126,6 +131,7 @@ public class FreezeGame extends RoomGame {
 
                                     entity.cancelWalk();
                                     entity.setCanWalk(false);
+                                    playerEntity.getPlayer().getSession().send(new UpdateFreezeLivesMessageComposer(playerEntity.getId(), freezePlayer.getLives()));
                                 }
                             }
                         }
@@ -178,9 +184,27 @@ public class FreezeGame extends RoomGame {
         final FreezeExitFloorItem exitItem = this.getExitTile();
 
         if (winningTeam != null) {
+            final List<HighscoreClassicFloorItem> scoreboards = this.room.getItems().getByClass(HighscoreClassicFloorItem.class);
+
+            if (scoreboards.size() != 0) {
+                List<Integer> winningPlayers = this.room.getGame().getTeams().get(winningTeam);
+                List<String> winningPlayerUsernames = Lists.newArrayList();
+                final int score = this.getGameComponent().getScore(winningTeam);
+
+                for (int playerId : winningPlayers) {
+                    winningPlayerUsernames.add(this.room.getEntities().getEntityByPlayerId(playerId).getUsername());
+                }
+
+                if (winningPlayerUsernames.size() != 0) {
+                    for (HighscoreClassicFloorItem scoreboard : scoreboards) {
+                        scoreboard.addEntry(winningPlayerUsernames, score);
+                    }
+                }
+            }
+
             for (FreezePlayer freezePlayer : this.players.values()) {
                 if (freezePlayer.getEntity().getGameTeam() == winningTeam) {
-                    this.room.getEntities().broadcastMessage(new ActionMessageComposer(freezePlayer.getEntity().getId(), 1)); // wave o/
+                    this.room.getEntities().broadcastMessage(new ActionMessageComposer(freezePlayer.getEntity().getId(), PlayerAvatarActions.EXPRESSION_WAVE.getValue())); // wave o/
                 }
             }
         }
@@ -241,6 +265,7 @@ public class FreezeGame extends RoomGame {
 
     @Override
     public void onGameStarts() {
+        WiredTriggerGameStarts.executeTriggers(this.room);
         this.activeBalls.clear();
 
         // Everyone starts with 40 points & 3 lives.
@@ -289,6 +314,7 @@ public class FreezeGame extends RoomGame {
         // reset all scores to 0
         this.activeBalls.clear();
         this.getGameComponent().resetScores(true);
+        WiredTriggerGameEnds.executeTriggers(this.room);
     }
 
     private FreezeExitFloorItem getExitTile() {

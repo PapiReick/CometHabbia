@@ -1,6 +1,7 @@
 package com.cometproject.server.game.rooms.types.components.games.banzai;
 
 import com.cometproject.api.game.achievements.types.AchievementType;
+import com.cometproject.server.game.players.types.PlayerAvatarActions;
 import com.cometproject.server.game.rooms.objects.entities.RoomEntity;
 import com.cometproject.server.game.rooms.objects.entities.RoomEntityType;
 import com.cometproject.server.game.rooms.objects.entities.types.PlayerEntity;
@@ -32,7 +33,7 @@ public class BanzaiGame extends RoomGame {
     @Override
     public void tick() {
         if (this.startBanzaiTileCount != 0 && this.banzaiTileCount == 0) {
-            // vvb the game!
+            // Stop the game!
             this.timer = this.gameLength;
         }
 
@@ -93,6 +94,7 @@ public class BanzaiGame extends RoomGame {
         if (scoreboards.size() != 0) {
             List<Integer> winningPlayers = this.room.getGame().getTeams().get(this.winningTeam());
             List<String> winningPlayerUsernames = Lists.newArrayList();
+            final int score = this.getScore(winningTeam);
 
             for (int playerId : winningPlayers) {
                 winningPlayerUsernames.add(this.room.getEntities().getEntityByPlayerId(playerId).getUsername());
@@ -111,7 +113,7 @@ public class BanzaiGame extends RoomGame {
 
                 if (this.getGameComponent().getTeam(playerEntity.getPlayerId()).equals(winningTeam) && winningTeam != GameTeam.NONE) {
                     playerEntity.getPlayer().getAchievements().progressAchievement(AchievementType.ACH_11, 1);
-                    this.room.getEntities().broadcastMessage(new ActionMessageComposer(playerEntity.getId(), 1)); // wave o/
+                    this.room.getEntities().broadcastMessage(new ActionMessageComposer(playerEntity.getId(), PlayerAvatarActions.EXPRESSION_WAVE.getValue())); // wave o/
                 }
             }
         }

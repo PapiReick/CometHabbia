@@ -5,6 +5,7 @@ import com.cometproject.server.game.rooms.objects.entities.RoomEntity;
 import com.cometproject.server.game.rooms.objects.entities.types.PlayerEntity;
 import com.cometproject.server.game.rooms.objects.items.RoomItemFloor;
 import com.cometproject.server.game.rooms.types.Room;
+import com.cometproject.server.game.rooms.types.components.games.GameState;
 import com.cometproject.server.game.rooms.types.components.games.GameTeam;
 import com.cometproject.server.game.rooms.types.components.games.RoomGame;
 import com.cometproject.server.game.rooms.types.components.games.freeze.FreezeGame;
@@ -35,7 +36,7 @@ public class FreezeBlockFloorItem extends RoomItemFloor {
 
         final RoomGame game = this.getRoom().getGame().getInstance();
 
-        if (this.getRoom().getGame().getInstance() == null || !(game instanceof FreezeGame)) {
+        if (this.getRoom().getGame().getInstance() == null || !(game instanceof FreezeGame) || !this.getRoom().getGame().getInstance().getState().equals(GameState.RUNNING)) {
             return;
         }
 
@@ -54,11 +55,7 @@ public class FreezeBlockFloorItem extends RoomItemFloor {
     private void setPowerUp(FreezePowerUp powerUp) {
         this.powerUp = powerUp;
 
-        if (powerUp == FreezePowerUp.None && this.isDestroyed()) {
-            this.updateState(powerUp, true);
-        } else {
-            this.updateState(powerUp, false);
-        }
+        this.updateState(powerUp, powerUp == FreezePowerUp.None && this.isDestroyed());
     }
 
     public void reset() {

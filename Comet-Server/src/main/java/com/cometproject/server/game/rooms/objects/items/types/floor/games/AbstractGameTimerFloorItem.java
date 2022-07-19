@@ -5,11 +5,12 @@ import com.cometproject.server.game.rooms.objects.entities.RoomEntity;
 import com.cometproject.server.game.rooms.objects.entities.types.PlayerEntity;
 import com.cometproject.server.game.rooms.objects.items.RoomItemFloor;
 import com.cometproject.server.game.rooms.types.Room;
+import com.cometproject.server.game.rooms.types.components.games.GameState;
 import com.cometproject.server.game.rooms.types.components.games.GameType;
 import org.apache.commons.lang.StringUtils;
 
 public abstract class AbstractGameTimerFloorItem extends RoomItemFloor {
-    public String lastTime;
+    private String lastTime;
 
     public AbstractGameTimerFloorItem(RoomItemData itemData, Room room) {
         super(itemData, room);
@@ -30,7 +31,15 @@ public abstract class AbstractGameTimerFloorItem extends RoomItemFloor {
             }
         }
 
-        if (requestData == 2) {
+        InteractionGameTimerAction action = InteractionGameTimerAction.getByAction(requestData);
+        if (action == InteractionGameTimerAction.INCREASE_TIME) {
+            if(this.getRoom().getGame().getInstance() != null) {
+                if(this.getRoom().getGame().getInstance().getState().equals(GameState.RUNNING)) return false;
+                if(this.getRoom().getGame().getInstance().getState().equals(GameState.PAUSED)) {
+                    this.getRoom().getGame().getInstance().onGameEnds();
+                    this.getRoom().getGame().stop();
+                }
+            }
             int time = 0;
 
             if (!this.getItemData().getData().isEmpty() && StringUtils.isNumeric(this.getItemData().getData())) {
@@ -68,20 +77,25 @@ public abstract class AbstractGameTimerFloorItem extends RoomItemFloor {
             this.getItemData().setData(time + "");
             this.sendUpdate();
             this.saveData();
-        } else {
+        } else { // pause/start game
             if (this.getItemData().getData().equals("0") && this.lastTime != null && !this.lastTime.isEmpty()) {
                 this.getItemData().setData(this.lastTime);
             }
 
             int gameLength = Integer.parseInt(this.getItemData().getData());
 
-            this.lastTime = this.getItemData().getData();
-
             if (gameLength == 0) return true;
 
             if (this.getRoom().getGame().getInstance() == null) {
+                this.lastTime = this.getItemData().getData();
                 this.getRoom().getGame().createNew(this.getGameType());
                 this.getRoom().getGame().getInstance().startTimer(gameLength);
+            }
+            else if(this.getRoom().getGame().getInstance() != null && this.getRoom().getGame().getInstance().getState().equals(GameState.RUNNING)) {
+                this.getRoom().getGame().pause();
+            }
+            else if(this.getRoom().getGame().getInstance() != null && this.getRoom().getGame().getInstance().getState().equals(GameState.PAUSED)) {
+                this.getRoom().getGame().getInstance().startTimer(this.getRoom().getGame().getInstance().getGameLength());
             }
         }
 
@@ -96,14 +110,27 @@ public abstract class AbstractGameTimerFloorItem extends RoomItemFloor {
         }
     }
 
-    @Override
-    public String getDataObject() {
-        return this.lastTime != null && !this.lastTime.isEmpty() ? this.lastTime : this.getItemData().getData();
-    }
-
-    public void setLastTime(String lastTime) {
-        this.lastTime = lastTime;
-    }
-
     public abstract GameType getGameType();
+
+    public enum InteractionGameTimerAction {
+        START_PAUSE(1),
+        INCREASE_TIME(2);
+
+        private final int action;
+
+        InteractionGameTimerAction(int action) {
+            this.action = action;
+        }
+
+        public int getAction() {
+            return action;
+        }
+
+        public static InteractionGameTimerAction getByAction(int action) {
+            if (action == 1) return START_PAUSE;
+            if (action == 2) return INCREASE_TIME;
+
+            return START_PAUSE;
+        }
+    }
 }

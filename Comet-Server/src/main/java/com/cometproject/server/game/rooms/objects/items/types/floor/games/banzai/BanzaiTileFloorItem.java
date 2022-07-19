@@ -7,6 +7,7 @@ import com.cometproject.server.game.rooms.objects.entities.types.PlayerEntity;
 import com.cometproject.server.game.rooms.objects.items.RoomItemFactory;
 import com.cometproject.server.game.rooms.objects.items.RoomItemFloor;
 import com.cometproject.server.game.rooms.types.Room;
+import com.cometproject.server.game.rooms.types.components.games.GameState;
 import com.cometproject.server.game.rooms.types.components.games.GameTeam;
 import com.cometproject.server.game.rooms.types.components.games.banzai.BanzaiGame;
 
@@ -68,7 +69,7 @@ public class BanzaiTileFloorItem extends RoomItemFloor {
             if (room.getMapping().getTile(nextX, nextY) != null) {
                 RoomItemFloor obj = room.getItems().getFloorItem(room.getMapping().getTile(nextX, nextY).getTopItem());
 
-                if (obj != null && obj instanceof BanzaiTileFloorItem) {
+                if (obj instanceof BanzaiTileFloorItem) {
                     final BanzaiTileFloorItem item = (BanzaiTileFloorItem) obj;
 
                     if (item.getTeam() == team && item.getPoints() == 3) {
@@ -125,6 +126,7 @@ public class BanzaiTileFloorItem extends RoomItemFloor {
         if (!(entity instanceof PlayerEntity) || ((PlayerEntity) entity).getGameTeam() == GameTeam.NONE || !(this.getRoom().getGame().getInstance() instanceof BanzaiGame)) {
             return;
         }
+        if(!this.getRoom().getGame().getInstance().getState().equals(GameState.RUNNING)) return;
 
         if (this.points == 3) {
             // It's locked, what you doing?!?

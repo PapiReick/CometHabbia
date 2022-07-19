@@ -29,6 +29,9 @@ public class GameComponent {
     private RoomGame instance;
     private Map<GameTeam, List<Integer>> teams;
     private Map<GameTeam, Integer> scores;
+
+    private boolean active = false;
+
     private Map<GameTeam, Set<AbstractGameGateFloorItem>> gates;
     private Set<PlayerEntity> players;
 
@@ -65,6 +68,12 @@ public class GameComponent {
         this.gates.clear();
         this.teams.clear();
         this.scores.clear();
+    }
+
+    public void pause() {
+        if (this.instance != null) {
+            this.instance.pause();
+        }
     }
 
     public void stop() {
@@ -201,6 +210,14 @@ public class GameComponent {
 
     public Map<GameTeam, Integer> getScores() {
         return scores;
+    }
+
+    public boolean getActive() {
+        return this.active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public Set<PlayerEntity> getPlayers() {

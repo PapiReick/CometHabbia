@@ -1,17 +1,17 @@
 package com.cometproject.server.game.rooms.objects.items.types.floor.wired.actions;
 
+import com.cometproject.api.config.CometSettings;
 import com.cometproject.api.game.rooms.objects.data.RoomItemData;
 import com.cometproject.api.game.utilities.Position;
 import com.cometproject.server.game.rooms.objects.items.RoomItemFloor;
 import com.cometproject.server.game.rooms.objects.items.types.floor.DiceFloorItem;
-import com.cometproject.server.game.rooms.objects.items.types.floor.GateFloorItem;
-import com.cometproject.server.game.rooms.objects.items.types.floor.games.AbstractGameTimerFloorItem;
+import com.cometproject.server.game.rooms.objects.items.types.floor.games.banzai.BanzaiTimerFloorItem;
 import com.cometproject.server.game.rooms.objects.items.types.floor.wired.WiredItemSnapshot;
 import com.cometproject.server.game.rooms.objects.items.types.floor.wired.base.WiredActionItem;
 import com.cometproject.server.game.rooms.objects.items.types.floor.wired.events.WiredItemEvent;
-import com.cometproject.server.game.rooms.objects.items.types.floor.wired.highscore.HighscoreClassicFloorItem;
 import com.cometproject.server.game.rooms.types.Room;
 import com.cometproject.server.network.messages.outgoing.room.items.SlideObjectBundleMessageComposer;
+import com.cometproject.server.network.messages.outgoing.room.items.UpdateFloorItemMessageComposer;
 
 
 public class WiredActionMatchToSnapshot extends WiredActionItem {
@@ -45,61 +45,39 @@ public class WiredActionMatchToSnapshot extends WiredActionItem {
 
         for (long itemId : this.getWiredData().getSelectedIds()) {
             boolean rotationChanged = false;
-            boolean stateChanged = false;
 
             RoomItemFloor floorItem = this.getRoom().getItems().getFloorItem(itemId);
-            if (floorItem == null) continue;
+            if (floorItem == null || (floorItem instanceof BanzaiTimerFloorItem && matchState)) continue;
 
             WiredItemSnapshot itemSnapshot = this.getWiredData().getSnapshots().get(itemId);
             if (itemSnapshot == null) continue;
 
-            if(matchState && floorItem instanceof AbstractGameTimerFloorItem){
-                ((AbstractGameTimerFloorItem) floorItem).setLastTime(itemSnapshot.getExtraData());
+            if (matchState && !(floorItem instanceof DiceFloorItem)) {
                 floorItem.getItemData().setData(itemSnapshot.getExtraData());
-                getRoom().getGame().stop();
-            }
-
-            if (matchState && !(floorItem instanceof DiceFloorItem || floorItem instanceof HighscoreClassicFloorItem)) {
-                String currentExtradata = floorItem.getItemData().getData();
-                String newExtradata = itemSnapshot.getExtraData();
-
-                if(!currentExtradata.equals(newExtradata)) {
-                    floorItem.getItemData().setData(newExtradata);
-                    stateChanged = true;
-                }
-            }
-
-            if(matchRotation) {
-                int currentRotation = floorItem.getRotation();
-                int newRotation = itemSnapshot.getRotation();
-
-                if(currentRotation != newRotation) {
-                    floorItem.setRotation(newRotation);
-                    rotationChanged = true;
-                }
-            }
-
-            if(stateChanged || rotationChanged) {
                 floorItem.sendUpdate();
-
-                if(floorItem instanceof GateFloorItem){
-                    Position currentPosition = floorItem.getPosition();
-                    this.getRoom().getMapping().getTile(currentPosition).reload();
-                }
+                floorItem.getTile().reload();
             }
 
-            if(matchPosition) {
-                Position currentPosition = floorItem.getPosition();
+            if (matchPosition || matchRotation) {
+                Position currentPosition = floorItem.getPosition().copy();
+
                 Position newPosition = new Position(itemSnapshot.getX(), itemSnapshot.getY(), itemSnapshot.getZ());
 
-                if(!currentPosition.equals(newPosition)){
-                    this.getRoom().getEntities().broadcastMessage(new SlideObjectBundleMessageComposer(currentPosition.copy(), newPosition.copy(), -1, this.getVirtualId(), floorItem.getVirtualId()));
-                    floorItem.setPosition(newPosition);
+                int currentRotation = floorItem.getRotation();
 
-                    this.getRoom().getMapping().getTile(currentPosition).reload();
-                    this.getRoom().getMapping().getTile(newPosition).reload();
+                if (this.getRoom().getItems().moveFloorItem(floorItem.getId(), !matchPosition ? currentPosition : newPosition, matchRotation ? itemSnapshot.getRotation() : floorItem.getRotation(), true, false, null, CometSettings.roomCanPlaceItemOnEntity)) {
+                    if (currentRotation != floorItem.getRotation()) {
+                        rotationChanged = true;
+                    }
+
+                    if (!matchRotation || !rotationChanged && !matchState) {
+                        this.getRoom().getEntities().broadcastMessage(new SlideObjectBundleMessageComposer(currentPosition, newPosition, 0, this.getVirtualId(), floorItem.getVirtualId()));
+                    }
                 }
             }
+
+            if (matchRotation && rotationChanged)
+                this.getRoom().getEntities().broadcastMessage(new UpdateFloorItemMessageComposer(floorItem));
 
             floorItem.save();
         }
