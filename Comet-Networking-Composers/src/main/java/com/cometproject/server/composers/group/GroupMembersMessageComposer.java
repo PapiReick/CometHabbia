@@ -84,7 +84,6 @@ public class GroupMembersMessageComposer extends MessageComposer {
 
                 final IGroupMember member = (IGroupMember) groupMember.tempData();
                 msg.writeString(groupMember.tempData() != null ? GroupInformationMessageComposer.getDate(member.getDateJoined()) : "");
-                msg.writeString(groupMember.tempData() != null ? member.getRole() : "");
             }
 
         }

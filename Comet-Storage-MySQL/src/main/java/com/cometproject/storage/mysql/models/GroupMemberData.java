@@ -56,14 +56,4 @@ public class GroupMemberData implements IGroupMember {
     public int getDateJoined() {
         return this.dateJoined;
     }
-
-    @Override
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    @Override
-    public String getRole() {
-        return this.role;
-    }
 }

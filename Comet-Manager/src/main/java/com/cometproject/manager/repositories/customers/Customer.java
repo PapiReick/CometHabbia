@@ -118,14 +118,6 @@ public class Customer {
         this.suspended = suspended;
     }
 
-    public List<CustomerRole> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(List<CustomerRole> roles) {
-        this.roles = roles;
-    }
-
     public boolean hasRole(CustomerRole role) {
         return this.roles.contains(role);
     }

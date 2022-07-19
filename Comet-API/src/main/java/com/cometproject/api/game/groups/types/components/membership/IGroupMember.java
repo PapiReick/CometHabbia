@@ -13,9 +13,5 @@ public interface IGroupMember {
 
     void setAccessLevel(GroupAccessLevel accessLevel);
 
-    void setRole(String role);
-
     int getDateJoined();
-
-    String getRole();
 }

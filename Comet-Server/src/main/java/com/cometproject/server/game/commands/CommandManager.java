@@ -22,7 +22,6 @@ import com.cometproject.server.game.commands.staff.muting.UnmuteCommand;
 import com.cometproject.server.game.commands.staff.rewards.*;
 import com.cometproject.server.game.commands.staff.rewards.mass.*;
 import com.cometproject.server.game.commands.user.*;
-import com.cometproject.server.game.commands.user.group.AssignGroupRoleCommand;
 import com.cometproject.server.game.commands.user.group.DeleteGroupCommand;
 import com.cometproject.server.game.commands.user.group.EjectAllCommand;
 import com.cometproject.server.game.commands.user.muting.MuteBotsCommand;
@@ -185,7 +184,6 @@ public class CommandManager implements Initialisable {
         this.addCommand(Locale.get("command.resetdicecount.name"), new ResetDiceCountCommand());
         this.addCommand(Locale.get("command.bank.name"), new BankCommand());
         this.addCommand(Locale.get("command.help.name"), new HelpCommand());
-        this.addCommand(Locale.get("command.grouprole.name"), new AssignGroupRoleCommand());
         this.addCommand("build", new BuildCommand());
         this.addCommand(Locale.get("command.autofloor.name"), new AutoFloorCommand());
         this.addCommand(Locale.get("command.look.name"), new LookCommand());
