@@ -70,6 +70,7 @@ public class RoomItemFactory {
 
         itemDefinitionMap = new HashMap<String, Class<? extends RoomItemFloor>>() {{
             put("roller", RollerFloorItem.class);
+            put("arrow_move", ArrowFloorItem.class);
             put("dice", DiceFloorItem.class);
             put("fishing_pool", FishingPoolFloorItem.class);
             put("slotmachine", SlotMachineFloorItem.class);
