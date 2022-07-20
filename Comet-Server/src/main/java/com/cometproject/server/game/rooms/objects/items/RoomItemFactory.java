@@ -235,6 +235,7 @@ public class RoomItemFactory {
             put("wf_cstm_reset_highscore", WiredCustomResetHighscore.class);
             put("wf_cstm_add_tag", WiredCustomAddTag.class);
             put("wf_cstm_remove_tag", WiredCustomRemoveTag.class);
+            put("wf_cstm_user_move", WiredCustomUserMove.class);
 
             put("wf_cnd_cstm_triggerer_furni_green", WiredConditionTriggererOnFurniGreen.class);
             put("wf_cnd_cstm_triggerer_furni_yellow", WiredConditionTriggererOnFurniYellow.class);
