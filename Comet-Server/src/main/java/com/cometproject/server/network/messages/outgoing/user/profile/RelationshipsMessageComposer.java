@@ -47,6 +47,7 @@ public class RelationshipsMessageComposer extends MessageComposer {
         int hearts = PlayerRelationships.countByLevel(RelationshipLevel.HEART, relationships);
         int smiles = PlayerRelationships.countByLevel(RelationshipLevel.SMILE, relationships);
         int bobbas = PlayerRelationships.countByLevel(RelationshipLevel.BOBBA, relationships);
+        int poops = PlayerRelationships.countByLevel(RelationshipLevel.POOP, relationships);
 
         List<Integer> relationshipKeys = Lists.newArrayList(relationships.keySet());
         Collections.shuffle(relationshipKeys);
@@ -64,7 +65,7 @@ public class RelationshipsMessageComposer extends MessageComposer {
                 msg.writeString("hr-115-42.hd-190-1.ch-215-62.lg-285-91.sh-290-62");
             } else {
                 msg.writeInt(level.getLevelId());
-                msg.writeInt(level == RelationshipLevel.HEART ? hearts : level == RelationshipLevel.SMILE ? smiles : bobbas);
+                msg.writeInt(level == RelationshipLevel.HEART ? hearts : level == RelationshipLevel.SMILE ? smiles : level == RelationshipLevel.BOBBA ? bobbas : poops);
                 msg.writeInt(data.getId());
                 msg.writeString(data.getUsername());
                 msg.writeString(data.getFigure());

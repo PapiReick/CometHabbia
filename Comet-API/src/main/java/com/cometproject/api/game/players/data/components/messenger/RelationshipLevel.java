@@ -1,6 +1,7 @@
 package com.cometproject.api.game.players.data.components.messenger;
 
 public enum RelationshipLevel {
+    POOP(4),
     BOBBA(3),
     SMILE(2),
     HEART(1);

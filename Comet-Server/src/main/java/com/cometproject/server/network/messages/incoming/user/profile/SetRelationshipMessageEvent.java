@@ -38,7 +38,7 @@ public class SetRelationshipMessageEvent implements Event {
 
             relationships.getRelationships().remove(user);
         } else {
-            final String levelString = level == 1 ? "HEART" : level == 2 ? "SMILE" : "BOBBA";
+            final String levelString = level == 1 ? "HEART" : level == 2 ? "SMILE" : level == 3 ? "BOBBA" : "POOP";
             final RelationshipLevel relationshipLevel = RelationshipLevel.valueOf(levelString);
 
             if (relationships.getRelationships().containsKey(user)) {
