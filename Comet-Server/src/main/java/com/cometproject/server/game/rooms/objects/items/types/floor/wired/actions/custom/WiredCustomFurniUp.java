@@ -56,7 +56,7 @@ public class WiredCustomFurniUp extends WiredActionItem {
             Position oldPos = floorItem.getPosition();
             Position newPos = new Position(floorItem.getPosition().getX(), floorItem.getPosition().getY(), this.isUp ? floorItem.getPosition().getZ() + newZ : floorItem.getPosition().getZ() - newZ);
 
-            this.getRoom().getItems().moveFloorItem(floorItem.getId(), newPos, floorItem.getRotation(), true, false, null, false);
+            this.getRoom().getItems().moveFloorItem(floorItem.getId(), newPos, floorItem.getRotation(), true, false, null, false, true);
             this.getRoom().getEntities().broadcastMessage(new SlideObjectBundleMessageComposer(oldPos, newPos, 0,0, floorItem.getVirtualId()));
             floorItem.sendUpdate();
         }

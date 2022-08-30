@@ -427,7 +427,7 @@ public class ItemsComponent {
 
         RoomTile tile = this.getRoom().getMapping().getTile(newPosition.getX(), newPosition.getY());
 
-        if (autoheight && !this.verifyItemPosition(item.getDefinition(), item, tile, item.getPosition(), rotation)) {
+        if (autoheight && !this.verifyItemPosition(item.getDefinition(), item, tile, item.getPosition(), rotation, false)) {
             return false;
         }
 
@@ -562,10 +562,10 @@ public class ItemsComponent {
     }
 
     public boolean moveFloorItem(long itemId, Position newPosition, int rotation, boolean save) {
-        return moveFloorItem(itemId, newPosition, rotation, save, true, null, false);
+        return moveFloorItem(itemId, newPosition, rotation, save, true, null, false, false);
     }
 
-    public boolean moveFloorItem(long itemId, Position newPosition, int rotation, boolean save, boolean obeyStack, Player mover, boolean isRentable) {
+    public boolean moveFloorItem(long itemId, Position newPosition, int rotation, boolean save, boolean obeyStack, Player mover, boolean isRentable, boolean customStack) {
         RoomItemFloor item = this.getFloorItem(itemId);
         if (item == null) return false;
 
@@ -575,10 +575,10 @@ public class ItemsComponent {
             if ((mover.getEntity()).setzok) {
                 if (!verifyItemPositionSetZ(item.getDefinition(), tile, item.getPosition(), rotation, mover))
                     return false;
-            } else if (!verifyItemPosition(item.getDefinition(), item, tile, item.getPosition(), rotation)) {
+            } else if (!verifyItemPosition(item.getDefinition(), item, tile, item.getPosition(), rotation, customStack)) {
                 return false;
             }
-        } else if (!verifyItemPosition(item.getDefinition(), item, tile, item.getPosition(), rotation)) {
+        } else if (!verifyItemPosition(item.getDefinition(), item, tile, item.getPosition(), rotation, customStack)) {
             return false;
         }
 
@@ -685,7 +685,7 @@ public class ItemsComponent {
         return true;
     }
 
-    private boolean verifyItemPosition(FurnitureDefinition item, RoomItemFloor floor, RoomTile tile, Position currentPosition, int rotation) {
+    private boolean verifyItemPosition(FurnitureDefinition item, RoomItemFloor floor, RoomTile tile, Position currentPosition, int rotation, boolean customStack) {
         if (tile != null) {
             if (currentPosition != null && currentPosition.getX() == tile.getPosition().getX() && currentPosition.getY() == tile.getPosition().getY())
                 return true;
@@ -697,7 +697,7 @@ public class ItemsComponent {
                 final RoomTile roomTile = this.getRoom().getMapping().getTile(affectedTile.x, affectedTile.y);
 
                 if (roomTile != null) {
-                    if (!this.verifyItemTilePosition(item, floor, roomTile, rotation)) {
+                    if (!this.verifyItemTilePosition(item, floor, roomTile, rotation, customStack)) {
                         return false;
                     }
                 } else {
@@ -734,7 +734,11 @@ public class ItemsComponent {
     }
 
 
-    private boolean verifyItemTilePosition(FurnitureDefinition item, RoomItemFloor floorItem, RoomTile tile, int rotation) {
+    private boolean verifyItemTilePosition(FurnitureDefinition item, RoomItemFloor floorItem, RoomTile tile, int rotation, boolean customStack) {
+        if (customStack){
+            return true;
+        }
+
         if (!tile.canPlaceItemHere()) {
             return false;
         }
@@ -828,10 +832,10 @@ public class ItemsComponent {
                 if(!verifyItemPositionSetZ(item.getDefinition(), tile, null, rot, player)){
                     return;
                 }
-            } else if (!verifyItemPosition(item.getDefinition(), null, tile, null, rot)) {
+            } else if (!verifyItemPosition(item.getDefinition(), null, tile, null, rot, false)) {
                 return;
             }
-        } else if (!verifyItemPosition(item.getDefinition(), null, tile, null, rot)) {
+        } else if (!verifyItemPosition(item.getDefinition(), null, tile, null, rot, false)) {
             return;
         }
 
@@ -927,7 +931,7 @@ public class ItemsComponent {
 
         data = (item.getExtraData().isEmpty() || item.getExtraData().equals(" ")) ? "0" : item.getExtraData();
 
-        if (!this.verifyItemPosition(item.getDefinition(), null, tile, null, rot))
+        if (!this.verifyItemPosition(item.getDefinition(), null, tile, null, rot, false))
             return;
 
         List<RoomItemFloor> floorItems = room.getItems().getItemsOnSquare(x, y);

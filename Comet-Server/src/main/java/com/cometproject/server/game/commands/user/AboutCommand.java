@@ -6,6 +6,7 @@ import com.cometproject.server.boot.Comet;
 import com.cometproject.server.config.Locale;
 import com.cometproject.server.game.GameCycle;
 import com.cometproject.server.game.commands.ChatCommand;
+import com.cometproject.server.network.messages.outgoing.notification.MotdNotificationMessageComposer;
 import com.cometproject.server.network.messages.outgoing.notification.WiredAlertMessageComposer;
 import com.cometproject.server.network.sessions.Session;
 import com.cometproject.server.utilities.CometRuntime;
@@ -61,7 +62,8 @@ public class AboutCommand extends ChatCommand {
         about.append("Online record - " + GameCycle.getInstance().getOnlineRecord() + "\n");
         about.append("Record since last reboot - " + GameCycle.getInstance().getCurrentOnlineRecord() + "\n");
 
-        client.send(new WiredAlertMessageComposer("Información del servidor:", about.toString()));
+        //client.send(new WiredAlertMessageComposer("Información del servidor:", about.toString()));
+        client.send(new MotdNotificationMessageComposer(about.toString()));
     }
 
     @Override

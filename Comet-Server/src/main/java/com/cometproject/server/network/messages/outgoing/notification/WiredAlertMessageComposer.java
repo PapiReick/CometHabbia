@@ -21,7 +21,7 @@ public class WiredAlertMessageComposer extends MessageComposer {
 
     @Override
     public void compose(IComposer msg) {
-        msg.writeString(this.title);
+        //msg.writeString(this.title);
         msg.writeString(this.alert);
     }
 }

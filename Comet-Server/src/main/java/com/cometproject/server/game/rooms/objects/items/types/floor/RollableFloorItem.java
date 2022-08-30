@@ -6,6 +6,7 @@ import com.cometproject.server.game.rooms.objects.entities.RoomEntity;
 import com.cometproject.server.game.rooms.objects.entities.types.PlayerEntity;
 import com.cometproject.server.game.rooms.objects.items.RoomItemFactory;
 import com.cometproject.server.game.rooms.objects.items.RoomItemFloor;
+import com.cometproject.server.game.rooms.objects.items.types.floor.football.FootballFloorItem;
 import com.cometproject.server.game.rooms.objects.items.types.floor.games.banzai.BanzaiPuckFloorItem;
 import com.cometproject.server.game.rooms.types.Room;
 import com.cometproject.server.game.rooms.types.mapping.RoomEntityMovementNode;
@@ -14,21 +15,21 @@ import com.cometproject.api.game.rooms.models.RoomTileState;
 import com.cometproject.server.game.utilities.DistanceCalculator;
 import com.cometproject.server.network.messages.outgoing.room.items.SlideObjectBundleMessageComposer;
 import com.cometproject.server.utilities.Direction;
-import com.cometproject.server.utilities.RandomUtil;
-import com.cometproject.storage.api.StorageContext;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 
 public abstract class RollableFloorItem extends RoomItemFloor {
-    private static int KICK_POWER = 1;
+    private static final int MOVE_POWER = 1;
+    private static final int CLICK_MOVE_POWER = 1; // yep
+    protected int KICK_MOVE_POWER = 7; // 6 is default, doesnt count the first
 
-    private boolean isRolling = false;
-    private RoomEntity kickerEntity;
+    protected boolean isRolling = false;
+    protected RoomEntity kickerEntity;
     private boolean skipNext = false;
     private int rollStage = -1;
+    private int tilesToMove = MOVE_POWER;
 
     public RollableFloorItem(RoomItemData itemData, Room room) {
         super(itemData, room);
@@ -43,13 +44,13 @@ public abstract class RollableFloorItem extends RoomItemFloor {
 
     }
 
-    private static Position calculatePosition(int x, int y, int playerRotation) {
+    protected static Position calculatePosition(int x, int y, int playerRotation) {
         return Position.calculatePosition(x, y, playerRotation, false, 1);
     }
 
     @Override
     public void onEntityStepOn(RoomEntity entity) {
-        if (this.skipNext && (this.kickerEntity != null && entity.getId() == this.kickerEntity.getId())) {
+        if (this.skipNext && this.kickerEntity != null && entity == this.kickerEntity) {
             this.kickerEntity = null;
             this.skipNext = false;
             return;
@@ -57,28 +58,26 @@ public abstract class RollableFloorItem extends RoomItemFloor {
 
         boolean isKickingMove = (this.getPosition().getY() == entity.getWalkingGoal().getY() && this.getPosition().getX() == entity.getWalkingGoal().getX()) && entity.getPreviousSteps() == 1;
 
-        KICK_POWER = isKickingMove ? 6 : 1;
+        tilesToMove = isKickingMove ? KICK_MOVE_POWER : MOVE_POWER;
 
         if (entity instanceof PlayerEntity && this instanceof BanzaiPuckFloorItem) {
-            this.getItemData().setData((((PlayerEntity) entity).getGameTeam().getTeamId() + 1) + "");
+            this.getItemData().setData((((PlayerEntity) entity).getGameTeam().getTeamId()) + "");
             this.sendUpdate();
         }
 
         this.setRotation(entity.getBodyRotation());
-
         if (entity instanceof PlayerEntity) {
             this.kickerEntity = entity;
         }
 
         this.rollStage = 0;
-
         this.rollBall(entity.getPosition(), entity.getBodyRotation());
 
     }
 
     @Override
     public void onEntityStepOff(RoomEntity entity) {
-        if (!this.skipNext) {
+        if (!this.skipNext || entity != this.kickerEntity) {
             this.rollBall(this.getPosition(), Direction.get(entity.getBodyRotation()).invert().num);
         } else {
             this.skipNext = false;
@@ -99,7 +98,7 @@ public abstract class RollableFloorItem extends RoomItemFloor {
 
     @Override
     public void onTickComplete() {
-        if (!this.isRolling || this.rollStage == -1 || this.rollStage >= KICK_POWER) {
+        if (!this.isRolling || this.rollStage == -1 || this.rollStage >= tilesToMove) {
             this.isRolling = false;
             this.rollStage = -1;
             this.skipNext = false;
@@ -118,38 +117,48 @@ public abstract class RollableFloorItem extends RoomItemFloor {
                 position = this.getNextPosition(position.getFlag(), position.squareBehind(position.getFlag()));
             }
 
-            int count = 2;
+            /*
+            only for soccer ball. People want it faster? ok TODO: change this
+            */
+            if(this instanceof FootballFloorItem) {
+                int count = 2; // this controls the speed i guess?
+                // can we skip some tiles?
+                for (int i = 0; i < count && (this.rollStage + i < tilesToMove); i++) {
+                    Position nextPosition = this.getNextPosition(position.getFlag(), position.squareInFront(position.getFlag()));
 
-            // can we skip some tiles?
-            for (int i = 0; i < count && (this.rollStage + i < KICK_POWER); i++) {
-                Position nextPosition = this.getNextPosition(position.getFlag(), position.squareInFront(position.getFlag()));
+                    if (!this.isValidRoll(nextPosition)) {
+                        break;
+                    }
 
-                if (!this.isValidRoll(nextPosition)) {
-                    break;
+                    if (nextPosition.getFlag() != this.getRotation() || (this.rollStage + i) > tilesToMove) {
+                        // we hit a snag
+                        break;
+                    }
+
+                    tiles ++;
+                    position = nextPosition;
                 }
-
-                if (nextPosition.getFlag() != this.getRotation() || (this.rollStage + i) > KICK_POWER) {
-                    // we hit a snag
-                    break;
-                }
-
-                tiles = i;
-                position = nextPosition;
             }
+
 
             if (position.getFlag() == -1) {
                 position.setFlag(kickerEntity.getBodyRotation());
             }
 
-            double distanceMoved = position.distanceTo(this.getPosition());
-            this.rollStage += distanceMoved;
-
-            this.getItemData().setData("55");
-            this.sendUpdate();
+            //double distanceMoved = position.distanceTo(this.getPosition());
+            //if (kickerEntity.getBodyRotation() % 2 != 0) {
+            //    distanceMoved--;
+            // }
+            this.rollStage += tiles;
+            if (!(this instanceof BanzaiPuckFloorItem)) {
+                this.getItemData().setData("55");
+                this.sendUpdate();
+            }
 
             this.moveTo(position, position.getFlag());
             //System.out.println(tiles);
-            this.setTicks(RoomItemFactory.getProcessTime(tiles * 0.5));
+            this.setTicks(RoomItemFactory.getProcessTime( (tiles -1) * 0.5));
+            //this.setTicks(RoomItemFactory.getProcessTime(this.getDelay(tiles)));
         } else {
             Position nextPosition = this.getNextPosition();
             Position newPosition;
@@ -167,9 +176,10 @@ public abstract class RollableFloorItem extends RoomItemFloor {
             if (newPosition.getFlag() == -1) {
                 newPosition.setFlag(kickerEntity.getBodyRotation());
             }
-
-            this.getItemData().setData((KICK_POWER - (this.rollStage - 1) == 0 ? 3 : (KICK_POWER - (this.rollStage - 1)) * 11));
-            this.sendUpdate();
+            if (!(this instanceof BanzaiPuckFloorItem)) {
+                this.getItemData().setData((tilesToMove - (this.rollStage - 1) == 0 ? 3 : (tilesToMove - (this.rollStage - 1)) * 11));
+                this.sendUpdate();
+            }
 
             this.moveTo(newPosition, newPosition.getFlag());
             this.setTicks(RoomItemFactory.getProcessTime(this.getDelay(this.rollStage)));
@@ -180,7 +190,7 @@ public abstract class RollableFloorItem extends RoomItemFloor {
         return false;
     }
 
-    private boolean isValidRoll(Position position) {
+    protected boolean isValidRoll(Position position) {
         RoomTile tile = this.getRoom().getMapping().getTile(position.getX(), position.getY());
 
         if (tile != null) {
@@ -268,9 +278,9 @@ public abstract class RollableFloorItem extends RoomItemFloor {
         return position;
     }
 
-    private void rollSingle(RoomEntity entity) {
+    protected boolean rollSingle(RoomEntity entity) {
         if (this.isRolling || !entity.getPosition().touching(this.getPosition())) {
-            return;
+            return false;
         }
 
         if (entity instanceof PlayerEntity) {
@@ -293,12 +303,16 @@ public abstract class RollableFloorItem extends RoomItemFloor {
         }
 
         if (!this.isValidRoll(newPosition)) {
-            return;
+            return false;
         }
 
-        this.getItemData().setData("11");
+        if (!(this instanceof BanzaiPuckFloorItem)) {
+            this.getItemData().setData("11");
+        }
         this.moveTo(newPosition, entity.getBodyRotation());
+        this.kickerEntity = null;
         this.isRolling = false;
+        return true;
     }
 
     @Override
@@ -307,9 +321,26 @@ public abstract class RollableFloorItem extends RoomItemFloor {
 
         if (entity instanceof PlayerEntity) {
             this.kickerEntity = entity;
+            this.skipNext = true;
+        }
+        /* Uncomment this to increase double click move
+        tilesToMove = CLICK_MOVE_POWER;
+
+        if (entity instanceof PlayerEntity && this instanceof BanzaiPuckFloorItem) {
+            this.getItemData().setData((((PlayerEntity) entity).getGameTeam().getTeamId()) + "");
+            this.sendUpdate();
         }
 
-        this.skipNext = true;
+        this.setRotation(entity.getBodyRotation());
+
+        if (entity instanceof PlayerEntity) {
+            this.kickerEntity = entity;
+        }
+
+        this.rollStage = 0;
+
+        this.rollBall(entity.getPosition(), entity.getBodyRotation());
+         */
         this.rollSingle(entity);
         return true;
     }
@@ -322,7 +353,7 @@ public abstract class RollableFloorItem extends RoomItemFloor {
         this.rollStage = -1;
     }
 
-    private void moveTo(Position pos, int rotation) {
+    protected void moveTo(Position pos, int rotation) {
         RoomTile newTile = this.getRoom().getMapping().getTile(pos);
 
         if (newTile == null) {
@@ -356,11 +387,13 @@ public abstract class RollableFloorItem extends RoomItemFloor {
     }
 
     private double getDelay(int i) {
+        /*
         if (i == 5) {
             return 0.5;
         } else if (i == 6) {
             return 1.0;
         }
+         */
 
 //        System.out.println(i);
         return 0.5;

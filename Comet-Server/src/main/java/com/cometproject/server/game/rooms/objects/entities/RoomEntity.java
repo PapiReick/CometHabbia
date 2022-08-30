@@ -3,10 +3,11 @@ package com.cometproject.server.game.rooms.objects.entities;
 import com.cometproject.api.game.rooms.entities.RoomEntityStatus;
 import com.cometproject.api.game.rooms.models.RoomTileState;
 import com.cometproject.api.game.utilities.Position;
-import com.cometproject.server.boot.Comet;
-import com.cometproject.server.game.permissions.PermissionsManager;
+import com.cometproject.api.networking.messages.IMessageComposer;
 import com.cometproject.server.game.rooms.objects.RoomFloorObject;
 import com.cometproject.server.game.rooms.objects.RoomObject;
+import com.cometproject.server.game.rooms.objects.entities.AvatarEntity;
+import com.cometproject.server.game.rooms.objects.entities.RoomEntityType;
 import com.cometproject.server.game.rooms.objects.entities.effects.PlayerEffect;
 import com.cometproject.server.game.rooms.objects.entities.pathfinding.Square;
 import com.cometproject.server.game.rooms.objects.entities.pathfinding.types.EntityPathfinder;
@@ -15,21 +16,25 @@ import com.cometproject.server.game.rooms.objects.entities.types.PetEntity;
 import com.cometproject.server.game.rooms.objects.entities.types.PlayerEntity;
 import com.cometproject.server.game.rooms.objects.entities.types.ai.BotAI;
 import com.cometproject.server.game.rooms.objects.items.RoomItemFloor;
-import com.cometproject.server.game.rooms.objects.items.types.floor.SeatFloorItem;
-import com.cometproject.server.game.rooms.objects.items.types.floor.wired.triggers.WiredTriggerWalksOnFurni;
-import com.cometproject.server.game.rooms.objects.items.types.floor.wired.triggers.custom.WiredTriggerCustomIdle;
-import com.cometproject.server.game.rooms.objects.items.types.floor.wired.triggers.custom.WiredTriggerUsersCollide;
 import com.cometproject.server.game.rooms.types.Room;
 import com.cometproject.server.game.rooms.types.mapping.RoomEntityMovementNode;
 import com.cometproject.server.game.rooms.types.mapping.RoomTile;
-import com.cometproject.server.network.messages.outgoing.room.avatar.*;
+import com.cometproject.server.network.messages.outgoing.room.avatar.ApplyEffectMessageComposer;
+import com.cometproject.server.network.messages.outgoing.room.avatar.AvatarUpdateMessageComposer;
+import com.cometproject.server.network.messages.outgoing.room.avatar.AvatarsMessageComposer;
+import com.cometproject.server.network.messages.outgoing.room.avatar.HandItemMessageComposer;
+import com.cometproject.server.network.messages.outgoing.room.avatar.IdleStatusMessageComposer;
+import com.cometproject.server.network.messages.outgoing.room.avatar.LeaveRoomMessageComposer;
+import com.cometproject.server.network.messages.outgoing.room.avatar.UpdateInfoMessageComposer;
 import com.cometproject.server.network.messages.outgoing.room.items.SendShadowMessageComposer;
 import com.cometproject.server.network.messages.outgoing.room.items.SlideObjectBundleMessageComposer;
-import com.cometproject.server.storage.queries.permissions.PermissionsDao;
 import com.cometproject.server.utilities.collections.ConcurrentHashSet;
 import com.google.common.collect.Sets;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class RoomEntity extends RoomFloorObject implements AvatarEntity {
@@ -157,43 +162,43 @@ public abstract class RoomEntity extends RoomFloorObject implements AvatarEntity
     }
 
     public void slidePlayer(Position client, Position user) {
-        this.getRoom().getEntities().broadcastMessage(new SlideObjectBundleMessageComposer(user, client, 0, this.getId(), 007));
+        this.getRoom().getEntities().broadcastMessage(new SlideObjectBundleMessageComposer(user, client, 0, this.getId(), 7));
     }
 
     @Override
     public void moveTo(int x, int y) {
+        if (this.isWarped()) {
+            return;
+        }
+
         RoomTile tile = this.getRoom().getMapping().getTile(x, y);
 
-        if (this.hasAttribute("teleport")) {
-            Position position = new Position(x, y, this.getRoom().getMapping().getTile(x, y).getWalkHeight());
-            // this.warp(position);
-            this.slidePlayer(position, this.getPosition());
-            this.updateAndSetPosition(position);
-            this.markNeedsUpdate();
-            this.getRoom().getProcess().updateEntityStuff(this);
-            final RoomTile oldTile = this.getRoom().getMapping().getTile(this.getPosition().getX(), this.getPosition().getY());
-
-            if (oldTile != null) {
-                oldTile.getEntities().remove(this);
-            }
-
-            if (tile != null) {
-                tile.getEntities().add(this);
-            }
+        if (tile == null)
             return;
-        }
 
-        if (tile == null) {
-            return;
-        }
-
-        if (!this.hasAttribute("interacttpencours")) {
-            if (tile.getState() == RoomTileState.INVALID || tile.getMovementNode() == RoomEntityMovementNode.CLOSED) {
-                if (tile.getRedirect() == null) {
-                    return;
-                }
+        if (tile.getState() == RoomTileState.INVALID || tile.getMovementNode() == RoomEntityMovementNode.CLOSED) {
+            if (tile.getRedirect() == null && !this.isOverriden()) {
+                return;
             }
         }
+
+//        if(this instanceof PlayerEntity) {
+//            final PlayerEntity playerEntity = ((PlayerEntity) this);
+//
+//            if(tile.getEntities().size() != 0 && playerEntity.getGameTeam() != GameTeam.NONE) {
+//                // We're playing!
+//
+//                final List<RoomTile> tiles = tile.getAdjacentTiles(this.getPosition());
+//
+//                for(RoomTile roomTiles : tiles) {
+//                    if(roomTiles.getMovementNode() != RoomEntityMovementNode.CLOSED) {
+//                        this.moveTo(roomTiles.getPosition());
+//                        return;
+//                    }
+//                }
+//
+//            }
+//        }
 
         // reassign the position values if they're set to redirect
         if (tile.getRedirect() != null) {
@@ -203,41 +208,30 @@ public abstract class RoomEntity extends RoomFloorObject implements AvatarEntity
 
         this.previousSteps = 0;
 
-        if (this.getPositionToSet() != null) {
-            RoomTile oldTile = this.getRoom().getMapping().getTile(this.getPosition());
-            RoomTile newTile = this.getRoom().getMapping().getTile(this.getPositionToSet());
-
-            if (oldTile != null) {
-                oldTile.getEntities().remove(this);
-            }
-
-            if (newTile != null) {
-                newTile.getEntities().add(this);
-            }
-
-            this.setPosition(this.getPositionToSet());
-        }
-
-        if(this instanceof PlayerEntity) {
-            switch (((PlayerEntity)this).getPlayer().getShadowStatus()) {
-                case 1:
-                    ((PlayerEntity)this).getPlayer().setShadow(2);
-                    ((PlayerEntity)this).getPlayer().getSession().send(new SendShadowMessageComposer(((PlayerEntity)this).getPlayerId(), tile.getPosition()));
-                    break;
-                case 2:
-                    ((PlayerEntity)this).getPlayer().getSession().send(new SlideObjectBundleMessageComposer(this.getPosition(), this.getPosition().squareInFront(this.getBodyRotation()), ((PlayerEntity)this).getPlayerId()));
-            }
-        }
+//        if (this.getPositionToSet() != null) {
+//            RoomTile oldTile = this.getRoom().getMapping().getTile(this.getPosition());
+//            RoomTile newTile = this.getRoom().getMapping().getTile(this.getPositionToSet());
+//
+//            if (oldTile != null) {
+//                oldTile.getEntities().remove(this);
+//            }
+//
+//            if (newTile != null) {
+//                newTile.getEntities().add(this);
+//            }
+//
+//            this.setPosition(this.getPositionToSet());
+//        }
 
         // Set the goal we are wanting to achieve
         this.setWalkingGoal(x, y);
 
         // Create a walking path
-        List<Square> path = EntityPathfinder.getInstance().makePath(this, new Position(x, y), (this.getRoom().hasAttribute("disableDiagonal")) ? (byte) 0 : (byte) 1, false);
+        List<Square> path = EntityPathfinder.getInstance().makePath(this, new Position(x, y), this.getRoom().hasAttribute("disableDiagonal") ? (byte) 0 : (byte) 1, false);
 
         // Check returned path to see if it calculated one
         if (path == null || path.size() == 0) {
-            path = EntityPathfinder.getInstance().makePath(this, new Position(x, y), (this.getRoom().hasAttribute("disableDiagonal")) ? (byte) 0 : (byte) 1, true);
+            path = EntityPathfinder.getInstance().makePath(this, new Position(x, y), this.getRoom().hasAttribute("disableDiagonal") ? (byte) 0 : (byte) 1, true);
 
             if (path == null || path.size() == 0) {
                 // Reset the goal and return as no path was found
@@ -245,8 +239,7 @@ public abstract class RoomEntity extends RoomFloorObject implements AvatarEntity
                 return;
             }
         }
-
-        //
+//
 //        if(this.isFastWalkEnabled()) {
 //            List<Square> newPath = new ArrayList<>();
 //
@@ -266,34 +259,8 @@ public abstract class RoomEntity extends RoomFloorObject implements AvatarEntity
 
         // UnIdle the user and set the path (if the path has nodes it will mean the user is walking)
         this.unIdle();
-        this.resetAfkTimer();
         this.setWalkingPath(path);
 
-        Position collisionCheck;
-
-        switch (this.bodyRotation){
-            case 4:
-                collisionCheck = new Position(this.getPosition().getX(), this.getPosition().getY() + 1);
-                break;
-            case 0:
-                collisionCheck = new Position(this.getPosition().getX(), this.getPosition().getY() - 1);
-                break;
-            case 6:
-                collisionCheck = new Position(this.getPosition().getX() - 1, this.getPosition().getY());
-                break;
-            default:
-                collisionCheck = new Position(this.getPosition().getX() + 1, this.getPosition().getY());
-                break;
-        }
-
-        RoomTile collisionTile = this.getRoom().getMapping().getTile(collisionCheck);
-        if(collisionTile != null) {
-            for (RoomEntity c : collisionTile.getEntities()) {
-                if (c instanceof PlayerEntity && c.getPosition().touching(this.getPosition()) && c != this) {
-                    WiredTriggerUsersCollide.executeTriggers(c);
-                }
-            }
-        }
     }
 
     public void sit(double height, int rotation) {
@@ -492,33 +459,23 @@ public abstract class RoomEntity extends RoomFloorObject implements AvatarEntity
     }
 
     public boolean isIdle() {
-        return this.idleTime >= 600;
+        return this.idleTime >= 1200;
     }
 
     @Override
     public boolean isIdleAndIncrement() {
-        this.idleTime++;
-
-        if(!this.isWalking()) this.afkTime++;
-
-        if(this.isForcedIdle){
-            this.getRoom().getEntities().broadcastMessage(new IdleStatusMessageComposer((PlayerEntity) this, true));
+        ++this.idleTime;
+        if (this.isForcedIdle) {
+            this.getRoom().getEntities().broadcastMessage(new IdleStatusMessageComposer((PlayerEntity)this, true));
             return true;
         }
-
         if (this.idleTime >= 60000) {
             if (!this.isIdle) {
                 this.isIdle = true;
-                this.getRoom().getEntities().broadcastMessage(new IdleStatusMessageComposer((PlayerEntity) this, true));
+                this.getRoom().getEntities().broadcastMessage(new IdleStatusMessageComposer((PlayerEntity)this, true));
             }
             return true;
         }
-
-        if(this.afkTime >= this.getRoom().getData().getUserIdleTicks()) {
-            this.resetAfkTimer();
-            WiredTriggerCustomIdle.executeTriggers((PlayerEntity)this);
-        }
-
         return false;
     }
 
@@ -537,6 +494,7 @@ public abstract class RoomEntity extends RoomFloorObject implements AvatarEntity
         this.isForcedIdle = value;
     }
 
+    @Override
     public boolean handItemNeedsRemove() {
         if (this.handItemTimer == -999)
             return false;
@@ -685,10 +643,12 @@ public abstract class RoomEntity extends RoomFloorObject implements AvatarEntity
         this.applyEffect(effect);
     }
 
+    @Override
     public boolean isOverriden() {
         return this.overriden;
     }
 
+    @Override
     public void setOverriden(boolean overriden) {
         this.overriden = overriden;
     }
@@ -754,24 +714,18 @@ public abstract class RoomEntity extends RoomFloorObject implements AvatarEntity
 
     public void teleportToObject(RoomObject roomObject) {
         this.applyEffect(new PlayerEffect(4, 5));
-
         this.warpedTile = this.getRoom().getMapping().getTile(this.getPosition());
-
         this.cancelWalk();
         this.warp(roomObject.getPosition());
     }
 
     public void warp(Position position, boolean cancelNextUpdate) {
-        this.setAttribute("tpencours", true);
-
         if (cancelNextUpdate) {
             this.cancelNextUpdate();
         } else {
             this.updatePhase = 1;
         }
-
         this.needsForcedUpdate = true;
-
         this.updateAndSetPosition(position);
         this.markNeedsUpdate();
 
@@ -799,9 +753,8 @@ public abstract class RoomEntity extends RoomFloorObject implements AvatarEntity
         if (this.cancelNextUpdate) {
             this.cancelNextUpdate = false;
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     public void cancelNextUpdate() {

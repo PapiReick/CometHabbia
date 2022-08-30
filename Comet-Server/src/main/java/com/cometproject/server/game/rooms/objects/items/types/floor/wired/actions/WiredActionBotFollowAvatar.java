@@ -59,7 +59,7 @@ public class WiredActionBotFollowAvatar extends WiredActionItem {
 
     @Override
     public boolean requiresPlayer() {
-        return true;
+        return false;
     }
 
     @Override

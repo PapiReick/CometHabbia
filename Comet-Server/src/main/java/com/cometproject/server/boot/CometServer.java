@@ -57,7 +57,7 @@ public class CometServer {
     public void init() {
         ModuleManager.getInstance().initialize();
         APIManager.getInstance().initialize();
-        WebSocketManager.getInstance().initialize();
+        //WebSocketManager.getInstance().initialize();
         PlayerFigureValidator.loadFigureData();
 
         CometThreadManager.getInstance().initialize();

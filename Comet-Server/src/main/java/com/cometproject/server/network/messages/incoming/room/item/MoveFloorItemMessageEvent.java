@@ -61,7 +61,7 @@ public class MoveFloorItemMessageEvent implements Event {
         }
 
         try {
-            if (room.getItems().moveFloorItem(id, new Position(x, y), rot, true, true, client.getPlayer(), client.getPlayer().getRentable().hasRent())) {
+            if (room.getItems().moveFloorItem(id, new Position(x, y), rot, true, true, client.getPlayer(), client.getPlayer().getRentable().hasRent(), false)) {
                 if (floorItem != null && floorItem.getTile().getItems().size() > 1) {
                     client.getPlayer().getQuests().progressQuest(QuestType.FURNI_STACK);
                 }

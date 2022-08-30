@@ -3,248 +3,157 @@ package com.cometproject.server.game.rooms.objects.items.types.floor;
 import com.cometproject.api.game.rooms.objects.data.RoomItemData;
 import com.cometproject.api.game.utilities.Position;
 import com.cometproject.server.game.rooms.objects.entities.RoomEntity;
+import com.cometproject.server.game.rooms.objects.entities.types.PlayerEntity;
 import com.cometproject.server.game.rooms.objects.items.RoomItemFactory;
 import com.cometproject.server.game.rooms.objects.items.RoomItemFloor;
 import com.cometproject.server.game.rooms.objects.items.events.types.RollerFloorItemEvent;
 import com.cometproject.server.game.rooms.objects.items.types.AdvancedFloorItem;
+import com.cometproject.server.game.rooms.objects.items.types.floor.groups.GroupGateFloorItem;
 import com.cometproject.server.game.rooms.objects.items.types.floor.wired.triggers.WiredTriggerWalksOffFurni;
 import com.cometproject.server.game.rooms.objects.items.types.floor.wired.triggers.WiredTriggerWalksOnFurni;
 import com.cometproject.server.game.rooms.types.Room;
 import com.cometproject.server.game.rooms.types.mapping.RoomTile;
 import com.cometproject.server.network.messages.outgoing.room.items.SlideObjectBundleMessageComposer;
 import com.cometproject.server.utilities.collections.ConcurrentHashSet;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-
 public class RollerFloorItem extends AdvancedFloorItem<RollerFloorItemEvent> {
-    private final RollerFloorItemEvent event;
     private boolean hasRollScheduled = false;
-    private long lastTick = 0;
-    private boolean cycleCancelled = false;
-    private Set<Integer> skippedEntities = Sets.newConcurrentHashSet();
-    private Set<Integer> skippedItems = Sets.newConcurrentHashSet();
-    private Set<RoomEntity> movedEntities = new ConcurrentHashSet<>();
+    private long lastTick = 0L;
+    private final Set<Integer> entitiesOnRoller = new ConcurrentHashSet<Integer>();
+    private final RollerFloorItemEvent event = new RollerFloorItemEvent(this.getTickCount());
 
     public RollerFloorItem(RoomItemData itemData, Room room) {
         super(itemData, room);
-
-        this.event = new RollerFloorItemEvent(this.getTickCount());
-        this.queueEvent(event);
+        this.queueEvent(this.event);
     }
 
     @Override
     public void onLoad() {
-        event.setTotalTicks(this.getTickCount());
-        this.queueEvent(event);
+        this.event.setTotalTicks(this.getTickCount());
+        this.queueEvent(this.event);
     }
 
     @Override
     public void onPlaced() {
-        event.setTotalTicks(this.getTickCount());
-        this.queueEvent(event);
+        this.event.setTotalTicks(this.getTickCount());
+        this.queueEvent(this.event);
     }
 
     @Override
     public void onEntityStepOn(RoomEntity entity) {
-        skippedEntities.add(entity.getId());
-
+        this.entitiesOnRoller.add(entity.getId());
+        this.event.setTotalTicks(this.getTickCount());
     }
 
     @Override
     public void onEntityStepOff(RoomEntity entity) {
+        if (!this.entitiesOnRoller.contains(entity.getId())) {
+            return;
+        }
+        this.entitiesOnRoller.remove(entity.getId());
     }
 
     @Override
     public void onItemAddedToStack(RoomItemFloor floorItem) {
-        skippedItems.add(floorItem.getVirtualId());
-
+        this.event.setTotalTicks(this.getTickCount());
     }
 
     @Override
     public void onEventComplete(RollerFloorItemEvent event) {
-        if (this.cycleCancelled) {
-            this.cycleCancelled = false;
-        }
-
-//        if (!cycleCancelled) {
         this.handleItems();
-//        }
-
         this.handleEntities();
-
-        this.movedEntities.clear();
-        this.skippedEntities.clear();
-        this.skippedItems.clear();
-
         event.setTotalTicks(this.getTickCount());
         this.queueEvent(event);
     }
 
     private void handleEntities() {
+        RoomTile tile = this.getTile();
         Position sqInfront = this.getPosition().squareInFront(this.getRotation());
-
         if (!this.getRoom().getMapping().isValidPosition(sqInfront)) {
             return;
         }
-
         boolean retry = false;
-
         List<RoomEntity> entities = this.getRoom().getEntities().getEntitiesAt(this.getPosition());
-
         for (RoomEntity entity : entities) {
-            if (entity.getPosition().getX() != this.getPosition().getX() && entity.getPosition().getY() != this.getPosition().getY()) {
-                continue;
-            }
-
-            if (this.skippedEntities.contains(entity.getId())) {
-                continue;
-            }
-
-            if (entity.getPositionToSet() != null) {
-                continue;
-            }
-
-            if (!this.getRoom().getMapping().isValidStep(entity.getId(), entity.getPosition(), sqInfront, true, false, false, true, false) || this.getRoom().getEntities().positionHasEntity(sqInfront)) {
+            if (entity.getPosition().getX() != this.getPosition().getX() && entity.getPosition().getY() != this.getPosition().getY() || !this.entitiesOnRoller.contains(entity.getId()) || entity.getPositionToSet() != null) continue;
+            if (!this.getRoom().getMapping().isValidStep((Integer)entity.getId(), entity.getPosition(), sqInfront, true, false, false, null, true) || this.getRoom().getEntities().positionHasEntity(sqInfront)) {
                 retry = true;
                 break;
             }
-
-            if (entity.isWalking()) {
-                continue;
-            }
-
+            if (entity.isWalking()) continue;
             if (sqInfront.getX() == this.getRoom().getModel().getDoorX() && sqInfront.getY() == this.getRoom().getModel().getDoorY()) {
                 entity.leaveRoom(false, false, true);
                 continue;
             }
-
             WiredTriggerWalksOffFurni.executeTriggers(entity, this);
-
-            final double toHeight = this.getRoom().getMapping().getTile(sqInfront.getX(), sqInfront.getY()).getWalkHeight();
-
-            this.getRoom().getEntities().broadcastMessage(new SlideObjectBundleMessageComposer(entity.getPosition().copy(), new Position(sqInfront.getX(), sqInfront.getY(), toHeight), this.getVirtualId(), entity.getId(), 0));
-
-            entity.updateAndSetPosition(new Position(sqInfront.getX(), sqInfront.getY(), toHeight));
-
-            Position notifyStep = new Position(sqInfront.getX(), sqInfront.getY(), toHeight);
-            RoomTile notifyTile = this.getRoom().getMapping().getTile(notifyStep);
-
-            if(!notifyTile.getItems().isEmpty())
-                WiredTriggerWalksOnFurni.executeTriggers(entity, notifyTile.getTopItemInstance());
-
-            entity.unIdle();
-            entity.resetAfkTimer();
-            entity.markNeedsUpdate(true);
-
+            for (RoomItemFloor nextItem : this.getRoom().getItems().getItemsOnSquare(sqInfront.getX(), sqInfront.getY())) {
+                if (nextItem instanceof GroupGateFloorItem) break;
+                if (entity instanceof PlayerEntity) {
+                    WiredTriggerWalksOnFurni.executeTriggers(entity, nextItem);
+                }
+                nextItem.onEntityStepOn(entity);
+            }
+            double toHeight = this.getRoom().getMapping().getTile(sqInfront.getX(), sqInfront.getY()).getWalkHeight();
+            RoomTile oldTile = this.getRoom().getMapping().getTile(entity.getPosition().getX(), entity.getPosition().getY());
+            RoomTile newTile = this.getRoom().getMapping().getTile(sqInfront.getX(), sqInfront.getY());
+            if (oldTile != null) {
+                oldTile.getEntities().remove(entity);
+            }
+            if (newTile != null) {
+                newTile.getEntities().add(entity);
+            }
+            this.getRoom().getEntities().broadcastMessage(new SlideObjectBundleMessageComposer(entity.getPosition(), new Position(sqInfront.getX(), sqInfront.getY(), toHeight), this.getVirtualId(), entity.getId(), 0));
+            entity.setPosition(new Position(sqInfront.getX(), sqInfront.getY(), toHeight));
             this.onEntityStepOff(entity);
-            movedEntities.add(entity);
         }
-
         if (retry) {
-            this.cycleCancelled = true;
+            this.setTicks(this.getTickCount());
         }
     }
 
     private void handleItems() {
         List<RoomItemFloor> floorItems = this.getRoom().getItems().getItemsOnSquare(this.getPosition().getX(), this.getPosition().getY());
-
         if (floorItems.size() < 2) {
             return;
         }
-
-        // quick check illegal use of rollers
         int rollerCount = 0;
         for (RoomItemFloor f : floorItems) {
-            if (f instanceof RollerFloorItem) {
-                rollerCount++;
-            }
+            if (!(f instanceof RollerFloorItem)) continue;
+            ++rollerCount;
         }
-
         if (rollerCount > 1) {
             return;
         }
-
-        final Position sqInfront = this.getPosition().squareInFront(this.getRotation());
-        List<RoomItemFloor> itemsSq = this.getRoom().getItems().getItemsOnSquare(sqInfront.getX(), sqInfront.getY());
-
+        Position sqInfront = this.getPosition().squareInFront(this.getRotation());
         boolean noItemsOnNext = false;
-
-        Position position = null;
-        final Map<Integer, Double> slidingItems = Maps.newHashMap();
-
         for (RoomItemFloor floor : floorItems) {
-            if (floor.getPosition().getX() != this.getPosition().getX() && floor.getPosition().getY() != this.getPosition().getY()) {
-                continue;
-            }
-
-            if (this.skippedItems.contains(floor.getVirtualId())) {
-                continue;
-            }
-
-            if (floor instanceof RollerFloorItem || floor.getPosition().getZ() <= this.getPosition().getZ()) {
-                continue;
-            }
-
-            if (!floor.getDefinition().canStack() && !(floor instanceof RollableFloorItem)) {
-                if (floor.getTile().getTopItem() != floor.getId())
-                    continue;
-            }
-
-            if (position == null) {
-                position = floor.getPosition().copy();
-            }
-
+            if (floor.getPosition().getX() != this.getPosition().getX() && floor.getPosition().getY() != this.getPosition().getY() || floor instanceof RollerFloorItem || floor.getPosition().getZ() <= this.getPosition().getZ() || !floor.getDefinition().canStack() && !(floor instanceof RollableFloorItem) && floor.getTile().getTopItem() != floor.getId()) continue;
             double height = floor.getPosition().getZ();
-
+            List<RoomItemFloor> itemsSq = this.getRoom().getItems().getItemsOnSquare(sqInfront.getX(), sqInfront.getY());
             boolean hasRoller = false;
-
             for (RoomItemFloor iq : itemsSq) {
-                if (iq instanceof RollerFloorItem) {
-                    hasRoller = true;
-
-                    if (iq.getPosition().getZ() != this.getPosition().getZ()) {
-                        height -= this.getPosition().getZ();
-                        height += iq.getPosition().getZ();
-                    }
-                }
+                if (!(iq instanceof RollerFloorItem)) continue;
+                hasRoller = true;
+                if (iq.getPosition().getZ() == this.getPosition().getZ()) continue;
+                height -= this.getPosition().getZ();
+                height += iq.getPosition().getZ();
             }
-
-            if (!noItemsOnNext) { // we have items on next tile
-                RoomTile tile = this.getRoom().getMapping().getTile(sqInfront.getX(), sqInfront.getY());
-                if(tile != null)
-                    height = tile.getStackHeight(floor);
-            }
-
             if (!hasRoller || noItemsOnNext) {
-                if(noItemsOnNext) height -= 0.5;
+                height -= 0.5;
                 noItemsOnNext = true;
             }
-
-            if (!this.getRoom().getMapping().isValidStep(null, new Position(floor.getPosition().getX(), floor.getPosition().getY(), floor.getPosition().getZ()), sqInfront, true, false, false, true, true) || this.getRoom().getEntities().positionHasEntity(sqInfront, this.movedEntities)) {
+            if (!this.getRoom().getMapping().isValidStep(null, new Position(floor.getPosition().getX(), floor.getPosition().getY(), floor.getPosition().getZ()), sqInfront, true, false, false, null, true) || this.getRoom().getEntities().positionHasEntity(sqInfront)) {
+                this.setTicks(this.getTickCount());
                 return;
             }
-
-            slidingItems.put(floor.getVirtualId(), height);
-
+            this.getRoom().getEntities().broadcastMessage(new SlideObjectBundleMessageComposer(new Position(floor.getPosition().getX(), floor.getPosition().getY(), floor.getPosition().getZ()), new Position(sqInfront.getX(), sqInfront.getY(), height), this.getVirtualId(), 0, floor.getVirtualId()));
             floor.getPosition().setX(sqInfront.getX());
             floor.getPosition().setY(sqInfront.getY());
             floor.getPosition().setZ(height);
-
-            for (RoomEntity roomEntity : this.movedEntities) {
-                floor.onEntityStepOn(roomEntity);
-            }
-
-            this.getRoom().getItemProcess().saveItem(floor);
+            floor.save();
         }
-
-        if (slidingItems.size() != 0)
-            this.getRoom().getEntities().broadcastMessage(new SlideObjectBundleMessageComposer(position, sqInfront.copy(), this.getVirtualId(), 0, slidingItems));
-
         this.getRoom().getMapping().updateTile(this.getPosition().getX(), this.getPosition().getY());
         this.getRoom().getMapping().updateTile(sqInfront.getX(), sqInfront.getY());
 
@@ -256,7 +165,6 @@ public class RollerFloorItem extends AdvancedFloorItem<RollerFloorItemEvent> {
     }
 
     private int getTickCount() {
-//        return RoomItemFactory.getProcessTime(this.getRoom().hasAttribute("customRollerSpeed") ? (int) this.getRoom().getAttribute("customRollerSpeed") : 3);
-        return RoomItemFactory.getProcessTime((this.getRoom().hasAttribute("customRollerSpeed") ? (int) this.getRoom().getAttribute("customRollerSpeed") : 4) / 2);
+        return RoomItemFactory.getProcessTime(this.getRoom().getData().getRollerSpeed() / 2);
     }
 }
